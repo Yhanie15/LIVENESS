@@ -1,0 +1,43 @@
+<div class="search-filter-row">
+  <%- include('../partials/search') %>
+</div>
+
+<div class="table-container">
+  <div class="report-table-wrapper">
+    <div class="table-body-container">
+      <table class="report-table">
+        <thead>
+          <tr>
+            <% columns.forEach(column => { %>
+              <th><%= column.header %></th>
+            <% }); %>
+          </tr>
+        </thead>
+        <tbody>
+          <% dataItems.forEach(item => { %>
+            <tr>
+              <% columns.forEach(column => { %>
+                <td>
+                  <% if(column.type === 'status') { %>
+                    <span class="status-badge <%= item[column.key].toLowerCase() %>">
+                      <%= item[column.key] %>
+                    </span>
+                  <% } else if(column.type === 'image') { %>
+                    <div class="profile-image-container">
+                      <img src="<%= item[column.key] %>" alt="Image" class="profile-image">
+                    </div>
+                  <% } else { %>
+                    <%= item[column.key] %>
+                  <% } %>
+                </td>
+              <% }); %>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <!-- Include the pagination component -->
+  <%- include('../partials/pagination') %>
+</div>

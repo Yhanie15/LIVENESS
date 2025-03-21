@@ -1,0 +1,179 @@
+/* ------------- FORGOT PASSWORD ------------- */
+
+/* The main container for Forgot Password (logo on right) */
+.forgot-container {
+    position: relative;
+    width: 900px;
+    height: 500px;
+    background: linear-gradient(135deg, #a6dee5, #463557);
+    border-radius: 30px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Overlapping white section on the right for forgot password */
+  .forgot-container .logo-section {
+    top: 0;
+    right: 0;
+    left: auto;  /* Ensure it’s pinned to the right */
+    width: 52%;
+    border-top-left-radius: 150px;
+    border-bottom-left-radius: 150px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  
+  /* Left side for the forgot form */
+  .forgot-section {
+    position: relative;
+    z-index: 3;
+    width: 48%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    padding: 2rem 0 2rem 2rem;
+    text-align: center;
+  }
+  
+  .forgot-section h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  
+  .forgot-section p {
+    font-size: 0.875rem;
+    margin-bottom: 30px;
+  }
+  
+  /* ------------- RESET PASSWORD ------------- */
+  
+  /* The main container for Reset Password */
+  .reset-container {
+    display: flex;
+    min-height: 100vh;
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .reset-section {
+    flex: 1;
+    padding: 40px;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .reset-section h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  
+  .reset-section p {
+    margin-bottom: 30px;
+    opacity: 0.9;
+  }
+  
+  .reset-section .input-group {
+    margin-bottom: 20px; /* override or extend if needed */
+  }
+  
+  .reset-section input {
+    /* Because the global input in main.css might be different,
+       we can add or override here for reset-specific styling: */
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+  
+  .reset-section input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .reset-section .submit-btn {
+    background: white;
+    color: #2575fc;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+  
+  .back-to-login {
+    color: white;
+    text-decoration: none;
+    margin-top: 20px;
+    text-align: center;
+    opacity: 0.8;
+  }
+  
+  .back-to-login:hover {
+    opacity: 1;
+  }
+  
+  /* The right side for reset page's logo or info block */
+  .reset-container .logo-section {
+    flex: 1;
+    padding: 40px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  /* Additional styling for .error-message in reset page if needed */
+  .error-message {
+    background: rgba(255, 0, 0, 0.1);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Responsive changes for forgot & reset */
+  @media (max-width: 768px) {
+    .forgot-container {
+      flex-direction: column-reverse;
+      width: 100%;
+      height: auto;
+      border-radius: 0;
+    }
+  
+    .forgot-container .logo-section {
+      position: static;
+      width: 100%;
+      border-radius: 0;
+      margin-bottom: 20px;
+    }
+  
+    .forgot-section {
+      width: 100%;
+      height: auto;
+      padding: 20px;
+    }
+  
+    .reset-container {
+      flex-direction: column-reverse;
+      margin: 0;
+      border-radius: 0;
+    }
+  
+    .reset-section {
+      padding: 20px;
+    }
+  
+    .reset-container .logo-section {
+      padding: 20px;
+      position: static;
+    }
+  }
+  

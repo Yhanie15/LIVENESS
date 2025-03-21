@@ -1,0 +1,24 @@
+<!-- src/presentation/views/admin/auth/login.ejs -->
+<div class="login-section">
+    <h1>Welcome</h1>
+    <p>Please sign in to continue.</p>
+    <% if (locals.message) { %>
+      <div class="notification success"><p><%= message %></p></div>
+    <% } %>
+    <% if (locals.error) { %>
+      <div class="notification error"><p><%= error %></p></div>
+    <% } %>
+    <form action="/admin/login" method="POST">
+      <div class="input-group">
+        <i class="fa fa-user input-icon"></i>
+        <input type="text" name="username" placeholder="Username" required />
+      </div>
+      <div class="input-group">
+        <i class="fa fa-lock input-icon"></i>
+        <input type="password" name="password" placeholder="Password" required />
+      </div>
+      <button type="submit" class="btn">SIGN IN</button>
+      <a href="/admin/forgot-password" class="link">Forgot Password?</a>
+    </form>
+  </div>
+  

@@ -1,0 +1,109 @@
+.footer {
+    width: calc(100% - var(--sidebar-width));
+    height: 40px;
+    background-color: #ffffff;
+    border-top: 1px solid #e0e0e0;
+    position: fixed; 
+    bottom: 0;
+    right: 0;
+    margin-left: var(--sidebar-width);
+    display: flex;
+    align-items: center;
+    z-index: 999; 
+  }
+  
+  .wrapper.sidebar-collapsed .footer {
+    width: calc(100% - var(--sidebar-collapsed-width));
+    margin-left: var(--sidebar-collapsed-width);
+  }
+  
+  .footer-content {
+    width: 100%;
+    padding-right: 30px;
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  
+  .footer-line {
+    position: absolute;
+    height: 1px;
+    background-color: #3a2d5b;
+    width: 98%;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    opacity: 0.5; /* Make the line more subtle */
+  }
+  
+  .footer-powered {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #555;
+    background-color: #ffffff;
+    padding: 0 10px;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .footer-powered span {
+    margin-right: 8px;
+  }
+  
+  .filmetrics-logo {
+    height: 20px;
+    max-width: 200px;
+  }
+  
+  .main-content {
+  padding-bottom: 50px; 
+  height: calc(100vh - 50px); 
+  overflow-y: auto; 
+}
+  
+  /* Responsive styles */
+  @media (max-width: 992px) {
+    .footer-line {
+      width: 70%;
+      left: 15%;
+    }
+    
+    .footer {
+      width: calc(100% - var(--sidebar-collapsed-width));
+      margin-left: var(--sidebar-collapsed-width);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .footer {
+      width: 100%;
+      margin-left: 0;
+      height: 35px;
+    }
+    
+    .footer-powered {
+      font-size: 12px;
+    }
+    
+    .filmetrics-logo {
+      height: 18px;
+    }
+    
+    .footer-line {
+      width: 60%;
+      left: 20%;
+    }
+    
+    .wrapper.sidebar-collapsed .footer {
+      width: 100%;
+      margin-left: 0;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .footer {
+      display: none; /* Hide footer on mobile devices */
+    }
+  }

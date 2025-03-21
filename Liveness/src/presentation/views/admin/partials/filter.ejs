@@ -1,0 +1,58 @@
+<button class="btn filter-btn"><i class="bi bi-funnel-fill"></i> Filters</button>
+
+<!-- Filter Modal Template -->
+<script type="text/template" id="filter-modal-template">
+    <div class="filter-modal">
+      <div class="filter-modal-header">
+        <h3>Filter Records</h3>
+        <button class="close-modal-btn">&times;</button>
+      </div>
+      <div class="filter-modal-body">
+        <div class="filter-section">
+          <label><i class="bi bi-calendar"></i> Date Range</label>
+          <div class="date-range-container">
+            <div class="date-input-group">
+              <label class="date-label">Start Date</label>
+              <div class="date-picker-container">
+                <input type="date" id="start-date" class="date-input">
+              </div>
+            </div>
+            <div class="date-input-group">
+              <label class="date-label">End Date</label>
+              <div class="date-picker-container">
+                <input type="date" id="end-date" class="date-input">
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="filter-section">
+          <label><i class="bi bi-building"></i> Company Code</label>
+          <div class="dropdown-container company-dropdown">
+            <input type="text" class="dropdown-input" placeholder="Search by company code">
+            <div class="dropdown-list"></div>
+          </div>
+        </div>
+        
+        <div class="filter-section">
+          <label><i class="bi bi-check-circle"></i> Status</label>
+          <div class="dropdown-container status-dropdown">
+            <input type="text" class="dropdown-input" placeholder="Select status">
+            <div class="dropdown-list"></div>
+          </div>
+        </div>
+        
+        <div class="filter-section">
+          <label><i class="bi bi-activity"></i> Activity</label>
+          <div class="dropdown-container activity-dropdown">
+            <input type="text" class="dropdown-input" placeholder="Select activity">
+            <div class="dropdown-list"></div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-modal-footer">
+        <button class="clear-all-btn">Clear All</button>
+        <button class="apply-filters-btn">Apply Filters</button>
+      </div>
+    </div>
+  </script>

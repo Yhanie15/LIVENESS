@@ -1,0 +1,287 @@
+<div class="dashboard-container">
+    <!-- Left Column -->
+    <div class="dashboard-column left-column">
+      <!-- Total Transactions Card -->
+      <div id="total-transactions-card" class="dashboard-card">
+        <div class="card-header">Total Transactions</div>
+        <div class="card-content">
+          <div class="transaction-count">777</div>
+        </div>
+      </div>
+      
+      <!-- Today's Images Card -->
+      <div id="todays-images-card" class="dashboard-card">
+        <div class="card-header">Today's Images</div>
+        <div class="card-content">
+          <div class="detection-stats">
+            <!-- Fake Stats -->
+            <div class="stat-group">
+              <div class="stat-label">
+                <span class="dot fake-dot"></span> Fake Images
+              </div>
+              <div class="stat-value-fake">30</div>
+            </div>
+            
+            <!-- Real Stats -->
+            <div class="stat-group">
+              <div class="stat-label">
+                <span class="dot real-dot"></span> Real Images
+              </div>
+              <div class="stat-value-real">178</div>
+            </div>
+          </div>
+          
+          <!-- Progress Bar -->
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress fake-progress" style="width: 14.4%"></div>
+              <div class="progress real-progress" style="width: 85.6%"></div>
+            </div>
+            <div class="progress-labels">
+              <span class="fake-percentage">14.4%</span>
+              <span class="real-percentage">85.6%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Middle Column -->
+    <div class="dashboard-column middle-column">
+      <!-- Total Fake vs Real Card -->
+      <div id="fake-real-pie-card" class="dashboard-card">
+        <div class="card-header">Fake vs Real</div>
+        <div class="card-subtitle">Overall detection statistics</div>
+        <div class="card-content">
+          <div class="pie-chart-container-full">
+            <canvas id="fakeRealPieChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Column -->
+    <div class="dashboard-column right-column">
+      <!-- User Login Information Card -->
+      <div id="user-login-card" class="dashboard-card user-card">
+        <div class="card-header">
+          User Login Information
+          <a href="#" class="view-all">
+            <i class="bi bi-arrow-right"></i> 4 Active
+          </a>
+        </div>
+        <div class="card-subtitle">Currently active users & their last login</div>
+        <div class="card-content">
+          <div class="user-list">
+            <!-- User 1 -->
+            <div class="user-item">
+              <div class="user-avatar">AT</div>
+              <div class="user-info">
+                <div class="user-name">Alex Thompson</div>
+                <div class="user-last-login">
+                  <i class="bi bi-clock"></i> Last login: Mar 18, 2025
+                </div>
+              </div>
+              <div class="user-active-status">
+                <div class="user-time">3:07 PM</div>
+              </div>
+            </div>
+              
+            <!-- User 2 -->
+            <div class="user-item">
+              <div class="user-avatar">JL</div>
+              <div class="user-info">
+                <div class="user-name">Jessica Lee</div>
+                <div class="user-last-login">
+                  <i class="bi bi-clock"></i> Last login: Mar 18, 2025
+                </div>
+              </div>
+              <div class="user-active-status">
+                <div class="user-time">3:05 PM</div>
+              </div>
+            </div>
+              
+            <!-- User 3 -->
+            <div class="user-item">
+              <div class="user-avatar">DM</div>
+              <div class="user-info">
+                <div class="user-name">David Miller</div>
+                <div class="user-last-login">
+                  <i class="bi bi-clock"></i> Last login: Mar 18, 2025
+                </div>
+              </div>
+              <div class="user-active-status">
+                <div class="user-time">2:58 PM</div>
+              </div>
+            </div>
+              
+            <!-- User 4 -->
+            <div class="user-item">
+              <div class="user-avatar">JL</div>
+              <div class="user-info">
+                <div class="user-name">Jessica Lee</div>
+                <div class="user-last-login">
+                  <i class="bi bi-clock"></i> Last login: Mar 18, 2025
+                </div>
+              </div>
+              <div class="user-active-status">
+                <div class="user-time">3:05 PM</div>
+              </div>
+            </div>
+
+            <div class="user-item">
+              <div class="user-avatar">AT</div>
+              <div class="user-info">
+                <div class="user-name">Alex Thompson</div>
+                <div class="user-last-login">
+                  <i class="bi bi-clock"></i> Last login: Mar 18, 2025
+                </div>
+              </div>
+              <div class="user-active-status">
+                <div class="user-time">3:07 PM</div>
+              </div>
+            </div>
+
+            <div class="user-item">
+              <div class="user-avatar">JL</div>
+              <div class="user-info">
+                <div class="user-name">Jessica Lee</div>
+                <div class="user-last-login">
+                  <i class="bi bi-clock"></i> Last login: Mar 18, 2025
+                </div>
+              </div>
+              <div class="user-active-status">
+                <div class="user-time">3:05 PM</div>
+              </div>
+            </div>
+
+            <div class="user-item">
+              <div class="user-avatar">JL</div>
+              <div class="user-info">
+                <div class="user-name">Jessica Lee</div>
+                <div class="user-last-login">
+                  <i class="bi bi-clock"></i> Last login: Mar 18, 2025
+                </div>
+              </div>
+              <div class="user-active-status">
+                <div class="user-time">3:05 PM</div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Daily Statistics (Full Width) -->
+    <div class="dashboard-column daily-stats-column">
+      <!-- Daily Statistics Chart Card -->
+      <div id="daily-stats-card" class="dashboard-card chart-card">
+        <div class="card-header">
+          Daily Statistics
+          <div class="chart-controls">
+            <button class="chart-btn active">Line</button>
+            <button class="chart-btn">Bar</button>
+          </div>
+        </div>
+        <div class="card-subtitle">Daily trends of fake vs. real images</div>
+        <div class="card-content">
+          <div class="chart-container">
+            <canvas id="dailyStatsChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Bottom Row (Full Width) -->
+    <div class="dashboard-column bottom-tables-column">
+      <div class="dashboard-bottom-row">
+        <!-- Top Companies with Fake Detections Card -->
+        <div id="top-companies-card" class="dashboard-card">
+          <div class="card-header">Top Companies with Fake Detections</div>
+          <div class="card-subtitle">Ranked by number of fake image detections</div>
+          <div class="card-content">
+            <!-- Table will be wrapped in a scrollable container by JavaScript -->
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Company Code</th>
+                  <th>Company Name</th>
+                  <th>Fake Detections</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>ACME123</td>
+                  <td>Acme Corporation</td>
+                  <td><span class="detection-badge">47</span></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>GLOB456</td>
+                  <td>Global Industries</td>
+                  <td><span class="detection-badge">35</span></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>TECH789</td>
+                  <td>Tech Innovations</td>
+                  <td><span class="detection-badge">32</span></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td>DATA234</td>
+                  <td>Data Systems Inc</td>
+                  <td><span class="detection-badge">28</span></td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>SECU567</td>
+                  <td>Security Solutions</td>
+                  <td><span class="detection-badge">24</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Employee Fake Image Detections Card -->
+        <div id="employee-detections-card" class="dashboard-card">
+          <div class="card-header">Employee Fake Image Detections</div>
+          <div class="card-subtitle">Employees with fake image detection instances</div>
+          <div class="card-content">
+            <!-- Table will be wrapped in a scrollable container by JavaScript -->
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Employee ID</th>
+                  <th>Name</th>
+                  <th>Department</th>
+                  <th>Detections</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>EMP001</td>
+                  <td>John Smith</td>
+                  <td>Marketing</td>
+                  <td><span class="detection-badge">5</span></td>
+                </tr>
+                <tr>
+                  <td>EMP042</td>
+                  <td>Sarah Johnson</td>
+                  <td>Sales</td>
+                  <td><span class="detection-badge">3</span></td>
+                </tr>
+                <tr>
+                  <td>EMP107</td>
+                  <td>Michael Chen</td>
+                  <td>IT</td>
+                  <td><span class="detection-badge">4</span></td>
+                </tr>
+                <tr>
+                  <td>EMP063</td>
+                  <td>Emily Davis</td>
+                  <td>HR</td>
