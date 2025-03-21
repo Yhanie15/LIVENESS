@@ -1,4 +1,4 @@
-<!-- report_page.ejs -->
+<!-- In admin/layouts/reports_page.ejs -->
 <!-- Include the search and filter component -->
 
 <div class="search-filter-row">
@@ -27,40 +27,37 @@
           </tr>
         </thead>
         <tbody>
-          <% const transactions = [
-            { id: 'TRX-1001', company: 'LILO-001', employee: 'OJT-2421', activity: 'IN', date: 'Feb 14, 2025', time: '8:30 AM' , image: '/img/profile1.jpg', status: 'REAL', score: '86.07 %' },
-            { id: 'TRX-1002', company: 'LILO-001', employee: 'OJT-2421', activity: 'OUT', date: 'Feb 14, 2025', time: '2:30 PM' , image: '/img/profile1.jpg', status: 'FAKE', score: '90.07 %'},
-            { id: 'TRX-1003', company: 'LILO-001', employee: 'OJT-2421', activity: 'IN', date: 'Feb 15, 2025', time: '8:30 AM' , image: '/img/profile1.jpg', status: 'REAL', score: '86.07 %' },
-            { id: 'TRX-1004', company: 'LILO-001', employee: 'OJT-2421', activity: 'OUT', date: 'Feb 15, 2025', time: '2:30 PM' , image: '/img/profile1.jpg', status: 'FAKE', score: '90.07 %'},
-            { id: 'TRX-1005', company: 'LILO-001', employee: 'OJT-2421', activity: 'IN', date: 'Feb 16, 2025', time: '8:30 AM' , image: '/img/profile1.jpg', status: 'REAL', score: '86.07 %' },
-            { id: 'TRX-1006', company: 'LILO-001', employee: 'OJT-2421', activity: 'OUT', date: 'Feb 16, 2025', time: '2:30 PM' , image: '/img/profile1.jpg', status: 'FAKE', score: '90.07 %'},
-            { id: 'TRX-1007', company: 'LILO-001', employee: 'OJT-2421', activity: 'IN', date: 'Feb 17, 2025', time: '8:30 AM' , image: '/img/profile1.jpg', status: 'REAL', score: '86.07 %' },
-            { id: 'TRX-1008', company: 'LILO-001', employee: 'OJT-2421', activity: 'OUT', date: 'Feb 17, 2025', time: '2:30 PM' , image: '/img/profile1.jpg', status: 'FAKE', score: '90.07 %'},
-            { id: 'TRX-1009', company: 'LILO-001', employee: 'OJT-2421', activity: 'IN', date: 'Feb 18, 2025', time: '8:30 AM' , image: '/img/profile1.jpg', status: 'REAL', score: '86.07 %' },
-            { id: 'TRX-1010', company: 'LILO-001', employee: 'OJT-2421', activity: 'OUT', date: 'Feb 18, 2025', time: '2:30 PM' , image: '/img/profile1.jpg', status: 'FAKE', score: '90.07 %'},
-          ]; %>
-          
-          <% transactions.forEach(transaction => { %>
+          <% if (typeof transactions !== 'undefined' && transactions.length > 0) { %>
+            <% transactions.forEach(transaction => { %>
+              <tr>
+                <td><%= transaction.id %></td>
+                <td><%= transaction.company %></td>
+                <td><%= transaction.employee %></td>
+                <td><%= transaction.activity !== null ? transaction.activity : 'N/A' %></td>
+                <td><%= transaction.date %></td>
+                <td><%= transaction.time %></td>
+                <td>
+                  <div class="profile-image-container">
+                    <% if (transaction.image) { %>
+                      <img src="<%= transaction.image %>" alt="Profile" class="profile-image">
+                    <% } else { %>
+                      <img src="/images/avatar.png" alt="Default Profile" class="profile-image">
+                    <% } %>
+                  </div>
+                </td>
+                <td>
+                  <span class="status-badge <%= transaction.status.toLowerCase() %>">
+                    <%= transaction.status %>
+                  </span>
+                </td>
+                <td><%= transaction.score %></td>
+              </tr>
+            <% }); %>
+          <% } else { %>
             <tr>
-              <td><%= transaction.id %></td>
-              <td><%= transaction.company %></td>
-              <td><%= transaction.employee %></td>
-              <td><%= transaction.activity %></td>
-              <td><%= transaction.date %></td>
-              <td><%= transaction.time %></td>
-              <td>
-                <div class="profile-image-container">
-                  <img src="<%= transaction.image %>" alt="Profile" class="profile-image">
-                </div>
-              </td>
-              <td>
-                <span class="status-badge <%= transaction.status.toLowerCase() %>">
-                  <%= transaction.status %>
-                </span>
-              </td>
-              <td><%= transaction.score %></td>
+              <td colspan="9" class="no-records">No records found</td>
             </tr>
-          <% }); %>
+          <% } %>
         </tbody>
       </table>
     </div>

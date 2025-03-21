@@ -1,11 +1,3 @@
-/* Add these CSS variables for consistent colors */
-:root {
-  --fake-color: #d32f2f;
-  --real-color: #558b2f;
-  --border-color: #f0f0f0;
-  --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
 /* Dashboard Container */
 .dashboard-container {
   padding: 10px;
@@ -17,29 +9,29 @@
   grid-template-rows: auto auto auto;
   gap: 16px;
 }
-
+ 
 /* Column layouts */
 .dashboard-column {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-
+ 
 .left-column {
   grid-column: 1;
   grid-row: 1;
 }
-
+ 
 .middle-column {
   grid-column: 2;
   grid-row: 1;
 }
-
+ 
 .right-column {
   grid-column: 3;
   grid-row: 1 / span 2; /* Spans two rows */
 }
-
+ 
 /* Dashboard Cards - Base styling */
 .dashboard-card {
   background-color: #fff;
@@ -50,7 +42,7 @@
   flex-direction: column;
   overflow: hidden;
 }
-
+ 
 /* Card headers and subtitles */
 .card-header {
   color: #333;
@@ -61,37 +53,37 @@
   justify-content: space-between;
   align-items: center;
 }
-
+ 
 .card-subtitle {
   color: #666;
   font-size: 12px;
   margin-bottom: 16px;
 }
-
+ 
 .card-content {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
-
+ 
 /* Daily Stats Column (spans left and middle) */
 .daily-stats-column {
   grid-column: 1 / span 2;
   grid-row: 2;
 }
-
+ 
 .bottom-tables-column {
   grid-column: 1 / span 3;
   grid-row: 3;
 }
-
+ 
 /* Transaction Card */
 #total-transactions-card {
   text-align: center;
   height: auto;
   padding: 16px;
 }
-
+ 
 #total-transactions-card .transaction-count {
   font-size: 2.5rem; /* Using rem instead of px for better scaling */
   font-weight: 700;
@@ -102,26 +94,26 @@
   padding: 0;
   margin: 0;
 }
-
+ 
 /* Today's Images Card */
 #todays-images-card .card-content {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
-
+ 
 #todays-images-card .detection-stats {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
-
+ 
 #todays-images-card .stat-group {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-
+ 
 #todays-images-card .stat-label {
   display: flex;
   align-items: center;
@@ -129,25 +121,25 @@
   font-size: 14px;
   color: #555;
 }
-
+ 
 #todays-images-card .stat-value-fake {
   font-size: 2.25rem; /* Using rem for better scaling */
   font-weight: 700;
   color: var(--fake-color);
 }
-
+ 
 #todays-images-card .stat-value-real {
   font-size: 2.25rem; /* Using rem for better scaling */
   font-weight: 700;
   color: var(--real-color);
 }
-
+ 
 /* Progress container */
 .progress-container {
   width: 100%;
   margin-top: 8px;
 }
-
+ 
 /* Progress Bars */
 .progress-bar {
   width: 100%;
@@ -157,37 +149,37 @@
   overflow: hidden;
   display: flex;
 }
-
+ 
 .progress {
   height: 100%;
 }
-
+ 
 .fake-progress {
   background-color: var(--fake-color);
   border-radius: 4px 0 0 4px;
 }
-
+ 
 .real-progress {
   background-color: var(--real-color);
   border-radius: 0 4px 4px 0;
 }
-
+ 
 .progress-labels {
   display: flex;
   justify-content: space-between;
   margin-top: 4px;
   font-size: 12px;
 }
-
+ 
 .fake-percentage {
   color: var(--fake-color);
 }
-
+ 
 .real-percentage {
   color: var(--real-color);
   text-align: right;
 }
-
+ 
 /* Dots for legends */
 .dot {
   width: 10px;
@@ -195,15 +187,15 @@
   border-radius: 50%;
   display: inline-block;
 }
-
+ 
 .fake-dot {
   background-color: var(--fake-color);
 }
-
+ 
 .real-dot {
   background-color: var(--real-color);
 }
-
+ 
 /* Fake vs Real Pie Chart Card */
 #fake-real-pie-card .pie-chart-container-full {
   display: flex;
@@ -212,12 +204,12 @@
   height: 100%;
   justify-content: center;
 }
-
+ 
 #fake-real-pie-card canvas {
   max-width: 100%; /* Change from fixed width to responsive width */
   max-height: 220px;
 }
-
+ 
 #fake-real-pie-card .chart-legend {
   display: flex;
   gap: 24px;
@@ -225,7 +217,7 @@
   flex-wrap: wrap; /* Allow wrapping for small screens */
   justify-content: center;
 }
-
+ 
 .legend-item {
   display: flex;
   align-items: center;
@@ -233,18 +225,18 @@
   font-size: 14px;
   color: #333;
 }
-
+ 
 .legend-label {
   font-weight: 500;
 }
-
+ 
 /* User Login Information Card */
 #user-login-card {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
-
+ 
 #user-login-card .view-all {
   background-color: #e0f7fa;
   color: #00bcd4;
@@ -255,14 +247,14 @@
   display: flex;
   align-items: center;
 }
-
+ 
 #user-login-card .card-content {
   flex: 1;
   overflow: hidden; /* Hide overflow */
   display: flex;
   flex-direction: column;
 }
-
+ 
 #user-login-card .user-list {
   display: flex;
   flex-direction: column;
@@ -271,7 +263,7 @@
   flex: 1;
   padding-right: 5px; /* Slight padding for scroll bar */
 }
-
+ 
 #user-login-card .user-item {
   display: flex;
   align-items: center;
@@ -280,7 +272,7 @@
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 16px;
 }
-
+ 
 #user-login-card .user-avatar {
   min-width: 40px; /* Ensure minimum width */
   width: 40px;
@@ -295,12 +287,12 @@
   margin-right: 12px;
   font-size: 14px;
 }
-
+ 
 #user-login-card .user-info {
   flex: 1;
   min-width: 0; /* Allow text to wrap/truncate */
 }
-
+ 
 #user-login-card .user-name {
   font-weight: 500;
   color: #333;
@@ -309,7 +301,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+ 
 #user-login-card .user-status {
   display: flex;
   align-items: center;
@@ -318,7 +310,7 @@
   color: #666;
   margin: 4px 0;
 }
-
+ 
 #user-login-card .status-dot.active {
   background-color: #4bc480;
   width: 8px;
@@ -326,7 +318,7 @@
   border-radius: 50%;
   display: inline-block;
 }
-
+ 
 #user-login-card .user-last-login {
   font-size: 12px;
   color: #666;
@@ -334,7 +326,7 @@
   align-items: center;
   gap: 5px;
 }
-
+ 
 #user-login-card .user-active-status {
   display: flex;
   flex-direction: column;
@@ -342,7 +334,7 @@
   gap: 4px;
   margin-left: 8px;
 }
-
+ 
 #user-login-card .active-icon {
   display: inline-block;
   width: 6px;
@@ -351,19 +343,19 @@
   background-color: #4bc480;
   margin-right: 4px;
 }
-
+ 
 #user-login-card .user-time {
   font-size: 12px;
   color: #666;
   white-space: nowrap;
 }
-
+ 
 /* Daily Statistics Chart Card */
 #daily-stats-card .chart-controls {
   display: flex;
   gap: 8px;
 }
-
+ 
 #daily-stats-card .chart-btn {
   background: none;
   border: none;
@@ -373,30 +365,30 @@
   border-radius: 4px;
   font-size: 12px;
 }
-
+ 
 #daily-stats-card .chart-btn.active {
   background-color: #f0f0f0;
   color: #333;
 }
-
+ 
 #daily-stats-card .chart-container {
   height: 240px;
   width: 100%;
 }
-
+ 
 /* Dashboard Bottom Row */
 .dashboard-bottom-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
-
+ 
 /* Data Tables */
 .data-table {
   width: 100%;
   border-collapse: collapse;
 }
-
+ 
 .data-table th {
   text-align: left;
   padding: 12px 8px;
@@ -405,20 +397,20 @@
   color: #333;
   border-bottom: 1px solid var(--border-color);
 }
-
+ 
 .data-table td {
   padding: 8px;
   font-size: 12px;
   color: #555;
   border-bottom: 1px solid var(--border-color);
 }
-
+ 
 /* Make table responsive */
 .data-table-container {
   width: 100%;
   overflow-x: auto;
 }
-
+ 
 /* Detection badges */
 .detection-badge {
   background-color: var(--fake-color);
@@ -429,63 +421,63 @@
   display: inline-block;
   font-weight: 500;
 }
-
+ 
 /* Improved Responsive Adjustments */
 /* Large tablets and small desktops */
 @media (max-width: 1200px) {
   .dashboard-container {
     grid-template-columns: 1fr 1fr;
   }
-  
+ 
   .left-column {
     grid-column: 1;
     grid-row: 1;
   }
-  
+ 
   .middle-column {
     grid-column: 2;
     grid-row: 1;
   }
-  
+ 
   .daily-stats-column {
     grid-column: 1 / span 2;
     grid-row: 2;
   }
-  
+ 
   .right-column {
     grid-column: 1 / span 2;
     grid-row: 3;
   }
-  
+ 
   .bottom-tables-column {
     grid-column: 1 / span 2;
     grid-row: 4;
   }
 }
-
+ 
 /* Tablets */
 @media (max-width: 992px) {
   #todays-images-card .stat-value-fake,
   #todays-images-card .stat-value-real {
     font-size: 1.75rem;
   }
-  
+ 
   .card-header {
     flex-wrap: wrap;
   }
-  
+ 
   #daily-stats-card .chart-controls {
     margin-top: 5px;
   }
 }
-
+ 
 /* Smaller tablets and large phones */
 @media (max-width: 768px) {
   .dashboard-container {
     grid-template-columns: 1fr;
     padding: 5px;
   }
-  
+ 
   .left-column,
   .middle-column,
   .right-column,
@@ -493,121 +485,121 @@
   .bottom-tables-column {
     grid-column: 1;
   }
-  
+ 
   .left-column {
     grid-row: 1;
   }
-  
+ 
   .middle-column {
     grid-row: 2;
   }
-  
+ 
   .daily-stats-column {
     grid-row: 3;
   }
-  
+ 
   .right-column {
     grid-row: 4;
   }
-  
+ 
   .bottom-tables-column {
     grid-row: 5;
   }
-  
+ 
   .dashboard-bottom-row {
     grid-template-columns: 1fr;
   }
-  
+ 
   #user-login-card {
     height: auto;
     max-height: 500px;
   }
-  
+ 
   #user-login-card .user-list {
     max-height: 400px; /* Set maximum height for scrolling */
   }
-  
+ 
   #total-transactions-card .transaction-count {
     font-size: 2rem;
   }
-  
+ 
   #fake-real-pie-card canvas {
     max-height: 180px;
   }
-  
+ 
   #daily-stats-card .chart-container {
     height: 220px;
   }
 }
-
+ 
 /* Phones */
 @media (max-width: 576px) {
   .dashboard-container {
     gap: 10px;
   }
-  
+ 
   .dashboard-card {
     padding: 12px;
   }
-  
+ 
   .card-header {
     font-size: 14px;
   }
-  
+ 
   .card-subtitle {
     font-size: 11px;
   }
-  
+ 
   #todays-images-card .stat-value-fake,
   #todays-images-card .stat-value-real {
     font-size: 1.5rem;
   }
-  
+ 
   #todays-images-card .stat-label {
     font-size: 12px;
   }
-  
+ 
   #daily-stats-card .chart-container {
     height: 180px;
   }
-  
+ 
   .data-table th,
   .data-table td {
     padding: 6px 4px;
     font-size: 11px;
   }
-  
+ 
   #total-transactions-card .transaction-count {
     font-size: 1.75rem;
   }
-  
+ 
   #user-login-card .user-list {
     max-height: 350px; /* Adjust for smaller screens */
   }
 }
-
+ 
 /* Small phones */
 @media (max-width: 375px) {
   #todays-images-card .detection-stats {
     flex-direction: column;
     gap: 8px;
   }
-  
+ 
   #todays-images-card .stat-group {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
   }
-  
+ 
   #daily-stats-card .chart-container {
     height: 150px;
   }
-  
+ 
   #user-login-card .user-list {
     max-height: 300px; /* Adjust for smaller screens */
   }
 }
-
+ 
 /* Extra small devices (phones) */
 @media (max-width: 480px) {
   /* Reduce padding and gaps */
@@ -615,33 +607,33 @@
     padding: 5px;
     gap: 8px;
   }
-  
+ 
   /* Make cards more compact */
   .dashboard-card {
     padding: 10px;
   }
-  
+ 
   /* Reduce font sizes */
   .card-header {
     font-size: 13px;
   }
-  
+ 
   .card-subtitle {
     font-size: 10px;
     margin-bottom: 10px;
   }
-  
+ 
   /* Scale down statistics */
   #todays-images-card .stat-value-fake,
   #todays-images-card .stat-value-real {
     font-size: 1.25rem;
   }
-  
+ 
   /* Make chart smaller */
   #daily-stats-card .chart-container {
     height: 140px;
   }
-  
+ 
   /* Make avatar smaller */
   #user-login-card .user-avatar {
     min-width: 32px;
@@ -649,35 +641,36 @@
     height: 32px;
     font-size: 12px;
   }
-  
+ 
   /* Adjust user items in user card */
   #user-login-card .user-item {
     padding: 6px 0;
     padding-bottom: 12px;
   }
-  
+ 
   #user-login-card .user-name {
     font-size: 12px;
   }
-  
+ 
   #user-login-card .user-last-login {
     font-size: 10px;
   }
-  
+ 
   /* Make tables more compact */
-  .data-table th, 
+  .data-table th,
   .data-table td {
     padding: 4px 3px;
     font-size: 10px;
   }
-  
+ 
   /* Scale down detection badges */
   .detection-badge {
     padding: 1px 6px;
     font-size: 10px;
   }
-  
+ 
   #user-login-card .user-list {
     max-height: 280px; /* Adjust for extra small screens */
   }
 }
+ 

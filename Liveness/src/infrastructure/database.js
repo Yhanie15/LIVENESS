@@ -1,75 +1,65 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+const mysql = require('mysql2');
 
-// Define the path for your SQLite database file
-const dbPath = path.join(__dirname, 'database.sqlite');
+// Create a connection to the database
+const connection = mysql.createConnection({
+  host: '192.168.100.36',
+  user: 'lv_dev',
+  password: 'liveness',
+  database: 'liveness'
+});
 
-// Open (or create) the SQLite database
-const db = new sqlite3.Database(dbPath, (err) => {
+// Connect to MySQL
+connection.connect(err => {
   if (err) {
-    console.error("Error opening database:", err.message);
+    console.error('Error connecting to MySQL database:', err);
+    return;
+  }
+  console.log('Connected to MySQL database');
+});
+
+// Create Admin table if it doesn't exist
+const createAdminTableQuery = `
+  CREATE TABLE IF NOT EXISTS Admin (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255) UNIQUE,
+    password VARCHAR(255),
+    email VARCHAR(255),
+    compCode VARCHAR(255),
+    resetToken VARCHAR(255),
+    resetTokenExpiration VARCHAR(255),
+    createdAt VARCHAR(255),
+    updatedAt VARCHAR(255)
+  )
+`;
+
+connection.query(createAdminTableQuery, (err) => {
+  if (err) {
+    console.error('Error creating Admin table:', err);
   } else {
-    console.log("Connected to the SQLite database.");
+    console.log('Admin table is ready');
   }
 });
 
-// Create tables if they don't exist
-db.serialize(() => {
-  // Create the Admin table
-  db.run(`
-    CREATE TABLE IF NOT EXISTS Admin (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      username TEXT UNIQUE,
-      password TEXT,
-      email TEXT,
-      compCode TEXT,
-      resetToken TEXT,
-      resetTokenExpiration TEXT,
-      createdAt TEXT,
-      updatedAt TEXT
-    )
-  `, (err) => {
-    if (err) console.error("Error creating Admin table:", err.message);
-    else console.log("Admin table is ready.");
-  });
+// Create transactions table if it doesn't exist
+const createTransactionsTableQuery = `
+  CREATE TABLE IF NOT EXISTS transactions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    transaction_no VARCHAR(50) NOT NULL,
+    company_code VARCHAR(50) NOT NULL,
+    employee_id VARCHAR(50) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    score DECIMAL(5,2) NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    image_data LONGTEXT
+  )
+`;
 
-  // Create the Employee table
-  // db.run(`
-  //   CREATE TABLE IF NOT EXISTS Employee (
-  //       id INTEGER PRIMARY KEY AUTOINCREMENT,
-  //       compCode TEXT NOT NULL,
-  //       empID TEXT NOT NULL UNIQUE,
-  //       fname TEXT NOT NULL,
-  //       mname TEXT,
-  //       lname TEXT NOT NULL,
-  //       dept TEXT NOT NULL,
-  //       email TEXT NOT NULL,
-  //       loc_assign INTEGER,
-  //       empPic TEXT,
-  //       regStat TEXT DEFAULT 'PRE-REGISTERED',
-  //       empStat TEXT DEFAULT 'ACTIVE',
-  //       createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  //       updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
-  //     )
-  // `, (err) => {
-  //   if (err) console.error("Error creating Employee table:", err.message);
-  //   else console.log("Employee table is ready.");
-  // });
-
-  // Create the Record table
-  // db.run(`
-  //   CREATE TABLE IF NOT EXISTS Record (
-  //     id INTEGER PRIMARY KEY AUTOINCREMENT,
-  //     empID INTEGER,
-  //     act TEXT,
-  //     date TEXT,
-  //     time TEXT,
-  //     FOREIGN KEY(empID) REFERENCES Employee(id)
-  //   )
-  // `, (err) => {
-  //   if (err) console.error("Error creating Record table:", err.message);
-  //   else console.log("Record table is ready.");
-  // });
+connection.query(createTransactionsTableQuery, (err) => {
+  if (err) {
+    console.error('Error creating transactions table:', err);
+  } else {
+    console.log('Transactions table is ready');
+  }
 });
 
-module.exports = db;
+module.exports = connection;

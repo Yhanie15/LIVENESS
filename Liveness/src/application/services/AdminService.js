@@ -38,60 +38,58 @@ class AdminService {
     }
   }
 
-  // In src/application/services/AdminService.js, modify the generateToken method
-async generateToken(admin) {
-  console.log("Generating token for admin:", admin.username);
+  async generateToken(admin) {
+    console.log("Generating token for admin:", admin.username);
 
-  if (!process.env.JWT_SECRET_ADMIN) {
-    console.error("JWT_SECRET_ADMIN environment variable is not set");
-    throw new Error("Server configuration error");
-  }
-
-  try {
-    const token = jwt.sign(
-      {
-        id: admin.id,
-        username: admin.username,
-        compCode: admin.compCode,
-        role: "admin",
-      },
-      process.env.JWT_SECRET_ADMIN,
-      { expiresIn: "8h" }, // Extend token validity from 1h to 8h
-    );
-    console.log("Token generated successfully");
-    return token;
-  } catch (error) {
-    console.error("Error generating token:", error);
-    throw new Error("Token generation failed");
-  }
-}
-
-// Add this function to AdminService.js
-async refreshTokenIfNeeded(token) {
-  try {
-    const decoded = jwt.decode(token);
-    if (!decoded) return { needsRefresh: false, token };
-    
-    // If token will expire in next 30 minutes, refresh it
-    const expiryThreshold = Math.floor(Date.now() / 1000) + 30 * 60;
-    if (decoded.exp < expiryThreshold) {
-      console.log("Token expiring soon, refreshing...");
-      
-      // Find admin by ID to refresh the token
-      const admin = await this.adminRepository.findById(decoded.id);
-      if (!admin) return { needsRefresh: false, token };
-      
-      // Generate fresh token
-      const newToken = await this.generateToken(admin);
-      return { needsRefresh: true, token: newToken };
+    if (!process.env.JWT_SECRET_ADMIN) {
+      console.error("JWT_SECRET_ADMIN environment variable is not set");
+      throw new Error("Server configuration error");
     }
-    
-    return { needsRefresh: false, token };
-  } catch (error) {
-    console.error("Error refreshing token:", error);
-    return { needsRefresh: false, token };
+
+    try {
+      const token = jwt.sign(
+        {
+          id: admin.id,
+          username: admin.username,
+          compCode: admin.compCode,
+          role: "admin",
+        },
+        process.env.JWT_SECRET_ADMIN,
+        { expiresIn: "8h" }, // Extend token validity from 1h to 8h
+      );
+      console.log("Token generated successfully");
+      return token;
+    } catch (error) {
+      console.error("Error generating token:", error);
+      throw new Error("Token generation failed");
+    }
   }
-}
+
+  async refreshTokenIfNeeded(token) {
+    try {
+      const decoded = jwt.decode(token);
+      if (!decoded) return { needsRefresh: false, token };
+      
+      // If token will expire in next 30 minutes, refresh it
+      const expiryThreshold = Math.floor(Date.now() / 1000) + 30 * 60;
+      if (decoded.exp < expiryThreshold) {
+        console.log("Token expiring soon, refreshing...");
+        
+        // Find admin by ID to refresh the token
+        const admin = await this.adminRepository.findById(decoded.id);
+        if (!admin) return { needsRefresh: false, token };
+        
+        // Generate fresh token
+        const newToken = await this.generateToken(admin);
+        return { needsRefresh: true, token: newToken };
+      }
+      
+      return { needsRefresh: false, token };
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      return { needsRefresh: false, token };
+    }
+  }
 
   async login(username, password) {
     console.log(`Login service called for username: ${username}`)

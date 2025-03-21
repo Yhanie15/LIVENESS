@@ -6,12 +6,12 @@ class AdminRepository {
   // Helper function to execute queries and handle results
   async executeQuery(query, params) {
     return new Promise((resolve, reject) => {
-      db.all(query, params, (err, rows) => {
+      db.query(query, params, (err, results) => {
         if (err) {
           console.error("Repository: Error executing query:", err);
           return reject(err);
         }
-        resolve(rows);
+        resolve(results);
       });
     });
   }
@@ -55,13 +55,13 @@ class AdminRepository {
 
     console.log(`Repository: Saving new admin: ${username}`);
     return new Promise((resolve, reject) => {
-      db.run(query, [username, password, email, compCode, createdAt, updatedAt], function (err) {
+      db.query(query, [username, password, email, compCode, createdAt, updatedAt], function (err, result) {
         if (err) {
           console.error("Repository: Error saving admin:", err);
           return reject(err);
         }
-        console.log(`Repository: Admin saved with ID: ${this.lastID}`);
-        resolve(this.lastID);
+        console.log(`Repository: Admin saved with ID: ${result.insertId}`);
+        resolve(result.insertId);
       });
     });
   }
@@ -76,13 +76,13 @@ class AdminRepository {
 
     console.log(`Repository: Updating admin with ID: ${id}`);
     return new Promise((resolve, reject) => {
-      db.run(query, [username, password, compCode, updatedAt, id], function (err) {
+      db.query(query, [username, password, compCode, updatedAt, id], function (err, result) {
         if (err) {
           console.error("Repository: Error updating admin:", err);
           return reject(err);
         }
-        console.log(`Repository: Admin updated, rows affected: ${this.changes}`);
-        resolve(this.changes);
+        console.log(`Repository: Admin updated, rows affected: ${result.affectedRows}`);
+        resolve(result.affectedRows);
       });
     });
   }
@@ -135,7 +135,7 @@ class AdminRepository {
         MIN(CASE WHEN act = 'in' THEN time END) AS earliest_login_time,
         COALESCE(
             AVG(CASE WHEN act = 'in' THEN 
-                strftime('%s', 
+                UNIX_TIMESTAMP(
                     CASE 
                         WHEN time LIKE '%AM' THEN REPLACE(time, ' AM', '')
                         WHEN time LIKE '%PM' THEN REPLACE(time, ' PM', '')
@@ -145,7 +145,7 @@ class AdminRepository {
             0) AS avg_login_seconds,
         COALESCE(
             AVG(CASE WHEN act = 'out' THEN 
-                strftime('%s', 
+                UNIX_TIMESTAMP(
                     CASE 
                         WHEN time LIKE '%AM' THEN REPLACE(time, ' AM', '')
                         WHEN time LIKE '%PM' THEN REPLACE(time, ' PM', '')
@@ -163,7 +163,7 @@ class AdminRepository {
         Employee ON Record.empID = Employee.id
       WHERE 
         Employee.compCode = ?
-        AND date BETWEEN DATE('now', '-7 days') AND DATE('now')
+        AND date BETWEEN DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND CURDATE()
       GROUP BY 
         date
       ORDER BY 
@@ -187,7 +187,7 @@ class AdminRepository {
       INNER JOIN 
         Employee ON Record.empID = Employee.id
       WHERE 
-        Employee.compCode = ? AND Record.date = DATE('now') 
+        Employee.compCode = ? AND Record.date = CURDATE() 
       GROUP BY 
         Record.empID, Employee.fname, Employee.lname
       ORDER BY 
@@ -199,12 +199,11 @@ class AdminRepository {
 
   // Get active users for maps (today)
   async getMapsActiveUsersToday(compCode) {
-    const today = new Date().toISOString().split("T")[0];
     const query = `
-      SELECT fname, lname, address, img, lat, long, time
+      SELECT fname, lname, address, img, lat, \`long\`, time
       FROM Record
       INNER JOIN Employee e ON e.id = Record.empID
-      WHERE e.compCode = ? AND Record.date = DATE('now') AND Record.act = 'in'`;
+      WHERE e.compCode = ? AND Record.date = CURDATE() AND Record.act = 'in'`;
 
     const rows = await this.executeQuery(query, [compCode]);
     return rows || [];
@@ -216,13 +215,13 @@ class AdminRepository {
     console.log(`Repository: Storing reset token for admin ID: ${adminId}`);
 
     return new Promise((resolve, reject) => {
-      db.run(query, [hashedToken, tokenExpiration, adminId], function (err) {
+      db.query(query, [hashedToken, tokenExpiration, adminId], function (err, result) {
         if (err) {
           console.error("Repository: Error storing reset token:", err);
           return reject(err);
         }
-        console.log(`Repository: Reset token stored, rows affected: ${this.changes}`);
-        resolve(this.changes);
+        console.log(`Repository: Reset token stored, rows affected: ${result.affectedRows}`);
+        resolve(result.affectedRows);
       });
     });
   }
@@ -246,13 +245,13 @@ class AdminRepository {
     const query = `UPDATE Admin SET password = ? WHERE id = ?`;
     console.log(`Repository: Updating password for admin ID: ${adminId}`);
     return new Promise((resolve, reject) => {
-      db.run(query, [newPassword, adminId], function (err) {
+      db.query(query, [newPassword, adminId], function (err, result) {
         if (err) {
           console.error("Repository: Error updating password:", err);
           return reject(err);
         }
-        console.log(`Repository: Password updated, rows affected: ${this.changes}`);
-        resolve(this.changes);
+        console.log(`Repository: Password updated, rows affected: ${result.affectedRows}`);
+        resolve(result.affectedRows);
       });
     });
   }
@@ -262,13 +261,13 @@ class AdminRepository {
     const query = `UPDATE Admin SET resetToken = NULL, resetTokenExpiration = NULL WHERE id = ?`;
     console.log(`Repository: Clearing reset token for admin ID: ${adminId}`);
     return new Promise((resolve, reject) => {
-      db.run(query, [adminId], function (err) {
+      db.query(query, [adminId], function (err, result) {
         if (err) {
           console.error("Repository: Error clearing reset token:", err);
           return reject(err);
         }
-        console.log(`Repository: Reset token cleared, rows affected: ${this.changes}`);
-        resolve(this.changes);
+        console.log(`Repository: Reset token cleared, rows affected: ${result.affectedRows}`);
+        resolve(result.affectedRows);
       });
     });
   }

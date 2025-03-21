@@ -1,6 +1,253 @@
 /* sidebar.css */
 /* ------------------------------------ */
 /* Sidebar Styles + Dropdown + Tooltip */
+ 
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--white);
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1030;
+  transition: all var(--transition-speed) ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-header {
+  padding: 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60px;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img {
+
+  max-height: 130px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  /* height: 40px;
+  width: auto;
+  transition: height var(--transition-speed) ease; */
+}
+
+.sidebar.collapsed .logo-img {
+  max-height: 60px;
+  width:auto;
+}
+
+.logo-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-bars {
+  display: flex;
+  align-items: flex-end;
+  height: 20px;
+}
+
+.bar {
+  width: 8px;
+  background-color: var(--accent-color);
+  margin-right: 2px;
+}
+
+.bar:nth-child(1) {
+  height: 16px;
+}
+
+.bar:nth-child(2) {
+  height: 20px;
+}
+
+.bar:nth-child(3) {
+  height: 12px;
+  margin-right: 0;
+}
+
+
+.sidebar-menu {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  padding: 12px 15px;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: all var(--transition-speed) ease;
+  white-space: nowrap;
+  position: relative;
+}
+
+.sidebar-link:hover {
+  background-color: var(--light-gray);
+  color: var(--text-color);
+}
+
+.sidebar-item.active .sidebar-link {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+.sidebar-item.active .sidebar-link:hover {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+.sidebar.collapsed .sidebar-item.active .sidebar-link i {
+  color: var(--white);
+}
+
+.sidebar-link i {
+  font-size: 18px;
+  min-width: 25px;
+  margin-right: 10px;
+  text-align: center;
+}
+
+.menu-text {
+  transition: opacity var(--transition-speed) ease, width var(--transition-speed) ease;
+  white-space: nowrap;
+}
+
+.sidebar.collapsed .menu-text,
+.sidebar.collapsed .dropdown-icon {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+.dropdown-icon {
+  margin-left: auto;
+  transition: transform var(--transition-speed) ease;
+}
+
+.has-dropdown.open .dropdown-icon {
+  transform: rotate(180deg);
+}
+
+/* Tooltip for collapsed sidebar */
+.sidebar-link {
+  position: relative;
+}
+
+.sidebar.collapsed .sidebar-link:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--primary-color);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1040;
+}
+
+.sidebar.collapsed .sidebar-link:hover::before {
+  content: "";
+  position: absolute;
+  left: calc(100% + 5px);
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-right-color: var(--primary-color);
+}
+
+/* Responsive Sidebar */
+@media (max-width: 992px) {
+  .sidebar {
+    width: var(--sidebar-collapsed-width);
+  }
+
+  .sidebar.mobile-open {
+    width: var(--sidebar-width);
+    transform: translateX(0);
+  }
+
+  .sidebar.mobile-open .menu-text {
+    opacity: 1;
+    width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    width: var(--sidebar-width);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar.collapsed {
+    width: var(--sidebar-width);
+    transform: translateX(-100%);
+  }
+
+  .sidebar.collapsed.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar.collapsed .menu-text{
+    opacity: 1;
+    width: auto;
+  }
+
+  .logo-img {
+    height: 30px; /* Smaller logo for mobile */
+  }
+
+}
+
+@media (max-width: 576px) {
+  .logo-img {
+    height: 25px;
+  }
+
+}
+/* sidebar.css */
+/* ------------------------------------ */
+/* Sidebar Styles + Dropdown + Tooltip */
 
 .sidebar {
     width: var(--sidebar-width);
