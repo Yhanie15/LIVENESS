@@ -25,26 +25,7 @@ router.get("/logout", adminController.logout)
 router.use(TokenAuthenticated)
 
 // Protected Routes
-router.get("/", adminController.redirectToDashboard)
-router.get("/dashboard", adminController.dashboard)
-
-// Reports
-// router.get("/reports/dtrs", adminController.reportsDtrs)
-// router.get("/reports/rejected", adminController.reportsRejected)
-// router.get("/reports/start-day", adminController.reportsStartDay)
-// router.get("/reports/end-day", adminController.reportsEndDay)
-
-// Reviews
-// router.get("/reviews/registration", adminController.reviewsRegistration)
-// router.get("/reviews/mismatch", adminController.reviewsMismatch)
-// router.get("/reviews/logs", adminController.reviewsLogs)
-
-// Settings
-// router.get("/settings/page", adminController.settingsPage)
-// router.get("/settings/log", adminController.settingsLog)
-// router.get("/settings/users", adminController.settingsUsers)
-// router.get("/settings/location", adminController.settingsLocation)
-// router.get("/settings/logs-display", adminController.settingsLogsDisplay)
-// router.get("/settings/reports", adminController.settingsReports)
+// router.get("/", adminController.redirectToDashboard)
+// router.get("/dashboard", adminController.dashboard)
 
 module.exports = router

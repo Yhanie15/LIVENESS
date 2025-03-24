@@ -11,6 +11,7 @@ const port = process.env.PORT || 3000
 const adminRoutes = require("./src/presentation/routes/adminRoutes")
 const userlogRoutes = require("./src/presentation/routes/userlogRoutes")
 const reportsRoutes = require("./src/presentation/routes/reportsRoutes")
+const dashboardRoutes = require("./src/presentation/routes/dashboardRoutes")
 
 // Setup session middleware with proper configuration
 app.use(
@@ -61,11 +62,12 @@ app.use(express.static(path.join(__dirname, process.env.PUBLIC_DIR || "public"))
 // setupDatabase()
 
 // Run infrastructure tasks (e.g., setup images)
-require("./src/infrastructure/setupImages")()
+// require("./src/infrastructure/setupImages")()
 
 app.use("/", adminRoutes)
 app.use("/", userlogRoutes) 
 app.use("/", reportsRoutes)
+app.use("/", dashboardRoutes)
 // app.use("/", employeeRoutes)
 
 // Start the server.
