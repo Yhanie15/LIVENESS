@@ -1,24 +1,100 @@
-<!-- pagination.ejs -->
-<div class="pagination-container">
+<!-- Combined pagination implementation -->
+<% if (typeof pagination !== 'undefined') { %>
+  <div class="pagination-container">
+    <!-- Rows per page dropdown from pagination.ejs -->
     <div class="rows-per-page">
       Rows per page: 
-      <select class="rows-select">
-        <option value="10" selected>10</option>
-        <option value="20">20</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
+      <select class="rows-select" onchange="window.location.href = '?page=<%= pagination.currentPage %>&limit=' + this.value">
+        <option value="10" <%= pagination.pageSize === 10 ? 'selected' : '' %>>10</option>
+        <option value="20" <%= pagination.pageSize === 20 ? 'selected' : '' %>>20</option>
+        <option value="50" <%= pagination.pageSize === 50 ? 'selected' : '' %>>50</option>
+        <option value="100" <%= pagination.pageSize === 100 ? 'selected' : '' %>>100</option>
       </select>
     </div>
+    
+    <!-- Pagination info - showing X to Y of Z entries -->
     <div class="pagination-info">
-      Showing 1 to 10 of 20 entries
+      <% if (pagination.totalPages > 0) { %>
+        Showing <%= ((pagination.currentPage - 1) * pagination.pageSize) + 1 %> to 
+        <%= Math.min(pagination.currentPage * pagination.pageSize, pagination.totalItems) %> 
+        of <%= pagination.totalItems %> <%= pagination.totalItems === 1 ? 'record' : 'records' %>
+      <% } else { %>
+        Showing 0 of 0 records
+      <% } %>
     </div>
-    <div class="pagination-controls">
-      <button class="pagination-btn prev" disabled>
-        <i class="bi bi-chevron-left"></i>
-      </button>
-      <span class="page-display">Page 1 of 3</span>
-      <button class="pagination-btn next">
-        <i class="bi bi-chevron-right"></i>
-      </button>
-    </div>
+    
+    <% if (pagination.totalPages > 1) { %>
+      <div class="pagination-controls">
+        <!-- Previous page button -->
+        <% if (pagination.currentPage > 1) { %>
+          <a href="?page=<%= pagination.currentPage - 1 %>&limit=<%= pagination.pageSize %>" class="pagination-btn prev">
+            <i class="bi bi-chevron-left"></i> Previous
+          </a>
+        <% } else { %>
+          <span class="pagination-btn prev disabled">
+            <i class="bi bi-chevron-left"></i> Previous
+          </span>
+        <% } %>
+        
+        <!-- Page numbers -->
+        <div class="page-numbers">
+          <% 
+            // Show up to 5 page numbers with current page in the middle when possible
+            let startPage = Math.max(1, pagination.currentPage - 2);
+            let endPage = Math.min(pagination.totalPages, startPage + 4);
+            
+            // Adjust start page if we're near the end
+            if (endPage - startPage < 4) {
+              startPage = Math.max(1, endPage - 4);
+            }
+          %>
+          
+          <% if (startPage > 1) { %>
+            <a href="?page=1&limit=<%= pagination.pageSize %>" class="page-number">1</a>
+            <% if (startPage > 2) { %>
+              <span class="ellipsis">...</span>
+            <% } %>
+          <% } %>
+          
+          <% for (let i = startPage; i <= endPage; i++) { %>
+            <a href="?page=<%= i %>&limit=<%= pagination.pageSize %>" 
+               class="page-number <%= i === pagination.currentPage ? 'active' : '' %>">
+              <%= i %>
+            </a>
+          <% } %>
+          
+          <% if (endPage < pagination.totalPages) { %>
+            <% if (endPage < pagination.totalPages - 1) { %>
+              <span class="ellipsis">...</span>
+            <% } %>
+            <a href="?page=<%= pagination.totalPages %>&limit=<%= pagination.pageSize %>" class="page-number">
+              <%= pagination.totalPages %>
+            </a>
+          <% } %>
+        </div>
+        
+        <!-- Next page button -->
+        <% if (pagination.currentPage < pagination.totalPages) { %>
+          <a href="?page=<%= pagination.currentPage + 1 %>&limit=<%= pagination.pageSize %>" class="pagination-btn next">
+            Next <i class="bi bi-chevron-right"></i>
+          </a>
+        <% } else { %>
+          <span class="pagination-btn next disabled">
+            Next <i class="bi bi-chevron-right"></i>
+          </span>
+        <% } %>
+      </div>
+    <% } else { %>
+      <!-- Simplified pagination controls for single page -->
+      <div class="pagination-controls">
+        <span class="pagination-btn prev disabled">
+          <i class="bi bi-chevron-left"></i>
+        </span>
+        <span class="page-display">Page 1 of 1</span>
+        <span class="pagination-btn next disabled">
+          <i class="bi bi-chevron-right"></i>
+        </span>
+      </div>
+    <% } %>
   </div>
+<% } %>

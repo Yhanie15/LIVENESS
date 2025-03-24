@@ -1,8 +1,276 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // API URL
+  const API_URL = 'http://192.168.6.93:5000/api/transactions';
+  
+  // Fetch data from API
+  async function fetchTransactions(page = 1, limit = 50) {
+    try {
+      const response = await fetch(`${API_URL}?page=${page}&limit=${limit}`);
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching transaction data:', error);
+      return { data: [], total: 0 };
+    }
+  }
+  
+  // Process data and update dashboard
+  async function updateDashboard() {
+    const data = await fetchTransactions();
+    
+    // Count FAKE vs REAL images
+    const counts = {
+      fake: 0,
+      real: 0,
+      total: data.total || 0
+    };
+    
+    // todays-images-card's date for filtering today's images
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Today's counts
+    const todayCounts = {
+      fake: 0,
+      real: 0
+    };
+    
+    // Process transaction data
+    data.data.forEach(transaction => {
+      // Count overall fake vs real
+      if (transaction.status === 'FAKE') {
+        counts.fake++;
+      } else if (transaction.status === 'REAL') {
+        counts.real++;
+      }
+      
+      // Count today's transactions
+      const txDate = new Date(transaction.timestamp);
+      if (txDate >= today) {
+        if (transaction.status === 'FAKE') {
+          todayCounts.fake++;
+        } else if (transaction.status === 'REAL') {
+          todayCounts.real++;
+        }
+      }
+    });
+    
+    // Update Total Transactions Card
+    document.querySelector('.transaction-count').textContent = counts.total;
+    
+    // Update Today's Images Card
+    document.querySelector('.stat-value-fake').textContent = todayCounts.fake;
+    document.querySelector('.stat-value-real').textContent = todayCounts.real;
+    
+    // Calculate today's percentages
+    const todayTotal = todayCounts.fake + todayCounts.real;
+    const fakePercentage = todayTotal > 0 ? (todayCounts.fake / todayTotal * 100).toFixed(1) : 0;
+    const realPercentage = todayTotal > 0 ? (todayCounts.real / todayTotal * 100).toFixed(1) : 0;
+    
+    // Update progress bars
+    document.querySelector('.fake-progress').style.width = `${fakePercentage}%`;
+    document.querySelector('.real-progress').style.width = `${realPercentage}%`;
+    document.querySelector('.fake-percentage').textContent = `${fakePercentage}%`;
+    document.querySelector('.real-percentage').textContent = `${realPercentage}%`;
+    
+    // Update pie chart
+    updatePieChart(counts.fake, counts.real);
+    
+    // Update daily stats chart
+    updateDailyStats(data.data);
+    
+    // Update tables
+    updateCompanyTable(data.data);
+    updateEmployeeTable(data.data);
+  }
+  
+  // Update the pie chart with new data
+  function updatePieChart(fakeCount, realCount) {
+    const pieChart = Chart.getChart('fakeRealPieChart');
+    if (pieChart) {
+      pieChart.data.datasets[0].data = [fakeCount, realCount];
+      pieChart.update();
+    }
+  }
+  
+  // Update daily stats chart
+  function updateDailyStats(transactions) {
+    // Group transactions by day
+    const dailyData = {};
+    const daysToShow = 7;
+    
+    // Get the last 7 days
+    const today = new Date();
+    for (let i = 0; i < daysToShow; i++) {
+      const date = new Date();
+      date.setDate(today.getDate() - i);
+      const dateString = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      dailyData[dateString] = { fake: 0, real: 0 };
+    }
+    
+    // Process transactions
+    transactions.forEach(tx => {
+      const txDate = new Date(tx.timestamp);
+      const dateString = txDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      
+      // Only include dates within our range
+      if (dailyData[dateString]) {
+        if (tx.status === 'FAKE') {
+          dailyData[dateString].fake++;
+        } else if (tx.status === 'REAL') {
+          dailyData[dateString].real++;
+        }
+      }
+    });
+    
+    // Convert to chart data
+    const labels = Object.keys(dailyData).reverse();
+    const fakeData = labels.map(date => dailyData[date].fake);
+    const realData = labels.map(date => dailyData[date].real);
+    
+    // Update the chart
+    const chart = Chart.getChart('dailyStatsChart');
+    if (chart) {
+      chart.data.labels = labels;
+      chart.data.datasets[0].data = realData;
+      chart.data.datasets[1].data = fakeData;
+      chart.update();
+    }
+  }
+  
+  // Update company table with fake detections
+  function updateCompanyTable(transactions) {
+    // Count fake detections by company
+    const companyFakeDetections = {};
+    
+    transactions.forEach(tx => {
+      if (tx.status === 'FAKE' && tx.company_code) {
+        if (!companyFakeDetections[tx.company_code]) {
+          companyFakeDetections[tx.company_code] = {
+            code: tx.company_code,
+            count: 0,
+            // In a real app, you might want to fetch company names from another API
+            name: `Company ${tx.company_code}`
+          };
+        }
+        companyFakeDetections[tx.company_code].count++;
+      }
+    });
+    
+    // Convert to array and sort by count
+    const companiesArray = Object.values(companyFakeDetections)
+      .sort((a, b) => b.count - a.count);
+    
+    // Get table body
+    const tableBody = document.querySelector('#top-companies-card .data-table tbody');
+    tableBody.innerHTML = '';
+    
+    // Add rows
+    companiesArray.slice(0, 5).forEach((company, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${company.code}</td>
+        <td>${company.name}</td>
+        <td>${company.count}</td>
+      `;
+      tableBody.appendChild(row);
+    });
+    
+    // Add placeholder if no data
+    if (companiesArray.length === 0) {
+      const row = document.createElement('tr');
+      row.innerHTML = '<td colspan="4" class="no-data">No fake detections found</td>';
+      tableBody.appendChild(row);
+    }
+  }
+  
+  // Update employee table with fake detections
+  function updateEmployeeTable(transactions) {
+    // Count fake detections by employee
+    const employeeFakeDetections = {};
+    
+    transactions.forEach(tx => {
+      if (tx.status === 'FAKE' && tx.employee_id) {
+        if (!employeeFakeDetections[tx.employee_id]) {
+          employeeFakeDetections[tx.employee_id] = {
+            id: tx.employee_id,
+            count: 0,
+            // In a real app, you might want to fetch employee details from another API
+            name: `Employee ${tx.employee_id}`,
+            department: 'Unknown'
+          };
+        }
+        employeeFakeDetections[tx.employee_id].count++;
+      }
+    });
+    
+    // Convert to array and sort by count
+    const employeesArray = Object.values(employeeFakeDetections)
+      .sort((a, b) => b.count - a.count);
+    
+    // Get table body
+    const tableBody = document.querySelector('#employee-detections-card .data-table tbody');
+    tableBody.innerHTML = '';
+    
+    // Add rows
+    employeesArray.slice(0, 5).forEach(employee => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${employee.id}</td>
+        <td>${employee.name}</td>
+        <td>${employee.department}</td>
+        <td>${employee.count}</td>
+      `;
+      tableBody.appendChild(row);
+    });
+    
+    // Add placeholder if no data
+    if (employeesArray.length === 0) {
+      const row = document.createElement('tr');
+      row.innerHTML = '<td colspan="4" class="no-data">No fake detections found</td>';
+      tableBody.appendChild(row);
+    }
+  }
+  
+  // Update active users section (mock data for now)
+  function updateActiveUsers() {
+    const activeUsersList = document.getElementById('active-users-list');
+    const mockUsers = [
+      { id: 'U001', name: 'John Doe', lastLogin: '10 minutes ago' },
+      { id: 'U002', name: 'Jane Smith', lastLogin: '25 minutes ago' },
+      { id: 'U003', name: 'Alex Johnson', lastLogin: '1 hour ago' }
+    ];
+    
+    // Update active user count
+    document.getElementById('active-user-count').textContent = mockUsers.length;
+    
+    // Update user list
+    activeUsersList.innerHTML = '';
+    mockUsers.forEach(user => {
+      const userItem = document.createElement('div');
+      userItem.className = 'user-item';
+      userItem.innerHTML = `
+        <div class="user-info">
+          <div class="user-name">${user.name}</div>
+          <div class="user-id">${user.id}</div>
+        </div>
+        <div class="user-status">
+          <div class="login-time">${user.lastLogin}</div>
+          <div class="status-indicator online"></div>
+        </div>
+      `;
+      activeUsersList.appendChild(userItem);
+    });
+  }
+  
+  // Initialize charts as in your original code
   // Daily Statistics Chart with responsive configuration
   const ctx = document.getElementById('dailyStatsChart').getContext('2d');
   
-  // Chart data
+  // Chart data (will be populated with API data later)
   const labels = ['Mar 12', 'Mar 13', 'Mar 14', 'Mar 15', 'Mar 16', 'Mar 17', 'Mar 18'];
   const realData = [180, 190, 210, 200, 220, 210, 230];
   const fakeData = [30, 25, 35, 30, 25, 30, 35];
@@ -174,4 +442,11 @@ document.addEventListener('DOMContentLoaded', function() {
     table.parentNode.insertBefore(wrapper, table);
     wrapper.appendChild(table);
   });
+  
+  // Initial data load
+  updateDashboard();
+  updateActiveUsers();
+  
+  // Set up auto-refresh every 30 seconds
+  setInterval(updateDashboard, 30000);
 });

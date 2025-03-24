@@ -41,25 +41,25 @@ connection.query(createAdminTableQuery, (err) => {
 });
 
 // Create transactions table if it doesn't exist
-const createTransactionsTableQuery = `
-  CREATE TABLE IF NOT EXISTS transactions (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    transaction_no VARCHAR(50) NOT NULL,
-    company_code VARCHAR(50) NOT NULL,
-    employee_id VARCHAR(50) NOT NULL,
-    status VARCHAR(20) NOT NULL,
-    score DECIMAL(5,2) NOT NULL,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    image_data LONGTEXT
-  )
-`;
+// const createTransactionsTableQuery = `
+//   CREATE TABLE IF NOT EXISTS transactions (
+//     id INT PRIMARY KEY AUTO_INCREMENT,
+//     transaction_no VARCHAR(50) NOT NULL,
+//     company_code VARCHAR(50) NOT NULL,
+//     employee_id VARCHAR(50) NOT NULL,
+//     status VARCHAR(20) NOT NULL,
+//     score DECIMAL(5,2) NOT NULL,
+//     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+//     image_data LONGTEXT
+//   )
+// `;
 
-connection.query(createTransactionsTableQuery, (err) => {
-  if (err) {
-    console.error('Error creating transactions table:', err);
-  } else {
-    console.log('Transactions table is ready');
-  }
-});
+// connection.query(createTransactionsTableQuery, (err) => {
+//   if (err) {
+//     console.error('Error creating transactions table:', err);
+//   } else {
+//     console.log('Transactions table is ready');
+//   }
+// });
 
 module.exports = connection;

@@ -1,45 +1,63 @@
-const db = require('../../infrastructure/database'); // Adjust path as needed
+const axios = require('axios');
 
-exports.reports_view = (req, res) => {
+exports.reports_view = async (req, res) => {
   console.log("Reports route accessed, user:", req.session.user);
   
-  // Query to fetch transaction data using MySQL syntax
-  const query = `
-    SELECT id, transaction_no, company_code, employee_id, 
-           status, score, timestamp, image_data
-    FROM transactions
-    ORDER BY timestamp DESC
-  `;
+  const page = req.query.page || 1;
+  const limit = req.query.limit || 10;
   
-  // Use the MySQL query method instead of SQLite's all method
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Error fetching transactions:", err.message);
-      return renderReportsPage([]);
+  try {
+    // Fetch data from the API with pagination parameters
+    const response = await axios.get('http://192.168.6.93:5000/api/transactions', {
+      params: {
+        page: page,
+        limit: limit
+      }
+    });
+    const { data: transactions, total, page: currentPage, limit: pageSize } = response.data;
+    const formattedTransactions = formatTransactions(transactions);
+    const totalPages = Math.ceil(total / pageSize);
+    
+    renderReportsPage(formattedTransactions, {
+      currentPage: parseInt(currentPage),
+      totalPages: totalPages,
+      totalItems: total,
+      pageSize: pageSize
+    });
+  } catch (error) {
+    console.error("Error fetching transactions from API:", error.message);
+    
+    if (error.response) {
+      console.error("Response data:", error.response.data);
+      console.error("Response status:", error.response.status);
+    } else if (error.request) {
+      console.error("No response received from API");
     }
     
-    // Format the data for display
-    const transactions = formatTransactions(results);
-    renderReportsPage(transactions);
-  });
+    renderReportsPage([], {
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 0,
+      pageSize: limit
+    });
+  }
   
-  function formatTransactions(rows) {
-    if (!rows || rows.length === 0) return [];
+  function formatTransactions(data) {
+    if (!data || data.length === 0) return [];
     
-    return rows.map(transaction => {
-      // Parse the timestamp to get date and time
-      const date = new Date(transaction.timestamp);
+    return data.map(transaction => {
+      const timestamp = transaction.timestamp || new Date().toISOString();
+      const date = new Date(timestamp);
+      
       const formattedDate = date.toLocaleDateString('en-US', { 
         month: 'short', day: 'numeric', year: 'numeric' 
       });
+      // Updated to display time in 24-hour format (military time)
       const formattedTime = date.toLocaleTimeString('en-US', { 
-        hour: 'numeric', minute: '2-digit', hour12: true 
+        hour: '2-digit', minute: '2-digit', hour12: false 
       });
-      
-      // Format the base64 image properly
-      let imageSource = '/img/profile1.jpg'; // Default image
+      let imageSource = '/img/profile1.jpg'; 
       if (transaction.image_data) {
-        // Check if the string already contains the data URI prefix
         if (!transaction.image_data.startsWith('data:image')) {
           imageSource = `data:image/jpeg;base64,${transaction.image_data}`;
         } else {
@@ -51,7 +69,7 @@ exports.reports_view = (req, res) => {
         id: transaction.transaction_no,
         company: transaction.company_code,
         employee: transaction.employee_id,
-        activity: null, // No column for activity yet
+        activity: null, 
         date: formattedDate,
         time: formattedTime,
         image: imageSource,
@@ -61,14 +79,15 @@ exports.reports_view = (req, res) => {
     });
   }
   
-  function renderReportsPage(transactions) {
+  function renderReportsPage(transactions, pagination) {
     res.render("admin/layouts/reports_page", {
       title: "Reports",
       currentPage: "reports",
       pageTitle: "Reports",
       pageIcon: "bi bi-bar-chart-fill",
       user: req.session.user,
-      transactions: transactions
+      transactions: transactions,
+      pagination: pagination
     });
   }
 };
