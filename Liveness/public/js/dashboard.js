@@ -448,5 +448,5 @@ document.addEventListener('DOMContentLoaded', function() {
   updateActiveUsers();
   
   // Set up auto-refresh every 30 seconds
-  setInterval(updateDashboard, 30000);
+  // setInterval(updateDashboard, 30000);
 });

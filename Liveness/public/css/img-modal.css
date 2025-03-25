@@ -1,0 +1,119 @@
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    justify-content: center;
+    align-items: center;
+}
+ 
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+}
+ 
+.close {
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    padding-right: 5px;
+    padding-left: 5px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    background: rgba(81, 160, 234, 0.9); /* Light card effect */
+}
+ 
+/* 🔹 Fix the layout of modal-body */
+.modal-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Image on left, Info on right */
+    width: 100%; /* Ensure full width */
+    gap: 15px;
+}
+ 
+/* 🔹 Image container (Left side) */
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    background: linear-gradient(var(--bg-gradient-start), var(--bg-gradient-end));
+    border-radius: 8px;
+    flex: 1; /* Takes available space */
+    max-width: 50%; /* Ensures it doesn’t take full width */
+}
+ 
+#modalImage {
+    max-width: 100%; /* Ensure it fits inside the container */
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 5px;
+}
+ 
+/* 🔹 Image Info (Right Side) */
+.image-info {
+    background: rgba(226, 244, 220, 0.9); /* Semi-transparent background */
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    color: #333;
+    align-self: flex-start; /* Stays at the top */
+    flex: 0 0 auto; /* Prevents it from shrinking */
+    max-width: 50%; /* Ensures it doesn’t take full width */
+}
+ 
+@media (max-width: 420px) {
+    /* Adjust modal container */
+    .modal-content {
+        width: 90%; /* Reduce width for smaller screens */
+        padding: 15px; /* Adjust padding */
+    }
+ 
+    /* Adjust close button */
+    .close {
+        font-size: 12px; /* Reduce font size */
+        bottom: 5px; /* Adjust position */
+        right: 10px; /* Adjust position */
+        padding: 3px 5px; /* Adjust padding */
+    }
+ 
+    /* Adjust modal body layout */
+    .modal-body {
+        flex-direction: row; /* Stack content vertically */
+        gap: 10px; /* Reduce gap between elements */
+    }
+ 
+    /* Adjust image container */
+    .image-container {
+        max-width: 100%; /* Allow full width */
+        padding: 5px; /* Adjust padding */
+    }
+ 
+    #modalImage {
+        max-height: 200px; /* Reduce max height */
+    }
+ 
+    /* Adjust image info */
+    .image-info {
+        font-size: 10px; /* Reduce font size */
+        padding: 8px 10px; /* Adjust padding */
+        max-width: 100%; /* Allow full width */
+    }
+}

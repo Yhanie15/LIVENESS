@@ -1,6 +1,6 @@
 <!-- In admin/layouts/reports_page.ejs -->
 <!-- Include the search and filter component -->
-
+ 
 <div class="search-filter-row">
   <%- include('../partials/search') %>
   <div class="action-buttons">
@@ -8,7 +8,7 @@
     <%- include('../partials/export') %>
   </div>
 </div>
-
+ 
 <div class="table-container">
   <div class="report-table-wrapper">
     <div class="table-body-container">
@@ -39,11 +39,12 @@
                 <td>
                   <div class="profile-image-container">
                     <% if (transaction.image) { %>
-                      <img src="<%= transaction.image %>" alt="Profile" class="profile-image">
+                      <img src="<%= transaction.image %>" alt="Profile" class="profile-image" onclick="openModal('<%= transaction.image %>')">
                     <% } else { %>
                       <img src="/images/avatar.png" alt="Default Profile" class="profile-image">
                     <% } %>
                   </div>
+                 
                 </td>
                 <td>
                   <span class="status-badge <%= transaction.status.toLowerCase() %>">
@@ -62,7 +63,22 @@
       </table>
     </div>
   </div>
-  
+ 
   <%- include('../partials/pagination') %>
-  
+ 
+</div>
+ 
+<!-- Modal (Place it at the end of your <body>) -->
+<div id="imageModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">close</span>
+    <div class="modal-body">
+      <div class="image-container">
+        <img id="modalImage" src="" alt="Expanded Image">
+      </div>
+      <div class="image-info">
+        <p class="image-score">This image is real</p>
+      </div>
+    </div>
+  </div>
 </div>

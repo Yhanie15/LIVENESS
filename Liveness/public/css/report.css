@@ -1,74 +1,11 @@
-/* Fixed search filter bar */
-.search-filter-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 15px;
-    background-color: #ffffff;
-    padding: 6px 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  }
-  
-  .search-container {
-    flex-grow: 1;
-    position: relative;
-    max-width: 900px;
-  }
-  
-  .search-icon {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6c757d;
-  }
-  
-  .search-input {
-    width: 100%;
-    padding: 5px 15px 5px 45px;
-    border: 1px solid #ced4da;
-    border-radius: 8px;
-    font-size: 12px;
-  }
-  
-  .action-buttons {
-    display: flex;
-    gap: 12px;
-  }
-  
-  .btn {
-    padding: 5px 15px;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-  }
-  
-  .filter-btn {
-    background-color: #ffffff;
-    border: 1px solid #ced4da;
-    color: #212529;
-  }
-  
-  .export-btn {
-    background-color: #ffffff;
-    border: 1px solid #ced4da;
-    color: #212529;
-  }
-  
-  /* Main container */
+/* Main container */
   .table-container {
     padding: 0; /* Changed from 0px 0px */
     display: flex;
     flex-direction: column;
     height: calc(100vh - 180px);
   }
-  
+ 
   /* Table styles with fixed header and scrollable body */
   .report-table-wrapper {
     background-color: #ffffff;
@@ -80,19 +17,19 @@
     flex-direction: column;
     margin-bottom: 0; /* Add this to ensure no gap */
   }
-  
+ 
   .report-table {
     width: 100%;
     border-collapse: collapse;
   }
-  
+ 
   .report-table thead {
     background-color: #ffffff;
     position: sticky;
     top: 0;
     z-index: 10;
   }
-  
+ 
   .report-table th {
     background-color: #ffffff;
     color: #495057;
@@ -102,28 +39,28 @@
     border-bottom: 2px solid #e9ecef;
     font-size: 13px;
   }
-  
+ 
   .table-body-container {
     overflow-y: auto;
     flex-grow: 1;
     max-height: calc(100% - 50px); /* Adjust based on header height */
   }
-  
+ 
   .report-table td {
     padding: 5px 14px;
     border-bottom: 1px solid #e9ecef;
     color: #212529;
     font-size: 12px;
   }
-  
+ 
   .report-table tbody tr:last-child td {
     border-bottom: none;
   }
-  
+ 
   .report-table tbody tr:hover {
     background-color: #f8f9fa;
   }
-  
+ 
   /* Status badge styles */
   .status-badge {
     display: inline-block;
@@ -134,17 +71,17 @@
     text-align: center;
     min-width: 90px;
   }
-  
+ 
   .status-badge.real {
     background-color: var(--real-color);
     color: white;
   }
-  
+ 
   .status-badge.fake {
     background-color: var(--fake-color);
     color: white;
   }
-  
+ 
   /* Profile image */
   .profile-image-container {
     width: 45px;
@@ -152,13 +89,13 @@
     overflow: hidden;
     border-radius: 6px;
   }
-  
+ 
   .profile-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  
+ 
   /* Fixed pagination at the bottom */
   .pagination-container {
     display: flex;
@@ -175,30 +112,30 @@
     z-index: 50;
     margin-top: 0; /* Change from margin-top: auto */
   }
-  
+ 
   .rows-per-page {
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  
+ 
   .rows-select {
     padding: 4px 8px;
     border: 1px solid #ced4da;
     border-radius: 4px;
     background-color: #ffffff;
   }
-  
+ 
   .pagination-info {
     color: #6c757d;
   }
-  
+ 
   .pagination-controls {
     display: flex;
     align-items: center;
     gap: 12px;
   }
-  
+ 
   .pagination-btn {
     background-color: #ffffff;
     border: 1px solid #ced4da;
@@ -209,12 +146,163 @@
     align-items: center;
     justify-content: center;
   }
-  
+ 
   .pagination-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
-  
+ 
   .page-display {
     font-weight: 500;
+  }
+ 
+  /* small */
+  @media (max-width: 420px) {
+    /* Adjust table container */
+    .table-container {
+      padding: 10px;
+      height: auto;
+      overflow-x: auto;
+    }
+ 
+    /* Adjust table */
+    .report-table-wrapper {
+      overflow-x: auto;
+    }
+ 
+    .report-table {
+      width: 100%;
+      table-layout: fixed;
+    }
+ 
+    .report-table th{
+      font-size: 4px;
+      padding: 6px;
+      white-space: nowrap; /* Prevents text from wrapping inside table */
+    }
+    .report-table td {
+      font-size: 4.5px;
+      padding: 6px;
+      white-space: nowrap; /* Prevents text from wrapping inside table */
+    }
+ 
+    /* Adjust profile image */
+    .profile-image-container {
+      width: 20px;
+      height: 20px;
+    }
+ 
+    /* Adjust status badge */
+    .status-badge {
+      font-size: 5px;
+      padding: 3px 8px;
+      min-width: 20px;
+    }
+ 
+    /* Adjust pagination */
+    .pagination-container {
+      flex-direction: row;
+      align-items: center;
+      gap: 5px;
+      padding: 8px;
+    }
+ 
+    .pagination-controls {
+      gap: 5px;
+      font-size: 8px;
+    }
+ 
+    .pagination-info {
+      font-size: 8px;
+    }
+ 
+    .pagination-btn {
+      padding: 3px 5px;
+      font-size: 5px;
+    }
+ 
+    .rows-per-page {
+      font-size: 6px;
+    }
+   
+    .rows-select {
+      padding: 2px 3px;
+    }
+ 
+  }
+ 
+  /* medium */
+  @media (max-width: 820px) {
+    /* Adjust table container */
+    .table-container {
+      padding: 5px;
+      height: auto;
+      overflow-x: auto;
+      height: 90%;
+    }
+ 
+    /* Adjust table */
+    .report-table-wrapper {
+      overflow-x: auto;
+    }
+ 
+    .report-table {
+      width: 100%;
+      table-layout: fixed;
+    }
+ 
+    .report-table th{
+      font-size: 8px;
+      padding: 6px;
+      white-space: nowrap; /* Prevents text from wrapping inside table */
+    }
+    .report-table td {
+      font-size: 9px;
+      padding: 6px;
+      white-space: nowrap; /* Prevents text from wrapping inside table */
+    }
+ 
+    /* Adjust profile image */
+    .profile-image-container {
+      width: 30px;
+      height: 30px;
+    }
+ 
+    /* Adjust status badge */
+    .status-badge {
+      font-size: 8px;
+      padding: 3px 8px;
+      min-width: 20px;
+    }
+ 
+    /* Adjust pagination */
+    .pagination-container {
+      flex-direction: row;
+      align-items: center;
+      gap: 5px;
+      padding: 8px;
+    }
+ 
+    .pagination-controls {
+      gap: 5px;
+      font-size: 10px;
+    }
+ 
+    .pagination-info {
+      font-size: 10px;
+    }
+ 
+    .pagination-btn {
+      padding: 3px 5px;
+      font-size: 10px;
+    }
+ 
+    .rows-per-page {
+      font-size: 10px;
+    }
+   
+    .rows-select {
+      padding: 2px 3px;
+    }
+ 
   }

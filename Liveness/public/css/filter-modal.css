@@ -211,3 +211,89 @@
 .apply-filters-btn:hover {
   background-color: #3a2f75;
 }
+ 
+@media (max-width: 420px) {
+  /* Adjust filter modal */
+  .filter-modal {
+    width: 70%; /* Reduce width for smaller screens */
+    right: 10%; /* Center the modal horizontally */
+    top: 100px; /* Adjust top position */
+    max-height: 80vh; /* Reduce max height */
+    padding: 10px; /* Add padding */
+  }
+ 
+  /* Adjust modal header */
+  .filter-modal-header {
+    flex-direction: row; /* Stack header elements vertically */
+    align-items: flex-start; /* Align items to the left */
+    gap: 8px; /* Add spacing between elements */
+  }
+ 
+  .filter-modal-header h3 {
+    font-size: 12px; /* Reduce font size */
+  }
+ 
+  .close-modal-btn {
+    font-size: 16px; /* Adjust size of close button */
+  }
+ 
+  /* Adjust modal body */
+  .filter-modal-body {
+    padding: 8px; /* Reduce padding */
+  }
+ 
+  .filter-section {
+    margin-bottom: 8px; /* Reduce margin */
+  }
+ 
+  .filter-section label {
+    font-size: 10px; /* Reduce font size */
+  }
+ 
+  /* Adjust date range inputs */
+  .date-range-container {
+    flex-direction: row; /* Stack date inputs vertically */
+    gap: 5px; /* Add spacing between inputs */
+  }
+ 
+  .date-input {
+    font-size: 10px; /* Reduce font size */
+    padding: 4px 4px; /* Adjust padding */
+  }
+ 
+  .date-picker-container {
+    width: 90%; /* Make date inputs full width */
+  }
+ 
+  .dropdown-container {
+    width: 100%; /* Make dropdown full width */
+  }
+ 
+  /* Adjust dropdown */
+  .dropdown-input {
+    font-size: 10px; /* Reduce font size */
+    padding: 4px 6px; /* Adjust padding */
+  }
+ 
+  .dropdown-list {
+    max-height: 150px; /* Reduce dropdown height */
+  }
+ 
+  .dropdown-item {
+    font-size: 8px; /* Reduce font size */
+    padding: 5px 8px; /* Adjust padding */
+  }
+ 
+  /* Adjust footer buttons */
+  .filter-modal-footer {
+    flex-direction: row; /* Stack buttons vertically */
+    gap: 10px; /* Add spacing between buttons */
+  }
+ 
+  .clear-all-btn,
+  .apply-filters-btn {
+    font-size: 10px; /* Reduce font size */
+    padding: 4px 4px; /* Adjust padding */
+    width: 100%; /* Make buttons full width */
+  }
+}

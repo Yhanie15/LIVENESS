@@ -192,10 +192,10 @@
  
   .user-info {
     display: flex;
-    justify-content: flex-end; /* Moves content to the right */
-    align-items: center; /* Aligns items vertically */
-    width: 100%; /* Ensures it takes full width */
-    position: absolute; /* Positions it relative to its nearest positioned ancestor */
+    justify-content: flex-end; 
+    align-items: center; 
+    width: 100%; 
+    position: absolute;
     top: 15px;
     right: 10px;
 }
