@@ -1,152 +1,159 @@
 <div class="dashboard-container">
-    <!-- Left Column -->
-    <div class="dashboard-column left-column">
-      <!-- Total Transactions Card -->
-      <div id="total-transactions-card" class="dashboard-card">
-        <div class="card-header">Total Transactions</div>
-        <div class="card-content">
-          <div class="transaction-count">0</div>
-        </div>
+  <!-- Left Column -->
+  <div class="dashboard-column left-column">
+    <!-- Total Transactions Card -->
+    <div id="total-transactions-card" class="dashboard-card">
+      <div class="card-header">Total Transactions</div>
+      <div class="card-content">
+        <div class="transaction-count">0</div>
       </div>
-      
-      <!-- Today's Images Card -->
-      <div id="todays-images-card" class="dashboard-card">
-        <div class="card-header">Today's Images</div>
-        <div class="card-content">
-          <div class="detection-stats">
-            <!-- Fake Stats -->
-            <div class="stat-group">
-              <div class="stat-label">
-                <span class="dot fake-dot"></span> Fake Images
-              </div>
-              <div class="stat-value-fake">0</div>
+    </div>
+   
+    <!-- Today's Images Card -->
+    <div id="todays-images-card" class="dashboard-card">
+      <div class="card-header">Today's Images</div>
+      <div class="card-content">
+        <div class="detection-stats">
+          <!-- Fake Stats -->
+          <div class="stat-group">
+            <div class="stat-label">
+              <span class="dot fake-dot"></span> Fake Images
             </div>
-            
-            <!-- Real Stats -->
-            <div class="stat-group">
-              <div class="stat-label">
-                <span class="dot real-dot"></span> Real Images
-              </div>
-              <div class="stat-value-real">0</div>
-            </div>
+            <div class="stat-value-fake">0</div>
           </div>
-          
-          <!-- Progress Bar -->
-          <div class="progress-container">
-            <div class="progress-bar">
-              <div class="progress fake-progress" style="width: 0%"></div>
-              <div class="progress real-progress" style="width: 0%"></div>
+         
+          <!-- Real Stats -->
+          <div class="stat-group">
+            <div class="stat-label">
+              <span class="dot real-dot"></span> Real Images
             </div>
-            <div class="progress-labels">
-              <span class="fake-percentage">0%</span>
-              <span class="real-percentage">0%</span>
-            </div>
+            <div class="stat-value-real">0</div>
+          </div>
+        </div>
+       
+        <!-- Progress Bar -->
+        <div class="progress-container">
+          <div class="progress-bar">
+            <div class="progress fake-progress" style="width: 0%"></div>
+            <div class="progress real-progress" style="width: 0%"></div>
+          </div>
+          <div class="progress-labels">
+            <span class="fake-percentage">0%</span>
+            <span class="real-percentage">0%</span>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- Middle Column -->
-    <div class="dashboard-column middle-column">
-      <!-- Total Fake vs Real Card -->
-      <div id="fake-real-pie-card" class="dashboard-card">
-        <div class="card-header">Fake vs Real</div>
-        <div class="card-subtitle">Overall detection statistics</div>
-        <div class="card-content">
-          <div class="pie-chart-container-full">
-            <canvas id="fakeRealPieChart"></canvas>
-          </div>
+  </div>
+ 
+  <!-- Middle Column -->
+  <div class="dashboard-column middle-column">
+    <!-- Total Fake vs Real Card -->
+    <div id="fake-real-pie-card" class="dashboard-card">
+      <div class="card-header">Fake vs Real</div>
+      <div class="card-subtitle">Overall detection statistics</div>
+      <div class="card-content">
+        <div class="pie-chart-container-full">
+          <canvas id="fakeRealPieChart"></canvas>
         </div>
       </div>
     </div>
-    
-    <!-- Right Column -->
-    <div class="dashboard-column right-column">
-      <!-- User Login Information Card -->
-      <div id="user-login-card" class="dashboard-card user-card">
-        <div class="card-header">
-          User Login Information
-          <a href="#" class="view-all">
+  </div>
+ 
+  <!-- Right Column -->
+  <div class="dashboard-column right-column">
+    <!-- User Login Information Card -->
+  <div id="user-login-card" class="dashboard-card user-card">
+    <div class="card-header">
+        User Login Information
+        <a href="#" class="view-all">
             <i class="bi bi-arrow-right"></i> <span id="active-user-count">0</span> Active
-          </a>
-        </div>
-        <div class="card-subtitle">Currently active users & their last login</div>
-        <div class="card-content">
-          <div class="user-list" id="active-users-list">
+        </a>
+    </div>
+    <div class="card-subtitle">Currently active users & their last login</div>
+
+    <!-- Toggle Buttons -->
+    <div class="toggle-buttons">
+        <button id="btn-active-employees" class="toggle-btn active">Active Employees</button>
+        <button id="btn-user-activity" class="toggle-btn">User Activity</button>
+    </div>
+
+    <div class="card-content">
+        <div class="user-list" id="active-users-list">
             <!-- User list will be dynamically populated by JavaScript -->
-          </div>
+        </div>
+    </div>
+  </div>
+  </div>
+ 
+  <!-- Daily Statistics (Full Width) -->
+  <div class="dashboard-column daily-stats-column">
+    <!-- Daily Statistics Chart Card -->
+    <div id="daily-stats-card" class="dashboard-card chart-card">
+      <div class="card-header">
+        Daily Statistics
+        <div class="chart-controls">
+          <button class="chart-btn active">Line</button>
+          <button class="chart-btn">Bar</button>
+        </div>
+      </div>
+      <div class="card-subtitle">Daily trends of fake vs. real images</div>
+      <div class="card-content">
+        <div class="chart-container">
+          <canvas id="dailyStatsChart"></canvas>
         </div>
       </div>
     </div>
-    
-    <!-- Daily Statistics (Full Width) -->
-    <div class="dashboard-column daily-stats-column">
-      <!-- Daily Statistics Chart Card -->
-      <div id="daily-stats-card" class="dashboard-card chart-card">
-        <div class="card-header">
-          Daily Statistics
-          <div class="chart-controls">
-            <button class="chart-btn active">Line</button>
-            <button class="chart-btn">Bar</button>
-          </div>
-        </div>
-        <div class="card-subtitle">Daily trends of fake vs. real images</div>
+  </div>
+ 
+  <!-- Bottom Row (Full Width) -->
+  <div class="dashboard-column bottom-tables-column">
+    <div class="dashboard-bottom-row">
+      <!-- Top Companies with Fake Detections Card -->
+      <div id="top-companies-card" class="dashboard-card">
+        <div class="card-header">Top Companies with Fake Detections</div>
+        <div class="card-subtitle">Ranked by number of fake image detections</div>
         <div class="card-content">
-          <div class="chart-container">
-            <canvas id="dailyStatsChart"></canvas>
+          <div class="data-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Company Code</th>
+                  <th>Company Name</th>
+                  <th>Fake Detections</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Table will be dynamically populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+     
+      <!-- Employee Fake Image Detections Card -->
+      <div id="employee-detections-card" class="dashboard-card">
+        <div class="card-header">Employee Fake Image Detections</div>
+        <div class="card-subtitle">Employees with fake image detection instances</div>
+        <div class="card-content">
+          <div class="data-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Employee ID</th>
+                  <th>Name</th>
+                  <th>Department</th>
+                  <th>Detections</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Table will be dynamically populated by JavaScript -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
-    
-    <!-- Bottom Row (Full Width) -->
-    <div class="dashboard-column bottom-tables-column">
-      <div class="dashboard-bottom-row">
-        <!-- Top Companies with Fake Detections Card -->
-        <div id="top-companies-card" class="dashboard-card">
-          <div class="card-header">Top Companies with Fake Detections</div>
-          <div class="card-subtitle">Ranked by number of fake image detections</div>
-          <div class="card-content">
-            <div class="data-table-container">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Rank</th>
-                    <th>Company Code</th>
-                    <th>Company Name</th>
-                    <th>Fake Detections</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- Table will be dynamically populated by JavaScript -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Employee Fake Image Detections Card -->
-        <div id="employee-detections-card" class="dashboard-card">
-          <div class="card-header">Employee Fake Image Detections</div>
-          <div class="card-subtitle">Employees with fake image detection instances</div>
-          <div class="card-content">
-            <div class="data-table-container">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Employee ID</th>
-                    <th>Name</th>
-                    <th>Department</th>
-                    <th>Detections</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- Table will be dynamically populated by JavaScript -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  </div>
 </div>

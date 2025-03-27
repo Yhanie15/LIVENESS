@@ -7,7 +7,7 @@
       <h1><%= pageTitle %></h1>
     </div>
   </div>
-
+ 
   <!-- In header.ejs -->
 <div class="header-right">
   <div class="datetime-display">
@@ -21,10 +21,19 @@
       <span id="current-date"></span>
     </div>
   </div>
-  
+ 
   <div class="user-info">
-    <div class="avatar">
-      <i class="bi bi-person-circle"></i>
+    <div class="avatar" id="avatar-btn">
+      <img src="/images/avatar.png" alt="User Avatar" />
+      <span>Admin</span>
+    </div>
+    <div class="dropdown-menu" id="dropdown-menu">
+      <div class="dropdown-item">
+        <i class="bi bi-person-circle"></i> User Activity
+      </div>
+      <div class="dropdown-item">
+        <i class="bi bi-power"></i> Log out
+      </div>
     </div>
   </div>
 </div>

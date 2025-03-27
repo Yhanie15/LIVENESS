@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
             minute: "2-digit",
             hour12: true,
         };
-
+ 
         const dateOptions = {
             timeZone: "Asia/Manila",
             weekday: "short",
@@ -16,15 +16,15 @@ document.addEventListener("DOMContentLoaded", () => {
             day: "numeric",
             year: "numeric",
         };
-
+ 
         const now = new Date();
-
+ 
         // Format time
         const timeElement = document.getElementById("current-time");
         if (timeElement) {
             timeElement.textContent = now.toLocaleTimeString("en-US", options);
         }
-
+ 
         // Format date
         const dateElement = document.getElementById("current-date");
         if (dateElement) {
@@ -36,8 +36,22 @@ document.addEventListener("DOMContentLoaded", () => {
             dateElement.textContent = formattedDate;
         }
     }
-
+ 
     // Update time every second
     updateDateTime();
     setInterval(updateDateTime, 1000);
-});
+ 
+   
+    const avatarBtn = document.getElementById("avatar-btn");
+    const dropdownMenu = document.getElementById("dropdown-menu");
+ 
+    avatarBtn.addEventListener("click", () => {
+      dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+    });
+ 
+    document.addEventListener("click", (event) => {
+      if (!avatarBtn.contains(event.target) && !dropdownMenu.contains(event.target)) {
+        dropdownMenu.style.display = "none";
+      }
+    });
+  });

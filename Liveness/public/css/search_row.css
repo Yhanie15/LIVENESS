@@ -1,96 +1,187 @@
 /* Fixed search filter bar */
 .search-filter-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    gap: 5px;
-    /* background-color: #ffffff;
-    padding: 6px 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); */
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 5px;
+  /* background-color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);  */
+}
+
+.search-container {
+  flex-grow: 1;
+  position: relative;
+  display: flex;
+  align-items:center
+  /* max-width: 900px; */
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+}
+
+.search-input {
+  width: 100%;
+  padding: 5px 15px 5px 45px;
+  border: 1px solid #ced4da;
+  border-radius: 30px 5px 5px 30px;
+  font-size: 12px;
+  height: 40px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.btn {
+  padding: 8px 15px 8px 15px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  height: 40px;
+
+  border: 1px solid transparent;
+  color: #fff;  /* Default white text */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1); /* Inner shadow */
+}
+
+.filter-btn {
+  background: linear-gradient(45deg, #3a2d5b, #5e3d8b);
+  border-radius: 5px;
+}
+
+.filter-btn:hover,
+.filter-btn:active {
+  background: linear-gradient(45deg, #4CBDD7, #4C9BDB);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+.export-btn {
+  background: linear-gradient(45deg, #3a2d5b, #5e3d8b);
+  border-radius: 5px 30px 30px 5px;
+}
+
+.export-btn:hover,
+.export-btn:active {
+  background: linear-gradient(45deg, #4CBDD7, #4C9BDB);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.2);
+  color: #fff;
+}
+
+/* .export-btn i, .filter-btn i {
+color: inherit;  /* Icons will inherit the font color
+} */
+
+.export-btn:hover i,
+.filter-btn:hover i {
+  color: #fff;  /* Icons turn white on hover */
+}
+
+
+/* Media Queries for Small Screens (Tablet & Mobile) */
+@media (max-width: 768px) {
+.search-filter-row {
+  flex-direction: row; /* Ensure the layout stays in a row on smaller screens */
+  align-items: center;  
+  margin-bottom: 15px;
+}
+
+.search-container {
+  flex-grow: 1;
+  width: 75%; /* Limit the width of the search bar to prevent it from being too wide */
+}
+
+.search-input {
+  font-size: 10px; /* Adjust font size for smaller screens */
+  padding: 8px 15px 8px 45px; /* Ensure enough space for the icon */
+}
+
+.action-buttons {
+  display: flex;
+  gap: 5px;
+  justify-content: flex-end; /* Align buttons to the right */
+}
+
+/* Hide text and show only icons on small screens */
+.filter-btn,
+.export-btn {
+  font-size: 0; /* Hide text */
+}
+
+.filter-btn i,
+.export-btn i {
+  font-size: 16px; /* Increase icon size */
+}
+
+/* Optional: Adjust button padding and alignment */
+.btn {
+  padding: 8px;
+  justify-content: center; /* Center icons in buttons */
  
-  .search-container {
-    flex-grow: 1;
-    position: relative;
-    /* max-width: 900px; */
+}
+
+/* Show text when screen is larger than 768px */
+@media (min-width: 769px) {
+  .search-filter-row{
+    margin-bottom: 13px;
   }
- 
-  .search-icon {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6c757d;
-  }
- 
-  .search-input {
-    width: 100%;
-    padding: 8px 15px 8px 45px;
-    border: 1px solid #ced4da;
-    border-radius: 30px 5px 5px 30px;
-    font-size: 12px;
-   
-  }
- 
-  .action-buttons {
-    display: flex;
-    gap: 5px;
-  }
- 
-  .btn {
-    padding: 8px 15px 8px 15px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 12px;
-  }
- 
-  .filter-btn {
-    background-color: #ffffff;
-    border-radius: 5px;
-    border: 1px solid #ced4da;
-    color: #212529;
-  }
- 
+  .filter-btn,
   .export-btn {
-    background-color: #ffffff;
-    border: 1px solid #ced4da;
-    color: #212529;
-    border-radius: 5px 30px 30px 5px;
+    font-size: 12px; /* Show text on larger screens */
   }
 
-  @media (max-width: 420px) {
-    /* Adjust search filter row */
-    .search-filter-row {
-        flex-wrap: wrap;
-        gap: 5px;
-        padding: 8px;
-      }
-   
-      .search-container {
-        width: 50%;
-      }
- 
-      .search-icon {
-        font-size: 12px; /* Adjust the size of the search icon */
-        margin-right: 12px; /* Add spacing between the icon and the input field */
-    }
-   
-      .search-input {
-        font-size: 5px;
-        padding: 5px 10px;
-        width: 90%;
-        margin-left: 10px;
-        padding-left: 20px;
-      }
-   
-      .action-buttons .btn {
-        display: block;
-        font-size: 9px;
-        padding: 2px 5px;
-      }
-    }
+  .filter-btn i,
+  .export-btn i {
+    font-size: 14px; /* Adjust icon size for larger screens */
+  }
+}
+}
+
+
+/* Additional media query for screens 412px and below */
+@media (max-width: 412px) {
+
+.search-filter-row{
+  margin-bottom: 10px;
+}
+
+.search-input {
+  font-size: 9px; /* Further reduce the font size */
+  padding: 8px 12px 8px 35px; /* Adjust padding for smaller screens */
+  height: 30px;
+}
+
+.btn {
+  font-size: 10px; /* Reduce button text size */
+  padding: 6px 12px; /* Adjust padding for buttons */
+}
+
+.filter-btn i,
+.export-btn i {
+  font-size: 12px; /* Slightly reduce the icon size */
+}
+
+.action-buttons {
+  gap: 3px; /* Reduce gap between buttons */
+}
+
+.filter-btn,
+.export-btn {
+  font-size: 0; /* Hide text on buttons */
+  height: 30px;
+}
+
+}

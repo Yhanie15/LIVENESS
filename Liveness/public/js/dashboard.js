@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const API_URL = 'http://192.168.6.93:5000/api/transactions';
   
   // Fetch data from API
-  async function fetchTransactions(page = 1, limit = 50) {
+  async function fetchTransactions(page = 1, limit = 1000000) {
     try {
       const response = await fetch(`${API_URL}?page=${page}&limit=${limit}`);
       if (!response.ok) {
@@ -16,11 +16,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
+  // Update the pie chart with new data
+  function updatePieChart(fakeCount, realCount) {
+    const pieChart = Chart.getChart('fakeRealPieChart');
+    if (pieChart) {
+      pieChart.data.datasets[0].data = [fakeCount, realCount];
+      pieChart.update();
+    }
+  }
+  
   // Process data and update dashboard
   async function updateDashboard() {
     const data = await fetchTransactions();
     
-    // Count FAKE vs REAL images
+    // Count FAKE vs REAL images (total across all transactions)
     const counts = {
       fake: 0,
       real: 0,
@@ -75,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.fake-percentage').textContent = `${fakePercentage}%`;
     document.querySelector('.real-percentage').textContent = `${realPercentage}%`;
     
-    // Update pie chart
+    // Update pie chart with TOTAL fake and real counts (not just today's)
     updatePieChart(counts.fake, counts.real);
     
     // Update daily stats chart
@@ -86,37 +95,44 @@ document.addEventListener('DOMContentLoaded', function() {
     updateEmployeeTable(data.data);
   }
   
-  // Update the pie chart with new data
-  function updatePieChart(fakeCount, realCount) {
-    const pieChart = Chart.getChart('fakeRealPieChart');
-    if (pieChart) {
-      pieChart.data.datasets[0].data = [fakeCount, realCount];
-      pieChart.update();
-    }
-  }
-  
   // Update daily stats chart
   function updateDailyStats(transactions) {
-    // Group transactions by day
+    // Generate labels for the current week (Sunday to Saturday)
+    const labels = [];
     const dailyData = {};
-    const daysToShow = 7;
     
-    // Get the last 7 days
+    // Find the most recent Sunday
     const today = new Date();
-    for (let i = 0; i < daysToShow; i++) {
-      const date = new Date();
-      date.setDate(today.getDate() - i);
-      const dateString = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const currentDay = today.getDay(); // 0 is Sunday
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - currentDay);
+    
+    // Create labels and initialize data for the current week
+    for (let i = 0; i < 7; i++) {
+      const currentDate = new Date(startDate);
+      currentDate.setDate(startDate.getDate() + i);
+      
+      const dateString = currentDate.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        weekday: 'short'
+      });
+      
+      labels.push(dateString);
       dailyData[dateString] = { fake: 0, real: 0 };
     }
     
     // Process transactions
     transactions.forEach(tx => {
       const txDate = new Date(tx.timestamp);
-      const dateString = txDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const dateString = txDate.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric',
+        weekday: 'short'
+      });
       
-      // Only include dates within our range
-      if (dailyData[dateString]) {
+      // Only count transactions within the current week
+      if (labels.includes(dateString)) {
         if (tx.status === 'FAKE') {
           dailyData[dateString].fake++;
         } else if (tx.status === 'REAL') {
@@ -125,10 +141,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    // Convert to chart data
-    const labels = Object.keys(dailyData).reverse();
-    const fakeData = labels.map(date => dailyData[date].fake);
+    // Convert to chart data, maintaining the current week's order
     const realData = labels.map(date => dailyData[date].real);
+    const fakeData = labels.map(date => dailyData[date].fake);
     
     // Update the chart
     const chart = Chart.getChart('dailyStatsChart');
@@ -236,25 +251,30 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // Update active users section (mock data for now)
-  function updateActiveUsers() {
-    const activeUsersList = document.getElementById('active-users-list');
-    const mockUsers = [
-      { id: 'U001', name: 'John Doe', lastLogin: '10 minutes ago' },
-      { id: 'U002', name: 'Jane Smith', lastLogin: '25 minutes ago' },
-      { id: 'U003', name: 'Alex Johnson', lastLogin: '1 hour ago' }
-    ];
-    
-    // Update active user count
-    document.getElementById('active-user-count').textContent = mockUsers.length;
-    
-    // Update user list
-    activeUsersList.innerHTML = '';
-    mockUsers.forEach(user => {
+  const activeEmployeesBtn = document.getElementById('btn-active-employees');
+  const userActivityBtn = document.getElementById('btn-user-activity');
+  const userListContainer = document.getElementById('active-users-list');
+  const activeUserCount = document.getElementById('active-user-count');
+ 
+  // Mock Data
+  const activeEmployees = [
+    { id: 'EMP001', name: 'Alice Brown', role: 'Admin', lastLogin: '5 minutes ago' },
+    { id: 'EMP002', name: 'Bob White', role: 'Admin', lastLogin: '20 minutes ago' }
+  ];
+ 
+  const userActivity = [
+    { admin: 'Admin1', action: 'Deleted an employee', timestamp: '10 minutes ago' },
+    { admin: 'Admin2', action: 'Updated permissions', timestamp: '1 hour ago' }
+  ];
+ 
+  function displayActiveEmployees() {
+    userListContainer.innerHTML = '';
+    activeEmployees.forEach(user => {
       const userItem = document.createElement('div');
       userItem.className = 'user-item';
       userItem.innerHTML = `
         <div class="user-info">
-          <div class="user-name">${user.name}</div>
+          <div class="user-name">${user.name} (${user.role})</div>
           <div class="user-id">${user.id}</div>
         </div>
         <div class="user-status">
@@ -262,18 +282,56 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="status-indicator online"></div>
         </div>
       `;
-      activeUsersList.appendChild(userItem);
+      userListContainer.appendChild(userItem);
     });
+ 
+    // Update active user count
+    activeUserCount.textContent = activeEmployees.length;
+ 
+    // Toggle active button styles
+    activeEmployeesBtn.classList.add('active');
+    userActivityBtn.classList.remove('active');
   }
+ 
+  function displayUserActivity() {
+    userListContainer.innerHTML = '';
+    userActivity.forEach(activity => {
+      const activityItem = document.createElement('div');
+      activityItem.className = 'activity-item';
+      activityItem.innerHTML = `
+        <div class="activity-info">
+          <strong>${activity.admin}</strong> ${activity.action}
+        </div>
+        <div class="activity-time">${activity.timestamp}</div>
+      `;
+      userListContainer.appendChild(activityItem);
+    });
+ 
+    // Toggle active button styles
+    activeEmployeesBtn.classList.remove('active');
+    userActivityBtn.classList.add('active');
+  }
+ 
+  // Initial display
+  displayActiveEmployees();
+ 
+  // Event listeners
+  activeEmployeesBtn.addEventListener('click', displayActiveEmployees);
+  userActivityBtn.addEventListener('click', displayUserActivity);
   
   // Initialize charts as in your original code
   // Daily Statistics Chart with responsive configuration
   const ctx = document.getElementById('dailyStatsChart').getContext('2d');
   
-  // Chart data (will be populated with API data later)
-  const labels = ['Mar 12', 'Mar 13', 'Mar 14', 'Mar 15', 'Mar 16', 'Mar 17', 'Mar 18'];
-  const realData = [180, 190, 210, 200, 220, 210, 230];
-  const fakeData = [30, 25, 35, 30, 25, 30, 35];
+  // Chart data (initial placeholder data to avoid empty chart)
+  const labels = [];
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+  }
+  const realData = new Array(7).fill(0);
+  const fakeData = new Array(7).fill(0);
   
   // Create responsive chart
   const chart = new Chart(ctx, {
@@ -307,7 +365,6 @@ document.addEventListener('DOMContentLoaded', function() {
           labels: {
             boxWidth: 12,
             padding: 15,
-            // Make legend text smaller on mobile screens
             font: {
               size: function() {
                 return window.innerWidth < 768 ? 10 : 12;
@@ -328,7 +385,6 @@ document.addEventListener('DOMContentLoaded', function() {
             color: 'rgba(200, 200, 200, 0.1)'
           },
           ticks: {
-            // Make y-axis labels smaller on mobile screens
             font: function(context) {
               const width = context.chart.width;
               const size = Math.min(Math.round(width / 32), 12);
@@ -343,7 +399,6 @@ document.addEventListener('DOMContentLoaded', function() {
             display: false
           },
           ticks: {
-            // Make x-axis labels smaller on mobile screens
             font: function(context) {
               const width = context.chart.width;
               const size = Math.min(Math.round(width / 32), 12);
@@ -351,9 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 size: size
               };
             },
-            // Hide some labels on small screens
             callback: function(val, index) {
-              // On small screens, show fewer labels
               if (window.innerWidth < 576) {
                 return index % 2 === 0 ? this.getLabelForValue(val) : '';
               }
@@ -445,7 +498,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initial data load
   updateDashboard();
-  updateActiveUsers();
   
   // Set up auto-refresh every 30 seconds
   // setInterval(updateDashboard, 30000);

@@ -8,6 +8,9 @@ const librariesLoaded = {
   autotable: false,
 }
 
+// Store base64 images globally so they can be accessed by the viewer
+window.exportImageData = {}
+
 // Initialize export functionality
 export function initExport(exportBtn) {
   if (!exportBtn) {
@@ -35,14 +38,14 @@ export function initExport(exportBtn) {
     const pdfOption = document.createElement("div")
     pdfOption.className = "export-option"
     pdfOption.innerHTML = '<i class="bi bi-file-pdf"></i> Export to PDF'
-    pdfOption.style.padding = "10px 15px"
+    pdfOption.style.padding = "10px 13px"
     pdfOption.style.cursor = "pointer"
 
     // Add Excel option
     const excelOption = document.createElement("div")
     excelOption.className = "export-option"
     excelOption.innerHTML = '<i class="bi bi-file-excel"></i> Export to Excel'
-    excelOption.style.padding = "10px 15px"
+    excelOption.style.padding = "10px 10px"
     excelOption.style.cursor = "pointer"
 
     // Add hover effect for options
@@ -100,6 +103,48 @@ export function initExport(exportBtn) {
       exportDropdown.style.display = "none"
     }
   })
+
+  // Add image viewer function to window object
+  window.viewExportImage = (imageId) => {
+    const imageData = window.exportImageData[imageId]
+    if (imageData) {
+      const newWindow = window.open("", "_blank")
+      if (newWindow) {
+        newWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Image Viewer</title>
+              <style>
+                body {
+                  margin: 0;
+                  padding: 0;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  min-height: 100vh;
+                  background-color: #f0f0f0;
+                }
+                img {
+                  max-width: 100%;
+                  max-height: 100vh;
+                  object-fit: contain;
+                }
+              </style>
+            </head>
+            <body>
+              <img src="${imageData}" alt="Full size image" />
+            </body>
+          </html>
+        `)
+        newWindow.document.close()
+      } else {
+        alert("Pop-up blocked. Please allow pop-ups for this site to view images.")
+      }
+    } else {
+      alert("Image data not found.")
+    }
+  }
 }
 
 // Load required libraries for export functionality
@@ -156,7 +201,7 @@ function loadExportLibraries() {
   }
 }
 
-// Export table data to Excel (XLSX format) with images
+// Export table data to Excel (XLSX format) without image column
 async function exportToExcel() {
   console.log("Exporting to Excel...")
 
@@ -170,8 +215,8 @@ async function exportToExcel() {
     // Show loading indicator
     showLoadingIndicator(true, "Preparing Excel export...")
 
-    // Get table data with images
-    const tableData = await getTableDataWithImages()
+    // Get table data
+    const tableData = await getTableDataForExcel()
 
     if (!tableData || !tableData.headers || !tableData.rows) {
       throw new Error("No table data found to export")
@@ -201,18 +246,8 @@ async function exportToExcel() {
     const ws = XLSX.utils.aoa_to_sheet([tableData.headers, ...processedRows])
 
     // Set column widths
-    const colWidths = tableData.headers.map((h, i) => {
-      // Make image column wider
-      return i === 6 ? { wch: 30 } : { wch: 15 }
-    })
+    const colWidths = tableData.headers.map(() => ({ wch: 15 }))
     ws["!cols"] = colWidths
-
-    // Add images to the worksheet
-    if (tableData.images && tableData.images.length > 0) {
-      // Excel doesn't directly support embedding images through the SheetJS library
-      // We'll need to use a workaround or a different approach
-      console.log("Note: Images will be represented as URLs in Excel")
-    }
 
     // Create workbook
     const wb = XLSX.utils.book_new()
@@ -231,7 +266,7 @@ async function exportToExcel() {
   }
 }
 
-// Export table data to PDF (landscape orientation) with images
+// Export table data to PDF (landscape orientation) with embedded images
 async function exportToPDF() {
   console.log("Exporting to PDF...")
 
@@ -254,7 +289,12 @@ async function exportToPDF() {
 
     // Process data to handle long text
     const processedRows = tableData.rows.map((row) => {
-      return row.map((cell) => {
+      return row.map((cell, colIndex) => {
+        // Skip image column as we'll handle it separately
+        if (colIndex === 6) {
+          return "" // Placeholder for image
+        }
+
         if (typeof cell === "string") {
           // Truncate long text for better PDF rendering
           if (cell.length > 1000) {
@@ -286,7 +326,7 @@ async function exportToPDF() {
       throw new Error("AutoTable plugin not properly loaded. Please refresh and try again.")
     }
 
-    // Create table with images
+    // Create table with embedded images
     doc.autoTable({
       head: [tableData.headers],
       body: processedRows,
@@ -305,50 +345,45 @@ async function exportToPDF() {
       alternateRowStyles: {
         fillColor: [240, 240, 240],
       },
-      // Handle image column
+      // Set column styles
       columnStyles: {
         6: {
-          // Assuming image is in column index 6
-          cellWidth: 30, // Increase from 20 to 30mm for more space
+          // Image column
+          cellWidth: 40,
         },
       },
-      // Custom cell renderer for images
+      // Add images to the cells
       didDrawCell: (data) => {
         // Only process cells in the image column (index 6) and in the body section
         if (data.column.index === 6 && data.cell.section === "body") {
-          // Get the row and column indices
+          // Get the row index
           const rowIndex = data.row.index
 
           // Check if we have an image for this cell
-          if (tableData.images && tableData.images[rowIndex]) {
-            const imgData = tableData.images[rowIndex]
+          if (tableData.imageData && tableData.imageData[rowIndex]) {
+            const imageData = tableData.imageData[rowIndex]
 
-            if (imgData) {
-              // Calculate position and size for the image
-              const cellWidth = data.cell.width
-              const cellHeight = data.cell.height
-
-              // Passport size dimensions (approximately 35mm x 45mm, but scaled to fit cell)
-              // Use 80% of cell width/height to leave some padding
-              const maxWidth = cellWidth * 0.8
-              const maxHeight = cellHeight * 0.8
-
-              // Calculate dimensions while maintaining aspect ratio
-              const imgWidth = maxWidth
-              const imgHeight = maxHeight
-
-              // Center the image in the cell
-              const xPos = data.cell.x + (cellWidth - imgWidth) / 2
-              const yPos = data.cell.y + (cellHeight - imgHeight) / 2
-
-              // Add the image to the PDF
+            if (imageData) {
               try {
-                doc.addImage(imgData, "JPEG", xPos, yPos, imgWidth, imgHeight)
-              } catch (e) {
-                console.error("Error adding image to PDF:", e)
-                // Add a placeholder text if image fails
-                doc.setFontSize(6)
-                doc.text("[Image]", data.cell.x + 5, data.cell.y + 5)
+                // Add the image to the cell
+                const imgWidth = data.cell.width - 4 // Slightly smaller than cell width
+                const imgHeight = data.cell.height - 4 // Slightly smaller than cell height
+
+                // Calculate position to center the image in the cell
+                const imgX = data.cell.x + 2
+                const imgY = data.cell.y + 2
+
+                // Add the image to the PDF
+                doc.addImage(
+                  imageData, // base64 image data
+                  "JPEG", // format
+                  imgX, // x position
+                  imgY, // y position
+                  imgWidth, // width
+                  imgHeight, // height
+                )
+              } catch (error) {
+                console.error("Error adding image to PDF:", error)
               }
             }
           }
@@ -369,7 +404,59 @@ async function exportToPDF() {
   }
 }
 
-// Get data from the table including images
+// Get data from the table excluding the image column for Excel export
+async function getTableDataForExcel() {
+  const table = document.querySelector(".report-table")
+  if (!table) {
+    console.error("Table not found")
+    return null
+  }
+
+  // Get headers (excluding the image column)
+  const headerCells = table.querySelectorAll("thead th")
+  const headers = Array.from(headerCells)
+    .map((cell) => cell.textContent.trim())
+    .filter((_, index) => index !== 6) // Exclude image column (index 6)
+
+  // Get rows
+  const rows = []
+  const rowElements = table.querySelectorAll("tbody tr")
+
+  // Process each row
+  for (let i = 0; i < rowElements.length; i++) {
+    const row = rowElements[i]
+
+    // Skip hidden rows
+    if (row.style.display === "none") continue
+
+    const rowData = []
+    const cells = row.querySelectorAll("td")
+
+    // Process each cell in the row
+    for (let j = 0; j < cells.length; j++) {
+      // Skip the image column
+      if (j === 6) continue
+
+      const cell = cells[j]
+
+      // For cells with status badges
+      const statusBadge = cell.querySelector(".status-badge")
+      if (statusBadge) {
+        rowData.push(statusBadge.textContent.trim())
+        continue
+      }
+
+      // Regular cells
+      rowData.push(cell.textContent.trim())
+    }
+
+    rows.push(rowData)
+  }
+
+  return { headers, rows }
+}
+
+// Get data from the table including images for PDF
 async function getTableDataWithImages() {
   const table = document.querySelector(".report-table")
   if (!table) {
@@ -383,7 +470,7 @@ async function getTableDataWithImages() {
 
   // Get rows
   const rows = []
-  const images = []
+  const imageData = []
   const rowElements = table.querySelectorAll("tbody tr")
 
   // Process each row
@@ -409,18 +496,15 @@ async function getTableDataWithImages() {
 
       // For cells with images
       const img = cell.querySelector("img")
-      if (img) {
+      if (img && j === 6) {
+        // Assuming image is in column index 6
         try {
-          // For the row data, use a placeholder
-          rowData.push("[Image]")
+          // Store the image data for embedding in PDF
+          const imgSrc = img.src
+          imageData[i] = imgSrc
 
-          // Store the image data for later use
-          if (j === 6) {
-            // Assuming image is in column index 6
-            // Use the new function with passport-like dimensions
-            const imgData = await getImageAsBase64WithSize(img.src, 300, 400)
-            images[i] = imgData
-          }
+          // Add a placeholder for the image in the row data
+          rowData.push("[IMAGE]")
         } catch (error) {
           console.error("Error processing image:", error)
           rowData.push("[Image Error]")
@@ -435,44 +519,19 @@ async function getTableDataWithImages() {
     rows.push(rowData)
   }
 
-  return { headers, rows, images }
+  return { headers, rows, imageData }
 }
 
-// Convert image URL to base64
-function getImageAsBase64(url) {
-  return new Promise((resolve, reject) => {
-    // Create a canvas element
-    const canvas = document.createElement("canvas")
-    const ctx = canvas.getContext("2d")
+// Format date for file name (YYYY-MM-DD_HH-MM-SS)
+function formatDateForFileName(date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
+  const hours = String(date.getHours()).padStart(2, "0")
+  const minutes = String(date.getMinutes()).padStart(2, "0")
+  const seconds = String(date.getSeconds()).padStart(2, "0")
 
-    // Create an image element
-    const img = new Image()
-    img.crossOrigin = "Anonymous" // To avoid CORS issues
-
-    img.onload = () => {
-      // Set canvas dimensions to match the image
-      canvas.width = img.width
-      canvas.height = img.height
-
-      // Draw the image on the canvas
-      ctx.drawImage(img, 0, 0)
-
-      try {
-        // Convert canvas to base64 data URL
-        const dataURL = canvas.toDataURL("image/jpeg", 0.95) // Increase quality from 0.8 to 0.95
-        resolve(dataURL)
-      } catch (e) {
-        reject(e)
-      }
-    }
-
-    img.onerror = () => {
-      reject(new Error("Failed to load image"))
-    }
-
-    // Set the source of the image
-    img.src = url
-  })
+  return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`
 }
 
 // Show/hide loading indicator
@@ -504,67 +563,5 @@ function showLoadingIndicator(show, message = "Loading...") {
   } else if (loadingIndicator && show) {
     loadingIndicator.innerHTML = message
   }
-}
-
-// Format date for file name (YYYY-MM-DD_HH-MM-SS)
-function formatDateForFileName(date) {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, "0")
-  const day = String(date.getDate()).padStart(2, "0")
-  const hours = String(date.getHours()).padStart(2, "0")
-  const minutes = String(date.getMinutes()).padStart(2, "0")
-  const seconds = String(date.getSeconds()).padStart(2, "0")
-
-  return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`
-}
-
-// Add a new function to handle image resizing with proper aspect ratio
-function getImageAsBase64WithSize(url, maxWidth = 300, maxHeight = 400) {
-  return new Promise((resolve, reject) => {
-    // Create a canvas element
-    const canvas = document.createElement("canvas")
-    const ctx = canvas.getContext("2d")
-
-    // Create an image element
-    const img = new Image()
-    img.crossOrigin = "Anonymous" // To avoid CORS issues
-
-    img.onload = () => {
-      // Calculate dimensions while maintaining aspect ratio
-      let width = img.width
-      let height = img.height
-
-      // Calculate the scaling factor
-      const widthRatio = maxWidth / width
-      const heightRatio = maxHeight / height
-      const scaleFactor = Math.min(widthRatio, heightRatio)
-
-      // Set new dimensions
-      width = width * scaleFactor
-      height = height * scaleFactor
-
-      // Set canvas dimensions
-      canvas.width = width
-      canvas.height = height
-
-      // Draw the image on the canvas with the new dimensions
-      ctx.drawImage(img, 0, 0, width, height)
-
-      try {
-        // Convert canvas to base64 data URL
-        const dataURL = canvas.toDataURL("image/jpeg", 0.95)
-        resolve(dataURL)
-      } catch (e) {
-        reject(e)
-      }
-    }
-
-    img.onerror = () => {
-      reject(new Error("Failed to load image"))
-    }
-
-    // Set the source of the image
-    img.src = url
-  })
 }
 

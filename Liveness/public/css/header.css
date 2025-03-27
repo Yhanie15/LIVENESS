@@ -95,13 +95,33 @@
   gap: 20px; /* Add space between datetime and avatar */
 }
  
-.avatar {
-  width: 32px;
-  height: 32px;
+.dropdown-menu {
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 150px;
+  display: none;
+}
+.dropdown-item {
+  padding: 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  cursor: pointer;
+}
+.dropdown-item i {
   margin-right: 10px;
+}
+ 
+.avatar {
+    width: 32px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
 }
  
 .avatar img {
@@ -109,13 +129,9 @@
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+  cursor: pointer;
 }
  
-/* Add this new style for the icon */
-.avatar i {
-  font-size: 24px;
-  color: var(--text-color);
-}
  
 /* Responsive Styles for Header */
  
@@ -192,9 +208,9 @@
  
   .user-info {
     display: flex;
-    justify-content: flex-end; 
-    align-items: center; 
-    width: 100%; 
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
     position: absolute;
     top: 15px;
     right: 10px;

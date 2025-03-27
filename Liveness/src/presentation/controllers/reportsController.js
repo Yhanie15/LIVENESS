@@ -1,5 +1,5 @@
 const axios = require('axios');
-
+require('dotenv').config(); 
 exports.reports_view = async (req, res) => {
   console.log("Reports route accessed, user:", req.session.user);
   
@@ -7,8 +7,7 @@ exports.reports_view = async (req, res) => {
   const limit = req.query.limit || 10;
   
   try {
-    // Fetch data from the API with pagination parameters
-    const response = await axios.get('http://192.168.6.93:5000/api/transactions', {
+    const response = await axios.get(`${process.env.API_BASE_URL}/transactions`, {
       params: {
         page: page,
         limit: limit
@@ -46,39 +45,60 @@ exports.reports_view = async (req, res) => {
     if (!data || data.length === 0) return [];
     
     return data.map(transaction => {
+      // Ensure timestamp is a valid datetime string
       const timestamp = transaction.timestamp || new Date().toISOString();
-      const date = new Date(timestamp);
       
-      const formattedDate = date.toLocaleDateString('en-US', { 
-        month: 'short', day: 'numeric', year: 'numeric' 
-      });
-      // Updated to display time in 24-hour format (military time)
-      const formattedTime = date.toLocaleTimeString('en-US', { 
-        hour: '2-digit', minute: '2-digit', hour12: false 
-      });
-      let imageSource = '/img/profile1.jpg'; 
-      if (transaction.image_data) {
-        if (!transaction.image_data.startsWith('data:image')) {
-          imageSource = `data:image/jpeg;base64,${transaction.image_data}`;
-        } else {
-          imageSource = transaction.image_data;
+      try {
+        // Parse the datetime string
+        const date = new Date(timestamp);
+        
+        // Validate the date
+        if (isNaN(date.getTime())) {
+          return {
+            ...transaction,
+            date: 'Invalid Date',
+            time: 'Invalid Time'
+          };
         }
+        
+        const formattedDate = date.toLocaleDateString('en-US', { 
+          month: 'short', day: 'numeric', year: 'numeric' 
+        });
+        
+        const formattedTime = date.toLocaleTimeString('en-US', { 
+          hour: '2-digit', minute: '2-digit', hour12: false 
+        });
+        
+        let imageSource = '/img/profile1.jpg'; 
+        if (transaction.image_data) {
+          if (!transaction.image_data.startsWith('data:image')) {
+            imageSource = `data:image/jpeg;base64,${transaction.image_data}`;
+          } else {
+            imageSource = transaction.image_data;
+          }
+        }
+        
+        return {
+          id: transaction.transaction_no,
+          company: transaction.company_code,
+          employee: transaction.employee_id,
+          activity: transaction.activity, 
+          date: formattedDate,
+          time: formattedTime,
+          image: imageSource,
+          status: transaction.status,
+          score: transaction.score + ' %'
+        };
+      } catch (error) {
+        console.error('Error formatting transaction:', error);
+        return {
+          ...transaction,
+          date: 'Invalid Date',
+          time: 'Invalid Time'
+        };
       }
-      
-      return {
-        id: transaction.transaction_no,
-        company: transaction.company_code,
-        employee: transaction.employee_id,
-        activity: null, 
-        date: formattedDate,
-        time: formattedTime,
-        image: imageSource,
-        status: transaction.status,
-        score: transaction.score + ' %'
-      };
     });
   }
-  
   function renderReportsPage(transactions, pagination) {
     res.render("admin/layouts/reports_page", {
       title: "Reports",
