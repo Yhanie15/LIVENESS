@@ -1,7 +1,7 @@
-// src/presentation/controllers/adminController.js
-const AdminService = require("../../application/services/AdminService")
-const AdminRepository = require("../../infrastructure/repositories/adminRepository")
-const AdminEntity = require("../../entities/AdminEntity")
+// src/presentation/controllers/supportController.js
+const SupportService = require("../../application/services/SupportService")
+const SupportRepository = require("../../infrastructure/repositories/supportRepository")
+const SupportEntity = require("../../entities/SupportEntity")
 
 // Dashboard and redirection
 exports.redirectToDashboard = (req, res) => {
@@ -10,7 +10,7 @@ exports.redirectToDashboard = (req, res) => {
 
 exports.dashboard = (req, res) => {
   console.log("Dashboard route accessed, user:", req.session.user)
-  res.render("admin/layouts/dashboard_page", {
+  res.render("support/layouts/dashboard_page", {
     title: "Dashboard",
     currentPage: "dashboard",
     pageTitle: "Dashboard",
@@ -18,7 +18,6 @@ exports.dashboard = (req, res) => {
     user: req.session.user,
   })
 }
-
 
 // --- Authentication Functions ---
 
@@ -37,12 +36,12 @@ exports.login_view = (req, res) => {
     delete req.session.error
   }
 
-  res.render("admin/layouts/auth-layout", {
+  res.render("support/layouts/auth-layout", {
     title: "Login",
     pageTitle: "Login",
     message,
     error,
-    layout: "admin/layouts/auth-layout", // override default layout for auth pages
+    layout: "support/layouts/auth-layout", // override default layout for auth pages
   })
 }
 
@@ -61,19 +60,19 @@ exports.login_post = async (req, res) => {
 
     console.log(`Attempting login for user: ${username}`)
 
-    const { token, admin, expirationTime } = await AdminService.login(username, password)
+    const { token, support, expirationTime } = await SupportService.login(username, password)
 
     console.log("Login successful, setting session data")
 
     // Set session data
     req.session.user = {
-      id: admin.id,
-      username: admin.username,
-      compCode: admin.compCode,
+      id: support.id,
+      username: support.username,
+      compCode: support.compCode,
     }
     req.session.token = token
     req.session.expiration = expirationTime
-    req.session.message = "Admin logged in successfully"
+    req.session.message = "Support logged in successfully"
 
     console.log("Session data set:", {
       user: req.session.user,
@@ -121,13 +120,13 @@ exports.forgotPassword_view = (req, res) => {
   delete req.session.message
   delete req.session.error
 
-  res.render("admin/layouts/auth-layout", {
+  res.render("support/layouts/auth-layout", {
     title: "Forgot Password",
     pageTitle: "Forgot Password",
     currentPage: "forgot password",
     message,
     error,
-    layout: "admin/layouts/auth-layout",
+    layout: "support/layouts/auth-layout",
   })
 }
 
@@ -141,7 +140,7 @@ exports.forgotPassword_post = async (req, res) => {
       return res.redirect("/support/forgot-password")
     }
 
-    await AdminService.forgotPassword(username, email)
+    await SupportService.forgotPassword(username, email)
     req.session.message = "Password reset link sent to your email."
     return res.redirect("/support/forgot-password")
   } catch (err) {
@@ -159,8 +158,8 @@ exports.resetPassword_view = async (req, res) => {
   }
 
   try {
-    const admin = await AdminRepository.findByResetToken(token)
-    if (!admin) {
+    const support = await SupportRepository.findByResetToken(token)
+    if (!support) {
       return res.status(400).send("Invalid or expired token.")
     }
 
@@ -169,14 +168,14 @@ exports.resetPassword_view = async (req, res) => {
     delete req.session.message
     delete req.session.error
 
-    return res.render("admin/layouts/auth-layout", {
+    return res.render("support/layouts/auth-layout", {
       title: "Reset Password",
       pageTitle: "Reset Password",
       currentPage: "reset password",
       token,
       message,
       error,
-      layout: "admin/layouts/auth-layout",
+      layout: "support/layouts/auth-layout",
     })
   } catch (error) {
     console.error("Reset password view error:", error)
@@ -201,7 +200,7 @@ exports.resetPassword_post = async (req, res) => {
     }
 
     // Call the service with the actual password
-    await AdminService.resetPassword(token, password)
+    await SupportService.resetPassword(token, password)
     req.session.message = "Password reset successfully!"
     return res.redirect("/support/login")
   } catch (err) {
@@ -222,12 +221,12 @@ exports.register_view = (req, res) => {
     delete req.session.error
   }
 
-  res.render("admin/layouts/auth-layout", {
+  res.render("support/layouts/auth-layout", {
     title: "Register",
     pageTitle: "Register",
     message,
     error,
-    layout: "admin/layouts/auth-layout", // explicitly use the auth layout
+    layout: "support/layouts/auth-layout", // explicitly use the auth layout
   })
 }
 
@@ -241,12 +240,12 @@ exports.register_post = async (req, res) => {
       return res.redirect("/support/register")
     }
 
-    const adminEntity = new AdminEntity({ username, password, email, compCode })
-    await AdminService.register(adminEntity)
+    const supportEntity = new SupportEntity({ username, password, email, compCode })
+    await SupportService.register(supportEntity)
     req.session.message = "Registration successful! Please log in."
     res.redirect("/support/login")
   } catch (err) {
-    console.error("Error registering admin:", err)
+    console.error("Error registering support:", err)
     req.session.error = err.message
     res.redirect("/support/register")
   }
@@ -268,3 +267,4 @@ exports.logout = (req, res) => {
     return res.redirect("/support/login")
   })
 }
+

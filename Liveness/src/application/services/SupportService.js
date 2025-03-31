@@ -1,11 +1,11 @@
-// src/application/services/AdminService.js
+// src/application/services/SupportService.js
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const moment = require("moment")
 const crypto = require("crypto")
 const nodemailer = require("nodemailer")
-const AdminRepository = require("../../infrastructure/repositories/adminRepository")
-const AdminEntity = require("../../entities/AdminEntity")
+const SupportRepository = require("../../infrastructure/repositories/supportRepository")
+const SupportEntity = require("../../entities/SupportEntity")
 
 // Configure email transporter
 const transporter = nodemailer.createTransport({
@@ -21,15 +21,15 @@ const transporter = nodemailer.createTransport({
   },
 })
 
-class AdminService {
-  constructor(adminRepository) {
-    this.adminRepository = adminRepository
+class SupportService {
+  constructor(supportRepository) {
+    this.supportRepository = supportRepository
   }
 
-  async validatePassword(admin, password) {
+  async validatePassword(support, password) {
     console.log("Validating password")
     try {
-      const result = await bcrypt.compare(password, admin.password)
+      const result = await bcrypt.compare(password, support.password)
       console.log("Password validation result:", result)
       return result
     } catch (error) {
@@ -38,56 +38,56 @@ class AdminService {
     }
   }
 
-  async generateToken(admin) {
-    console.log("Generating token for admin:", admin.username);
+  async generateToken(support) {
+    console.log("Generating token for support:", support.username)
 
-    if (!process.env.JWT_SECRET_ADMIN) {
-      console.error("JWT_SECRET_ADMIN environment variable is not set");
-      throw new Error("Server configuration error");
+    if (!process.env.JWT_SECRET_SUPPORT) {
+      console.error("JWT_SECRET_SUPPORT environment variable is not set")
+      throw new Error("Server configuration error")
     }
 
     try {
       const token = jwt.sign(
         {
-          id: admin.id,
-          username: admin.username,
-          compCode: admin.compCode,
-          role: "admin",
+          id: support.id,
+          username: support.username,
+          compCode: support.compCode,
+          role: "support",
         },
-        process.env.JWT_SECRET_ADMIN,
+        process.env.JWT_SECRET_SUPPORT,
         { expiresIn: "8h" }, // Extend token validity from 1h to 8h
-      );
-      console.log("Token generated successfully");
-      return token;
+      )
+      console.log("Token generated successfully")
+      return token
     } catch (error) {
-      console.error("Error generating token:", error);
-      throw new Error("Token generation failed");
+      console.error("Error generating token:", error)
+      throw new Error("Token generation failed")
     }
   }
 
   async refreshTokenIfNeeded(token) {
     try {
-      const decoded = jwt.decode(token);
-      if (!decoded) return { needsRefresh: false, token };
-      
+      const decoded = jwt.decode(token)
+      if (!decoded) return { needsRefresh: false, token }
+
       // If token will expire in next 30 minutes, refresh it
-      const expiryThreshold = Math.floor(Date.now() / 1000) + 30 * 60;
+      const expiryThreshold = Math.floor(Date.now() / 1000) + 30 * 60
       if (decoded.exp < expiryThreshold) {
-        console.log("Token expiring soon, refreshing...");
-        
-        // Find admin by ID to refresh the token
-        const admin = await this.adminRepository.findById(decoded.id);
-        if (!admin) return { needsRefresh: false, token };
-        
+        console.log("Token expiring soon, refreshing...")
+
+        // Find support by ID to refresh the token
+        const support = await this.supportRepository.findById(decoded.id)
+        if (!support) return { needsRefresh: false, token }
+
         // Generate fresh token
-        const newToken = await this.generateToken(admin);
-        return { needsRefresh: true, token: newToken };
+        const newToken = await this.generateToken(support)
+        return { needsRefresh: true, token: newToken }
       }
-      
-      return { needsRefresh: false, token };
+
+      return { needsRefresh: false, token }
     } catch (error) {
-      console.error("Error refreshing token:", error);
-      return { needsRefresh: false, token };
+      console.error("Error refreshing token:", error)
+      return { needsRefresh: false, token }
     }
   }
 
@@ -95,17 +95,17 @@ class AdminService {
     console.log(`Login service called for username: ${username}`)
 
     try {
-      // Find admin by username
-      const admin = await this.adminRepository.findByUsername(username)
+      // Find support by username
+      const support = await this.supportRepository.findByUsername(username)
 
-      if (!admin) {
-        console.log(`Admin not found with username: ${username}`)
+      if (!support) {
+        console.log(`Support not found with username: ${username}`)
         throw new Error("Username Not Found")
       }
 
-      console.log(`Admin found: ${admin.username}, validating password`)
+      console.log(`Support found: ${support.username}, validating password`)
 
-      const isPasswordValid = await this.validatePassword(admin, password)
+      const isPasswordValid = await this.validatePassword(support, password)
 
       if (!isPasswordValid) {
         console.log("Password validation failed")
@@ -113,7 +113,7 @@ class AdminService {
       }
 
       console.log("Password validated, generating token")
-      const token = await this.generateToken(admin)
+      const token = await this.generateToken(support)
       const decoded = jwt.decode(token)
 
       if (!decoded || !decoded.exp) {
@@ -127,11 +127,11 @@ class AdminService {
 
       return {
         token,
-        admin: {
-          id: admin.id,
-          username: admin.username,
-          compCode: admin.compCode,
-          email: admin.email,
+        support: {
+          id: support.id,
+          username: support.username,
+          compCode: support.compCode,
+          email: support.email,
         },
         expirationTime,
       }
@@ -141,8 +141,8 @@ class AdminService {
     }
   }
 
-  async register(adminEntity) {
-    console.log("Register service called for username:", adminEntity.username)
+  async register(supportEntity) {
+    console.log("Register service called for username:", supportEntity.username)
 
     try {
       const currentDate = new Date()
@@ -150,22 +150,22 @@ class AdminService {
       const formattedTime = currentDate.toLocaleTimeString("en-GB", { hour12: false })
       const formattedDateTime = `${formattedDate} ${formattedTime}`
 
-      adminEntity.createdAt = formattedDateTime
-      adminEntity.updatedAt = formattedDateTime
+      supportEntity.createdAt = formattedDateTime
+      supportEntity.updatedAt = formattedDateTime
 
-      adminEntity.validate()
+      supportEntity.validate()
 
-      const existingAdmin = await this.adminRepository.findByUsername(adminEntity.username)
+      const existingSupport = await this.supportRepository.findByUsername(supportEntity.username)
 
-      if (existingAdmin) {
-        console.log(`Username ${adminEntity.username} already exists`)
+      if (existingSupport) {
+        console.log(`Username ${supportEntity.username} already exists`)
         throw new Error("Username already exists")
       }
-      const hashedPassword = await bcrypt.hash(adminEntity.password, 10)
-      adminEntity.password = hashedPassword
+      const hashedPassword = await bcrypt.hash(supportEntity.password, 10)
+      supportEntity.password = hashedPassword
 
-      await this.adminRepository.save(adminEntity)
-      console.log(`Admin ${adminEntity.username} registered successfully`)
+      await this.supportRepository.save(supportEntity)
+      console.log(`Support ${supportEntity.username} registered successfully`)
     } catch (error) {
       console.error("Registration error:", error)
       throw error
@@ -176,11 +176,11 @@ class AdminService {
     console.log(`Forgot password requested for username: ${username}, email: ${email}`)
 
     try {
-      const admin = await this.adminRepository.findByUsername(username)
+      const support = await this.supportRepository.findByUsername(username)
 
-      if (!admin || admin.email !== email) {
-        console.log("Admin not found or email does not match")
-        throw new Error("Admin not found or email does not match.")
+      if (!support || support.email !== email) {
+        console.log("Support not found or email does not match")
+        throw new Error("Support not found or email does not match.")
       }
 
       const resetToken = crypto.randomBytes(32).toString("hex")
@@ -191,15 +191,15 @@ class AdminService {
         : `http://localhost:3000/support/reset-password?token=${resetToken}`
 
       const mailOptions = {
-        to: admin.email,
+        to: support.email,
         subject: "Password Reset Request",
         text: `You requested a password reset. Use the following link to reset your password: ${resetURL}. This link is valid for 1 hour.`,
       }
 
       await transporter.sendMail(mailOptions)
-      await this.adminRepository.storeResetToken(admin.id, resetToken, expirationTime)
+      await this.supportRepository.storeResetToken(support.id, resetToken, expirationTime)
 
-      console.log(`Reset token generated and email sent to ${admin.email}`)
+      console.log(`Reset token generated and email sent to ${support.email}`)
       return { message: "EMAIL SENT" }
     } catch (error) {
       console.error("Forgot password error:", error)
@@ -211,18 +211,18 @@ class AdminService {
     console.log("Reset password requested with token")
 
     try {
-      const admin = await this.adminRepository.findByResetToken(resetToken)
+      const support = await this.supportRepository.findByResetToken(resetToken)
 
-      if (!admin || new Date(admin.resetTokenExpiration) < new Date()) {
+      if (!support || new Date(support.resetTokenExpiration) < new Date()) {
         console.log("Invalid or expired reset token")
         throw new Error("Invalid or expired reset token.")
       }
 
       const hashedPassword = await bcrypt.hash(newPassword, 10)
-      await this.adminRepository.updatePassword(admin.id, hashedPassword)
-      await this.adminRepository.clearResetToken(admin.id)
+      await this.supportRepository.updatePassword(support.id, hashedPassword)
+      await this.supportRepository.clearResetToken(support.id)
 
-      console.log(`Password reset successful for admin: ${admin.username}`)
+      console.log(`Password reset successful for support: ${support.username}`)
       return { message: "Password reset successfully." }
     } catch (error) {
       console.error("Reset password error:", error)
@@ -231,4 +231,5 @@ class AdminService {
   }
 }
 
-module.exports = new AdminService(AdminRepository)
+module.exports = new SupportService(SupportRepository)
+

@@ -20,15 +20,15 @@ exports.TokenAuthenticated = (req, res, next) => {
   }
 
   try {
-    // Check if JWT_SECRET_ADMIN is set
-    if (!process.env.JWT_SECRET_ADMIN) {
-      console.error("JWT_SECRET_ADMIN environment variable is not set")
+    // Check if JWT_SECRET_SUPPORT is set
+    if (!process.env.JWT_SECRET_SUPPORT) {
+      console.error("JWT_SECRET_SUPPORT environment variable is not set")
       req.session.error = "Server configuration error"
       return res.redirect("/support/login")
     }
 
     // Verify the token
-    const decoded = jwt.verify(req.session.token, process.env.JWT_SECRET_ADMIN)
+    const decoded = jwt.verify(req.session.token, process.env.JWT_SECRET_SUPPORT)
     console.log("Token verified successfully. Decoded payload:", JSON.stringify(decoded))
 
     // Check if token is about to expire (less than 5 minutes remaining)
@@ -41,21 +41,21 @@ exports.TokenAuthenticated = (req, res, next) => {
       console.log("Token is about to expire. Refreshing...")
       // Create a new token with a new expiration time
       const newToken = jwt.sign(
-        { 
-          username: decoded.username, 
-          compCode: decoded.compCode || req.session.user.compCode 
+        {
+          username: decoded.username,
+          compCode: decoded.compCode || req.session.user.compCode,
         },
-        process.env.JWT_SECRET_ADMIN,
-        { expiresIn: process.env.JWT_EXPIRY || '24h' }
-      );
-      
+        process.env.JWT_SECRET_SUPPORT,
+        { expiresIn: process.env.JWT_EXPIRY || "24h" },
+      )
+
       // Update the token in the session
-      req.session.token = newToken;
-      
+      req.session.token = newToken
+
       // Touch the session to reset its expiration
-      req.session.touch();
-      
-      console.log("Token refreshed successfully");
+      req.session.touch()
+
+      console.log("Token refreshed successfully")
     }
 
     // Check if the token username matches the session username
@@ -98,30 +98,30 @@ exports.ApiAuthenticated = (req, res, next) => {
   if (!req.session || !req.session.user || !req.session.token) {
     return res.status(401).json({
       success: false,
-      message: "Unauthorized. Please log in again."
-    });
+      message: "Unauthorized. Please log in again.",
+    })
   }
 
   try {
     // Verify the token
-    const decoded = jwt.verify(req.session.token, process.env.JWT_SECRET_ADMIN)
-    
+    const decoded = jwt.verify(req.session.token, process.env.JWT_SECRET_SUPPORT)
+
     // Refresh token if needed (similar to above)
     const currentTime = Math.floor(Date.now() / 1000)
     const timeRemaining = decoded.exp - currentTime
-    
+
     if (timeRemaining < 300) {
       const newToken = jwt.sign(
-        { 
-          username: decoded.username, 
-          compCode: decoded.compCode || req.session.user.compCode 
+        {
+          username: decoded.username,
+          compCode: decoded.compCode || req.session.user.compCode,
         },
-        process.env.JWT_SECRET_ADMIN,
-        { expiresIn: process.env.JWT_EXPIRY || '24h' }
-      );
-      
-      req.session.token = newToken;
-      req.session.touch();
+        process.env.JWT_SECRET_SUPPORT,
+        { expiresIn: process.env.JWT_EXPIRY || "24h" },
+      )
+
+      req.session.token = newToken
+      req.session.touch()
     }
 
     // Token is valid, proceed
@@ -129,7 +129,8 @@ exports.ApiAuthenticated = (req, res, next) => {
   } catch (error) {
     return res.status(401).json({
       success: false,
-      message: "Authentication failed. Please log in again."
-    });
+      message: "Authentication failed. Please log in again.",
+    })
   }
 }
+

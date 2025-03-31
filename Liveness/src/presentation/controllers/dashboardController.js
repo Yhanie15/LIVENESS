@@ -5,7 +5,7 @@ exports.redirectToDashboard = (req, res) => {
   
   exports.dashboard = (req, res) => {
     console.log("Dashboard route accessed, user:", req.session.user)
-    res.render("admin/layouts/dashboard_page", {
+    res.render("support/layouts/dashboard_page", {
       title: "Dashboard",
       currentPage: "dashboard",
       pageTitle: "Dashboard",

@@ -126,7 +126,7 @@ exports.reports_view = async (req, res) => {
   }
   
   function renderReportsPage(transactions, pagination) {
-    res.render("admin/layouts/reports_page", {
+    res.render("support/layouts/reports_page", {
       title: "Reports",
       currentPage: "reports",
       pageTitle: "Reports",

@@ -125,7 +125,7 @@ exports.userlog_view = async (req, res) => {
   }
   
   function renderUserlogPage(userlogs, pagination) {
-    res.render("admin/layouts/userlog_page", {
+    res.render("support/layouts/userlog_page", {
       title: "User Logs",
       currentPage: "userlogs",
       pageTitle: "User Logs",

@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const adminController = require("../controllers/adminController")
+const supportController = require("../controllers/supportController")
 const { TokenAuthenticated} = require("../../frameworks/web/middleware/authMiddleware")
 
 // Debug middleware to log all requests
@@ -9,8 +9,8 @@ router.use((req, res, next) => {
   next()
 })
 
-router.get("/", adminController.redirectToDashboard)
-router.get("/dashboard", adminController.dashboard)
+router.get("/", supportController.redirectToDashboard)
+router.get("/dashboard", supportController.dashboard)
 
 router.use(TokenAuthenticated)
 

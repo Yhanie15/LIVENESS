@@ -1,5 +1,5 @@
-// src/entities/AdminEntity.js
-class AdminEntity {
+// src/entities/SupportEntity.js
+class SupportEntity {
   constructor({ id, compCode, username, password, email, resetToken, resetTokenExpiration, createdAt, updatedAt }) {
     this.id = id
     this.compCode = compCode
@@ -12,7 +12,7 @@ class AdminEntity {
     this.updatedAt = updatedAt || new Date().toISOString()
   }
 
-  // Validates admin data
+  // Validates support data
   validate() {
     if (!this.username) {
       throw new Error("Username is required")
@@ -56,4 +56,5 @@ class AdminEntity {
   }
 }
 
-module.exports = AdminEntity
+module.exports = SupportEntity
+

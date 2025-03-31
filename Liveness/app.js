@@ -8,7 +8,7 @@ const SQLiteStore = require("connect-sqlite3")(session)
 const app = express()
 const port = process.env.PORT || 3000
 // const employeeRoutes = require("./src/presentation/routes/employeeRoutes")
-const adminRoutes = require("./src/presentation/routes/adminRoutes")
+const supportRoutes = require("./src/presentation/routes/supportRoutes")
 const userlogRoutes = require("./src/presentation/routes/userlogRoutes")
 const reportsRoutes = require("./src/presentation/routes/reportsRoutes")
 const dashboardRoutes = require("./src/presentation/routes/dashboardRoutes")
@@ -52,7 +52,7 @@ app.set("views", path.join(__dirname, process.env.VIEWS_DIR || "src/presentation
 
 // Set up the layout engine.
 app.use(ejsLayouts)
-app.set("layout", process.env.LAYOUT || "admin/layouts/main-layout")
+app.set("layout", process.env.LAYOUT || "support/layouts/main-layout")
 
 // Serve static files from the public directory.
 app.use(express.static(path.join(__dirname, process.env.PUBLIC_DIR || "public")))
@@ -64,7 +64,7 @@ app.use(express.static(path.join(__dirname, process.env.PUBLIC_DIR || "public"))
 // Run infrastructure tasks (e.g., setup images)
 // require("./src/infrastructure/setupImages")()
 
-app.use("/", adminRoutes)
+app.use("/", supportRoutes)
 app.use("/", userlogRoutes) 
 app.use("/", reportsRoutes)
 app.use("/", dashboardRoutes)
