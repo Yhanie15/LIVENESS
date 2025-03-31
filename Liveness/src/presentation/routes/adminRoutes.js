@@ -11,14 +11,14 @@ router.use((req, res, next) => {
 })
 
 // Public Authentication Routes
-router.get("/admin/register", adminController.register_view)
-router.post("/admin/register", adminController.register_post)
-router.get("/admin/login", adminController.login_view)
-router.post("/admin/login", adminController.login_post)
-router.get("/admin/forgot-password", adminController.forgotPassword_view)
-router.post("/admin/forgot-password", adminController.forgotPassword_post)
-router.get("/admin/reset-password", adminController.resetPassword_view)
-router.post("/admin/reset-password", adminController.resetPassword_post)
+router.get("/support/register", adminController.register_view)
+router.post("/support/register", adminController.register_post)
+router.get("/support/login", adminController.login_view)
+router.post("/support/login", adminController.login_post)
+router.get("/support/forgot-password", adminController.forgotPassword_view)
+router.post("/support/forgot-password", adminController.forgotPassword_post)
+router.get("/support/reset-password", adminController.resetPassword_view)
+router.post("/support/reset-password", adminController.resetPassword_post)
 router.get("/logout", adminController.logout)
 
 // Apply the TokenAuthenticated middleware for all subsequent routes

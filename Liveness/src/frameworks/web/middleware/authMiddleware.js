@@ -10,13 +10,13 @@ exports.TokenAuthenticated = (req, res, next) => {
   // Check if session exists
   if (!req.session) {
     console.log("No session found. Redirecting to login.")
-    return res.redirect("/admin/login")
+    return res.redirect("/support/login")
   }
 
   // Check if user and token exist in session
   if (!req.session.user || !req.session.token) {
     console.log("No user or token in session. Redirecting to login.")
-    return res.redirect("/admin/login")
+    return res.redirect("/support/login")
   }
 
   try {
@@ -24,7 +24,7 @@ exports.TokenAuthenticated = (req, res, next) => {
     if (!process.env.JWT_SECRET_ADMIN) {
       console.error("JWT_SECRET_ADMIN environment variable is not set")
       req.session.error = "Server configuration error"
-      return res.redirect("/admin/login")
+      return res.redirect("/support/login")
     }
 
     // Verify the token
@@ -62,7 +62,7 @@ exports.TokenAuthenticated = (req, res, next) => {
     if (decoded.username !== req.session.user.username) {
       console.log("Token username does not match session username. Redirecting to login.")
       req.session.error = "Session mismatch. Please log in again."
-      return res.redirect("/admin/login")
+      return res.redirect("/support/login")
     }
 
     // Token is valid, proceed
@@ -85,7 +85,7 @@ exports.TokenAuthenticated = (req, res, next) => {
       if (err) {
         console.error("Error destroying session after auth failure:", err)
       }
-      res.redirect("/admin/login")
+      res.redirect("/support/login")
     })
   }
 }

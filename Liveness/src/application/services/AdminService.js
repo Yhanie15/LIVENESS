@@ -187,8 +187,8 @@ class AdminService {
       const expirationTime = new Date(Date.now() + 3600000) // 1 hour from now
 
       const resetURL = process.env.FRONTEND_URL
-        ? `${process.env.FRONTEND_URL}/admin/reset-password?token=${resetToken}`
-        : `http://localhost:3000/admin/reset-password?token=${resetToken}`
+        ? `${process.env.FRONTEND_URL}/support/reset-password?token=${resetToken}`
+        : `http://localhost:3000/support/reset-password?token=${resetToken}`
 
       const mailOptions = {
         to: admin.email,

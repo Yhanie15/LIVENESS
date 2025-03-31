@@ -1,10 +1,10 @@
+<!-- In admin/layouts/userlog_page.ejs -->
 <div class="search-filter-row">
   <%- include('../partials/search') %>
- 
   <div class="action-buttons">
+    <%- include('../partials/filter') %>
     <%- include('../partials/export') %>
   </div>
- 
 </div>
 
 <div class="table-container">
@@ -13,36 +13,57 @@
       <table class="report-table">
         <thead>
           <tr>
-            <% columns.forEach(column => { %>
-              <th><%= column.header %></th>
-            <% }); %>
+            <th>COMPANY CODE</th>
+            <th>EMPLOYEE ID</th>
+            <th>ACTIVITY</th>
+            <th>DATE</th>
+            <th>TIME</th>
+            <th>IMAGE</th>
           </tr>
         </thead>
         <tbody>
-          <% dataItems.forEach(item => { %>
-            <tr>
-              <% columns.forEach(column => { %>
+          <% if (typeof userlogs !== 'undefined' && userlogs.length > 0) { %>
+            <% userlogs.forEach(userlog => { %>
+              <tr>
+                <td><%= userlog.company %></td>
+                <td><%= userlog.id %></td>
+                <td><%= userlog.activity !== null ? userlog.activity : 'N/A' %></td>
+                <td><%= userlog.date %></td>
+                <td><%= userlog.time %></td>
                 <td>
-                  <% if(column.type === 'status') { %>
-                    <span class="status-badge <%= item[column.key].toLowerCase() %>">
-                      <%= item[column.key] %>
-                    </span>
-                  <% } else if(column.type === 'image') { %>
-                    <div class="profile-image-container">
-                      <img src="<%= item[column.key] %>" alt="Image" class="profile-image">
-                    </div>
-                  <% } else { %>
-                    <%= item[column.key] %>
-                  <% } %>
+                  <div class="profile-image-container">
+                    <% if (userlog.image) { %>
+                      <img 
+                        src="<%= userlog.image %>" 
+                        alt="Profile" 
+                        class="profile-image"
+                        loading="lazy"
+                        width="100"
+                        height="100"
+                      >
+                    <% } else { %>
+                      <img 
+                        src="/images/avatar.png" 
+                        alt="Default Profile" 
+                        class="profile-image"
+                        loading="lazy"
+                        width="100"
+                        height="100"
+                      >
+                    <% } %>
+                  </div>
                 </td>
-              <% }); %>
+              </tr>
+            <% }); %>
+          <% } else { %>
+            <tr>
+              <td colspan="7" class="no-records">No records found</td>
             </tr>
-          <% }); %>
+          <% } %>
         </tbody>
       </table>
     </div>
   </div>
-  
-  <!-- Include the pagination component -->
+
   <%- include('../partials/pagination') %>
 </div>

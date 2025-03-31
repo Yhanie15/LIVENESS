@@ -56,7 +56,7 @@ exports.login_post = async (req, res) => {
     if (!username || !password) {
       console.log("Missing username or password")
       req.session.error = "Username and password are required"
-      return res.redirect("/admin/login")
+      return res.redirect("/support/login")
     }
 
     console.log(`Attempting login for user: ${username}`)
@@ -86,7 +86,7 @@ exports.login_post = async (req, res) => {
       if (err) {
         console.error("Session save error:", err)
         req.session.error = "Session error. Please try again."
-        return res.redirect("/admin/login")
+        return res.redirect("/support/login")
       }
 
       console.log("Session saved successfully. Redirecting to dashboard.")
@@ -109,7 +109,7 @@ exports.login_post = async (req, res) => {
       if (err) {
         console.error("Error saving session after login error:", err)
       }
-      return res.redirect("/admin/login")
+      return res.redirect("/support/login")
     })
   }
 }
@@ -138,16 +138,16 @@ exports.forgotPassword_post = async (req, res) => {
 
     if (!username || !email) {
       req.session.error = "Username and email are required"
-      return res.redirect("/admin/forgot-password")
+      return res.redirect("/support/forgot-password")
     }
 
     await AdminService.forgotPassword(username, email)
     req.session.message = "Password reset link sent to your email."
-    return res.redirect("/admin/forgot-password")
+    return res.redirect("/support/forgot-password")
   } catch (err) {
     console.error("Forgot password error:", err)
     req.session.error = err.message
-    return res.redirect("/admin/forgot-password")
+    return res.redirect("/support/forgot-password")
   }
 }
 
@@ -191,23 +191,23 @@ exports.resetPassword_post = async (req, res) => {
 
     if (!token || !password || !confirmPassword) {
       req.session.error = "All fields are required"
-      return res.redirect(`/admin/reset-password?token=${token}`)
+      return res.redirect(`/support/reset-password?token=${token}`)
     }
 
     // Validate that both passwords match
     if (password !== confirmPassword) {
       req.session.error = "Passwords do not match."
-      return res.redirect(`/admin/reset-password?token=${token}`)
+      return res.redirect(`/support/reset-password?token=${token}`)
     }
 
     // Call the service with the actual password
     await AdminService.resetPassword(token, password)
     req.session.message = "Password reset successfully!"
-    return res.redirect("/admin/login")
+    return res.redirect("/support/login")
   } catch (err) {
     console.error("Reset password error:", err)
     req.session.error = err.message
-    return res.redirect(`/admin/reset-password?token=${req.body.token}`)
+    return res.redirect(`/support/reset-password?token=${req.body.token}`)
   }
 }
 
@@ -238,17 +238,17 @@ exports.register_post = async (req, res) => {
 
     if (!username || !password || !email || !compCode) {
       req.session.error = "All fields are required"
-      return res.redirect("/admin/register")
+      return res.redirect("/support/register")
     }
 
     const adminEntity = new AdminEntity({ username, password, email, compCode })
     await AdminService.register(adminEntity)
     req.session.message = "Registration successful! Please log in."
-    res.redirect("/admin/login")
+    res.redirect("/support/login")
   } catch (err) {
     console.error("Error registering admin:", err)
     req.session.error = err.message
-    res.redirect("/admin/register")
+    res.redirect("/support/register")
   }
 }
 
@@ -265,6 +265,6 @@ exports.logout = (req, res) => {
     // Clear the session cookie
     res.clearCookie("connect.sid")
     console.log("Session destroyed and cookie cleared")
-    return res.redirect("/admin/login")
+    return res.redirect("/support/login")
   })
 }

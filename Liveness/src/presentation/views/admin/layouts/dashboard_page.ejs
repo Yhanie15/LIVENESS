@@ -1,159 +1,397 @@
+<!-- dashboard_page.ejs -->
 <div class="dashboard-container">
-  <!-- Left Column -->
-  <div class="dashboard-column left-column">
-    <!-- Total Transactions Card -->
-    <div id="total-transactions-card" class="dashboard-card">
-      <div class="card-header">Total Transactions</div>
-      <div class="card-content">
-        <div class="transaction-count">0</div>
-      </div>
-    </div>
-   
-    <!-- Today's Images Card -->
-    <div id="todays-images-card" class="dashboard-card">
-      <div class="card-header">Today's Images</div>
-      <div class="card-content">
-        <div class="detection-stats">
-          <!-- Fake Stats -->
-          <div class="stat-group">
-            <div class="stat-label">
-              <span class="dot fake-dot"></span> Fake Images
-            </div>
-            <div class="stat-value-fake">0</div>
-          </div>
-         
-          <!-- Real Stats -->
-          <div class="stat-group">
-            <div class="stat-label">
-              <span class="dot real-dot"></span> Real Images
-            </div>
-            <div class="stat-value-real">0</div>
-          </div>
-        </div>
-       
-        <!-- Progress Bar -->
-        <div class="progress-container">
-          <div class="progress-bar">
-            <div class="progress fake-progress" style="width: 0%"></div>
-            <div class="progress real-progress" style="width: 0%"></div>
-          </div>
-          <div class="progress-labels">
-            <span class="fake-percentage">0%</span>
-            <span class="real-percentage">0%</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
- 
-  <!-- Middle Column -->
-  <div class="dashboard-column middle-column">
-    <!-- Total Fake vs Real Card -->
-    <div id="fake-real-pie-card" class="dashboard-card">
-      <div class="card-header">Fake vs Real</div>
-      <div class="card-subtitle">Overall detection statistics</div>
-      <div class="card-content">
-        <div class="pie-chart-container-full">
-          <canvas id="fakeRealPieChart"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
- 
-  <!-- Right Column -->
-  <div class="dashboard-column right-column">
-    <!-- User Login Information Card -->
-  <div id="user-login-card" class="dashboard-card user-card">
-    <div class="card-header">
-        User Login Information
-        <a href="#" class="view-all">
-            <i class="bi bi-arrow-right"></i> <span id="active-user-count">0</span> Active
-        </a>
-    </div>
-    <div class="card-subtitle">Currently active users & their last login</div>
-
-    <!-- Toggle Buttons -->
-    <div class="toggle-buttons">
-        <button id="btn-active-employees" class="toggle-btn active">Active Employees</button>
-        <button id="btn-user-activity" class="toggle-btn">User Activity</button>
-    </div>
-
+  <!-- Top Row - 3 cards side by side -->
+  <div class="dashboard-card" id="total-transactions-card">
+    <div class="card-header">Total Transactions</div>
     <div class="card-content">
-        <div class="user-list" id="active-users-list">
-            <!-- User list will be dynamically populated by JavaScript -->
-        </div>
+      <div class="transaction-count">0</div>
     </div>
   </div>
-  </div>
- 
-  <!-- Daily Statistics (Full Width) -->
-  <div class="dashboard-column daily-stats-column">
-    <!-- Daily Statistics Chart Card -->
-    <div id="daily-stats-card" class="dashboard-card chart-card">
-      <div class="card-header">
-        Daily Statistics
-        <div class="chart-controls">
-          <button class="chart-btn active">Line</button>
-          <button class="chart-btn">Bar</button>
+  
+  <div class="dashboard-card" id="todays-images-card">
+    <div class="card-header">Today's Images</div>
+    <div class="card-content">
+      <div class="detection-stats-container">
+        <!-- Fake Stats -->
+        <div class="detection-column fake-column">
+          <div class="detection-dot fake-dot"></div>
+          <div class="detection-label">Fake Images</div>
+          <div class="detection-value fake-value"></div>
+          <div class="percentage-badge fake-badge"></div>
+        </div>
+        
+        <!-- Real Stats -->
+        <div class="detection-column real-column">
+          <div class="detection-dot real-dot"></div>
+          <div class="detection-label">Real Images</div>
+          <div class="detection-value real-value"></div>
+          <div class="percentage-badge real-badge"></div>
         </div>
       </div>
-      <div class="card-subtitle">Daily trends of fake vs. real images</div>
-      <div class="card-content">
-        <div class="chart-container">
-          <canvas id="dailyStatsChart"></canvas>
+      
+      <div class="total-processed">
+        <span>total : <strong></strong> images processed</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="dashboard-card" id="recent-detections-card">
+    <div class="card-header">Recent Fake Detections</div>
+    <div class="card-content">
+      <div class="detection-list" id="recent-detections-list">
+        <!-- Detection items -->
+        <div class="detection-item">
+          <div class="detection-image">
+            <img src="/placeholder.svg" alt="Detection">
+          </div>
+          <div class="detection-info">
+            <div class="detection-id"></div>
+            <div class="detection-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="detection-time"></div>
         </div>
       </div>
     </div>
   </div>
- 
-  <!-- Bottom Row (Full Width) -->
-  <div class="dashboard-column bottom-tables-column">
-    <div class="dashboard-bottom-row">
-      <!-- Top Companies with Fake Detections Card -->
-      <div id="top-companies-card" class="dashboard-card">
-        <div class="card-header">Top Companies with Fake Detections</div>
-        <div class="card-subtitle">Ranked by number of fake image detections</div>
-        <div class="card-content">
-          <div class="data-table-container">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Rank</th>
-                  <th>Company Code</th>
-                  <th>Company Name</th>
-                  <th>Fake Detections</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Table will be dynamically populated by JavaScript -->
-              </tbody>
-            </table>
-          </div>
+  
+  <!-- Middle Row -->
+  <div class="dashboard-card" id="fake-real-pie-card">
+    <div class="card-header">Fake vs Real</div>
+    <div class="card-content">
+      <div class="pie-chart-container-full">
+        <canvas id="fakeRealPieChart"></canvas>
+      </div>
+      <div class="pie-stats">
+        <div class="pie-stat fake-stat">
+          <span class="pie-dot fake-dot"></span> Fake : 
+        </div>
+        <div class="pie-stat real-stat">
+          <span class="pie-dot real-dot"></span> Real :
         </div>
       </div>
-     
-      <!-- Employee Fake Image Detections Card -->
-      <div id="employee-detections-card" class="dashboard-card">
-        <div class="card-header">Employee Fake Image Detections</div>
-        <div class="card-subtitle">Employees with fake image detection instances</div>
-        <div class="card-content">
-          <div class="data-table-container">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Employee ID</th>
-                  <th>Name</th>
-                  <th>Department</th>
-                  <th>Detections</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Table will be dynamically populated by JavaScript -->
-              </tbody>
-            </table>
+    </div>
+  </div>
+  
+  <div class="dashboard-card chart-card" id="daily-stats-card">
+    <div class="card-header">
+      Daily Statistics
+      <div class="chart-controls">
+        <button class="chart-btn active">Line</button>
+        <button class="chart-btn">Bar</button>
+      </div>
+    </div>
+    <div class="card-subtitle">Fake vs Real Fake vs. real images</div>
+    <div class="card-content">
+      <div class="chart-container">
+        <canvas id="dailyStatsChart"></canvas>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Bottom Row - 2 tables side by side -->
+  <div class="dashboard-card" id="top-companies-card">
+    <div class="card-header">Top Companies with Fake Detection</div>
+    <div class="card-subtitle">Ranked by number of fake image detections</div>
+    <div class="card-content">
+      <div class="companies-list">
+        <!-- Company items will be dynamically populated, but here's the structure -->
+        <div class="company-item">
+          <div class="company-rank">1</div>
+          <div class="company-info">
+            <div class="company-code">COMP123</div>
+            <div class="company-name">Company COMP123</div>
+            <div class="company-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+              </div>
+            </div>
           </div>
+          <div class="company-count">83</div>
+        </div>
+        
+        <div class="company-item">
+          <div class="company-rank">2</div>
+          <div class="company-info">
+            <div class="company-code">COMP123</div>
+            <div class="company-name">Company COMP123</div>
+            <div class="company-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 85%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="company-count">70</div>
+        </div>
+        
+        <div class="company-item">
+          <div class="company-rank">3</div>
+          <div class="company-info">
+            <div class="company-code">COMP123</div>
+            <div class="company-name">Company COMP123</div>
+            <div class="company-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="company-count">65</div>
+        </div>
+        
+        <div class="company-item">
+          <div class="company-rank">4</div>
+          <div class="company-info">
+            <div class="company-code">COMP123</div>
+            <div class="company-name">Company COMP123</div>
+            <div class="company-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 60%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="company-count">50</div>
+        </div>
+        
+        <div class="company-item">
+          <div class="company-rank">5</div>
+          <div class="company-info">
+            <div class="company-code">COMP123</div>
+            <div class="company-name">Company COMP123</div>
+            <div class="company-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 30%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="company-count">25</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="dashboard-card" id="employee-detections-card">
+    <div class="card-header">Employee Fake Image Detections</div>
+    <div class="card-subtitle">Ranked by employee with fake image detection</div>
+    <div class="card-content">
+      <div class="employees-list">
+        <!-- Employee items will be dynamically populated, but here's the structure -->
+        <div class="employee-item">
+          <div class="employee-avatar">
+            <div class="avatar-icon"></div>
+          </div>
+          <div class="employee-info">
+            <div class="employee-id">EMP456</div>
+            <div class="employee-name">Miranda Bratcher</div>
+            <div class="employee-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="employee-count">83</div>
+        </div>
+        
+        <div class="employee-item">
+          <div class="employee-avatar">
+            <div class="avatar-icon"></div>
+          </div>
+          <div class="employee-info">
+            <div class="employee-id">EMP456</div>
+            <div class="employee-name">Bruce Tong</div>
+            <div class="employee-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="employee-count">83</div>
+        </div>
+        
+        <div class="employee-item">
+          <div class="employee-avatar">
+            <div class="avatar-icon"></div>
+          </div>
+          <div class="employee-info">
+            <div class="employee-id">EMP456</div>
+            <div class="employee-name">Jesse Miller</div>
+            <div class="employee-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="employee-count">83</div>
+        </div>
+        
+        <div class="employee-item">
+          <div class="employee-avatar">
+            <div class="avatar-icon"></div>
+          </div>
+          <div class="employee-info">
+            <div class="employee-id">EMP456</div>
+            <div class="employee-name">Matilda Deman</div>
+            <div class="employee-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="employee-count">83</div>
+        </div>
+        
+        <div class="employee-item">
+          <div class="employee-avatar">
+            <div class="avatar-icon"></div>
+          </div>
+          <div class="employee-info">
+            <div class="employee-id">EMP456</div>
+            <div class="employee-name">Arlen Packer</div>
+            <div class="employee-progress">
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="employee-count">83</div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Add this before the closing body tag -->
+<script>
+  class LoadingScreen {
+    constructor() {
+      this.overlay = null;
+      this.progressBar = null;
+      this.initialized = false;
+    }
+  
+    init() {
+      if (this.initialized) return;
+      
+      // Create loading overlay element
+      this.overlay = document.createElement('div');
+      this.overlay.className = 'loading-overlay';
+      
+      // Create spinner
+      const spinner = document.createElement('div');
+      spinner.className = 'loading-spinner';
+      
+      // Create text
+      const text = document.createElement('div');
+      text.className = 'loading-text';
+      text.textContent = 'Loading dashboard data...';
+      
+      // Create progress container
+      const progressContainer = document.createElement('div');
+      progressContainer.className = 'loading-progress';
+      
+      // Create progress bar
+      this.progressBar = document.createElement('div');
+      this.progressBar.className = 'loading-progress-bar';
+      progressContainer.appendChild(this.progressBar);
+      
+      // Append all elements to overlay
+      this.overlay.appendChild(spinner);
+      this.overlay.appendChild(text);
+      this.overlay.appendChild(progressContainer);
+      
+      // Append overlay to body
+      document.body.appendChild(this.overlay);
+      
+      this.initialized = true;
+    }
+    
+    show() {
+      if (!this.initialized) this.init();
+      this.overlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden'; // Prevent scrolling while loading
+    }
+    
+    hide() {
+      if (!this.initialized) return;
+      this.overlay.classList.add('hidden');
+      document.body.style.overflow = ''; // Restore scrolling
+      
+      // Reset progress bar for next time
+      setTimeout(() => {
+        if (this.progressBar) this.progressBar.style.width = '0%';
+      }, 300);
+    }
+    
+    setProgress(percent) {
+      if (!this.initialized || !this.progressBar) return;
+      this.progressBar.style.width = `${percent}%`;
+    }
+  }
+  
+  // Create a global instance
+  window.loadingScreen = new LoadingScreen();
+  </script>
+  
+  <style>
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+  }
+  
+  .loading-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  .loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  
+  .loading-text {
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+    margin-top: 15px;
+  }
+  
+  .loading-progress {
+    width: 200px;
+    height: 4px;
+    background-color: #f3f3f3;
+    border-radius: 4px;
+    margin-top: 15px;
+    overflow: hidden;
+  }
+  
+  .loading-progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #3498db;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  </style>
+  <script src="/js/dashboard.js"></script>
