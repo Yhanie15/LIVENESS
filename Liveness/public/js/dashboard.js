@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
   // Configuration
   const config = {
-    apiUrl: 'http://192.168.6.93:5000/api/transactions',
+    apiUrl: 'http://192.168.6.93:5001/api/transactions',
     refreshInterval: 30000, // 30 seconds
-    maxRecentDetections: 3
+    maxRecentDetections: 3,
+    maxTopItems: 10 // Changed from 5 to 10
   };
 
   // Utility functions
@@ -324,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const companyCode = detection.company_code || 'COMP26';
             const confidenceScore = detection.confidence || 14.5;
             
-            let imgSrc = '/placeholder.jpg';
+            let imgSrc = '/images/avatar.png'; // Default image
             if (detection.image_base64) {
               imgSrc = `data:image/jpeg;base64,${detection.image_base64}`;
             }
@@ -373,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const items = Object.values(data)
           .sort((a, b) => b.count - a.count)
-          .slice(0, 5);
+          .slice(0, config.maxTopItems); // Changed from 5 to config.maxTopItems
         
         if (items.length === 0) {
           container.innerHTML = `<div class="no-data">No ${type} data available</div>`;

@@ -1,0 +1,64 @@
+<nav id="sidebar" class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-container">
+      <a href="/" class="logo">
+        <div class="logo-wrapper">
+          <img src="/images/logo.png" alt="ilo" class="logo-img">
+        </div>
+      </a>
+    </div>
+  </div>
+ 
+  <ul class="list-unstyled sidebar-menu">
+    <li class="sidebar-item <%= currentPage === 'dashboard' ? 'active' : '' %>">
+      <a href="/admin/dashboard" class="sidebar-link" data-tooltip="Dashboard">
+        <i class="bi bi-grid-1x2-fill"></i>
+        <span class="menu-text">Dashboard</span>
+      </a>
+    </li>
+   
+    <li class="sidebar-item <%= currentPage === 'userlogs' ? 'active' : '' %>">
+      <a href="/admin/transactionlog" class="sidebar-link" data-tooltip="Userlog">
+        <i class="bi bi-arrow-left-right"></i>
+        <span class="menu-text">Transaction logs</span>
+      </a>
+    </li>
+ 
+    <li class="sidebar-item <%= currentPage === 'reports' ? 'active' : '' %>">
+      <a href="/admin/reports" class="sidebar-link" data-tooltip="Reports">
+        <i class="bi bi-bar-chart-fill"></i>
+        <span class="menu-text">Reports</span>
+      </a>
+    </li>
+ 
+    <!-- Settings tab with submenu -->
+    <li class="sidebar-item has-submenu">
+      <a href="#" class="sidebar-link" data-tooltip="Settings" data-bs-toggle="collapse" data-bs-target="#settingsSubmenu" aria-expanded="<%= ['user-management', 'scheduler', 'thresholds'].includes(currentPage) ? 'true' : 'false' %>">
+        <i class="bi bi-gear-fill"></i>
+        <span class="menu-text">Settings</span>
+        <i class="bi bi-chevron-down submenu-icon"></i>
+      </a>
+      <ul class="collapse submenu list-unstyled <%= ['user-management', 'scheduler', 'thresholds'].includes(currentPage) ? 'show' : '' %>" id="settingsSubmenu">
+        <li class="submenu-item <%= currentPage === 'user-management' ? 'active' : '' %>">
+          <a href="/admin/settings/user-management" class="submenu-link">
+            <i class="bi bi-people-fill"></i>
+            <span class="menu-text">User Management</span>
+          </a>
+        </li>
+        <li class="submenu-item <%= currentPage === 'scheduler' ? 'active' : '' %>">
+          <a href="#" class="submenu-link">
+            <i class="bi bi-calendar-check-fill"></i>
+            <span class="menu-text">Scheduler</span>
+          </a>
+        </li>
+        <li class="submenu-item <%= currentPage === 'thresholds' ? 'active' : '' %>">
+          <a href="#" class="submenu-link">
+            <i class="bi bi-sliders"></i>
+            <span class="menu-text">Thresholds</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+

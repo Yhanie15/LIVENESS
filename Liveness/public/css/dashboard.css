@@ -446,6 +446,60 @@
   margin-top: -5px;
 }
 
+/* Scrollable list wrappers */
+.company-list-wrapper,
+.employee-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Show only 5 items initially */
+.companies-list,
+.employees-list {
+  max-height: none;
+  overflow-y: visible;
+}
+
+/* Scrollbar styling for better UX */
+.company-list-wrapper::-webkit-scrollbar,
+.employee-list-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.company-list-wrapper::-webkit-scrollbar-track,
+.employee-list-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.company-list-wrapper::-webkit-scrollbar-thumb,
+.employee-list-wrapper::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 10px;
+}
+
+.company-list-wrapper::-webkit-scrollbar-thumb:hover,
+.employee-list-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #ccc;
+}
+
+/* Add a subtle indicator that there's more content */
+.company-list-wrapper::after,
+.employee-list-wrapper::after {
+  content: "";
+  display: block;
+  height: 10px;
+  width: 100%;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.8));
+  position: sticky;
+  bottom: 0;
+  pointer-events: none;
+}
+
 .companies-list {
   display: flex;
   flex-direction: column;
@@ -724,13 +778,27 @@
     min-height: auto;
   }
 
-  #total-transactions-card { grid-row: 1; }
-  #todays-images-card { grid-row: 2; }
-  #recent-detections-card { grid-row: 3; }
-  #fake-real-pie-card { grid-row: 4; }
-  #daily-stats-card { grid-row: 5; }
-  #top-companies-card { grid-row: 6; }
-  #employee-detections-card { grid-row: 7; }
+  #total-transactions-card {
+    grid-row: 1;
+  }
+  #todays-images-card {
+    grid-row: 2;
+  }
+  #recent-detections-card {
+    grid-row: 3;
+  }
+  #fake-real-pie-card {
+    grid-row: 4;
+  }
+  #daily-stats-card {
+    grid-row: 5;
+  }
+  #top-companies-card {
+    grid-row: 6;
+  }
+  #employee-detections-card {
+    grid-row: 7;
+  }
 
   #total-transactions-card .transaction-count {
     font-size: 3rem;
@@ -739,62 +807,63 @@
   #todays-images-card .detection-value {
     font-size: 24px;
   }
-  
+
   .company-item {
     gap: 8px;
   }
-  
+
   .company-rank {
     width: 20px;
     height: 20px;
     font-size: 11px;
   }
-  
+
   .company-code {
     font-size: 12px;
   }
-  
+
   .company-name {
     font-size: 10px;
   }
-  
+
   .company-count {
     font-size: 13px;
   }
-  
+
   .employee-item {
     gap: 8px;
   }
-  
+
   .employee-avatar {
     width: 28px;
     height: 28px;
   }
-  
+
   .employee-id {
     font-size: 12px;
   }
-  
+
   .employee-name {
     font-size: 10px;
   }
-  
+
   .employee-count {
     font-size: 13px;
   }
-  
+
   #recent-detections-card .detection-image {
     width: 50px;
     height: 50px;
   }
-  
+
   #recent-detections-card .detection-id {
     font-size: 13px;
   }
-  
+
   #recent-detections-card .detection-meta,
   #recent-detections-card .fake-percentage,
   #recent-detections-card .detection-time {
     font-size: 10px;
   }
 }
+

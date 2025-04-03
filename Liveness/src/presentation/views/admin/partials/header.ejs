@@ -1,0 +1,41 @@
+<header class="header">
+  <div class="header-left">
+    <button id="sidebar-toggle" class="sidebar-toggle">
+      <i class="bi <%= pageIcon %>"></i>
+    </button>
+    <div class="page-title">
+      <h1><%= pageTitle %></h1>
+    </div>
+  </div>
+
+  <!-- In header.ejs -->
+  <div class="header-right">
+    <div class="datetime-display">
+      <div class="time-section">
+        <i class="bi bi-clock-fill"></i>
+        <span id="current-time"></span>
+      </div>
+      <div class="date-divider">|</div>
+      <div class="date-section">
+        <i class="bi bi-calendar3"></i>
+        <span id="current-date"></span>
+      </div>
+    </div>
+
+    <div class="user-info">
+      <div class="avatar" id="avatar-btn">
+        <img src="/images/avatar.png" alt="User Avatar" />
+        <span>Admin
+        </span>
+      </div>
+      <div class="dropdown-menu" id="dropdown-menu">
+        <div class="dropdown-item">
+          <i class="bi bi-person-circle"></i> Admin Activity
+        </div>
+        <a href="/logout" class="dropdown-item">
+          <i class="bi bi-power"></i> Logout
+        </a>
+      </div>
+    </div>
+  </div>
+</header>

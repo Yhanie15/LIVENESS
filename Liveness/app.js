@@ -5,13 +5,15 @@ const path = require("path")
 const ejsLayouts = require("express-ejs-layouts")
 const session = require("express-session")
 const SQLiteStore = require("connect-sqlite3")(session)
-const app = express()
 const port = process.env.PORT || 3000
 // const employeeRoutes = require("./src/presentation/routes/employeeRoutes")
 const supportRoutes = require("./src/presentation/routes/supportRoutes")
+const adminRoutes = require("./src/presentation/routes/adminRoutes")
 const userlogRoutes = require("./src/presentation/routes/userlogRoutes")
 const reportsRoutes = require("./src/presentation/routes/reportsRoutes")
 const dashboardRoutes = require("./src/presentation/routes/dashboardRoutes")
+
+const app = express()
 
 // Setup session middleware with proper configuration
 app.use(
@@ -64,7 +66,8 @@ app.use(express.static(path.join(__dirname, process.env.PUBLIC_DIR || "public"))
 // Run infrastructure tasks (e.g., setup images)
 // require("./src/infrastructure/setupImages")()
 
-app.use("/", supportRoutes)
+app.use("/admin",adminRoutes)
+app.use("/",supportRoutes)
 app.use("/", userlogRoutes) 
 app.use("/", reportsRoutes)
 app.use("/", dashboardRoutes)

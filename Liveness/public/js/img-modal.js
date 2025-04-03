@@ -40,7 +40,7 @@ function openModal(imageSrc, score, status, transactionId) {
     imageStatus.textContent = status
 
     // Fetch remarks for the specific transaction
-    fetch(`http://192.168.6.93:5000/api/transactions-with-remarks?transaction_id=${transactionId}`)
+    fetch(`http://192.168.6.93:5001/api/transactions-with-remarks?transaction_id=${transactionId}`)
     .then(response => {
       if (!response.ok) {
         // If response is not OK, throw an error
