@@ -11,11 +11,18 @@ document.addEventListener('DOMContentLoaded', function () {
  
     // Open modal function - make it globally available
     window.openThresholdModal = function () {
+        // First close the scheduler modal if it's open
+        const schedModalContainer = document.getElementById('sched-modal-container');
+        if (schedModalContainer && !schedModalContainer.classList.contains('sched-modal-hidden')) {
+            schedModalContainer.classList.add('sched-modal-hidden');
+        }
+ 
+        // Then open the threshold modal
         if (threshModalContainer) {
             threshModalContainer.classList.remove('thresh-modal-hidden');
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
         }
-    };
+    }
  
     // Close modal function
     function closeThresholdModal() {

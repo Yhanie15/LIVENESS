@@ -211,7 +211,7 @@
 .apply-filters-btn:hover {
   background-color: #3a2f75;
 }
- 
+
 @media (max-width: 420px) {
   /* Adjust filter modal */
   .filter-modal {

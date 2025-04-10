@@ -1,7 +1,7 @@
 <nav id="sidebar" class="sidebar">
   <div class="sidebar-header">
     <div class="logo-container">
-      <a href="/" class="logo">
+      <a href="/admin/dashboard" class="logo">
         <div class="logo-wrapper">
           <img src="/images/logo.png" alt="ilo" class="logo-img">
         </div>
@@ -31,8 +31,9 @@
       </a>
     </li>
  
+   
     <!-- Settings tab with submenu -->
-    <li class="sidebar-item has-submenu">
+    <li class="sidebar-item has-submenu <%= ['user-management', 'scheduler', 'thresholds'].includes(currentPage) ? 'open' : '' %>">
       <a href="#" class="sidebar-link" data-tooltip="Settings" data-bs-toggle="collapse" data-bs-target="#settingsSubmenu" aria-expanded="<%= ['user-management', 'scheduler', 'thresholds'].includes(currentPage) ? 'true' : 'false' %>">
         <i class="bi bi-gear-fill"></i>
         <span class="menu-text">Settings</span>
