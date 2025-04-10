@@ -24,11 +24,18 @@ document.addEventListener('DOMContentLoaded', () => {
         type: 'pie',
         data: {
           labels: ['Fake', 'Real'],
-          datasets: [{ data: [fake, real], backgroundColor: ['#d32f2f', '#558b2f'] }]
+          datasets: [{
+            data: [fake, real],
+            backgroundColor: ['#d32f2f', '#558b2f']
+          }]
         },
-        options: { responsive: true, plugins: { legend: { display: false } } }
+        options: {
+          responsive: false,  // Disable responsive sizing
+          plugins: { legend: { display: false } }
+        }
       });
     },
+    
     updatePie(chart, fake, real) {
       chart.data.datasets[0].data = [fake, real];
       chart.update();

@@ -329,6 +329,12 @@
   padding-left: 20px;
 }
 
+#fakeRealPieChart {
+  width: 200px;
+  height: 200px;
+  display: block;
+}
+
 .pie-dot,
 .detection-dot {
   display: inline-block;
@@ -347,6 +353,12 @@
 }
 
 /* Daily Statistics Chart */
+
+/* #daily-stats-card{
+  height: 300px;
+  display: fel;
+} */
+
 #daily-stats-card .chart-controls {
   display: flex;
   gap: 3px;

@@ -1,0 +1,32 @@
+<!-- threshold-modal.ejs -->
+<div id="thresh-modal-container" class="thresh-modal-hidden">
+    <div id="thresh-modal-overlay"></div>
+    <div id="thresh-modal-content">
+      <!-- Header with gradient background -->
+      <div id="thresh-modal-header">
+        <h2 id="thresh-modal-title">Threshold</h2>
+        <p id="thresh-modal-subtitle">Set desired threshold value</p>
+        <button id="thresh-modal-close-btn" aria-label="Close">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+     
+      <!-- Modal body with input field -->
+      <div id="thresh-modal-body">
+        <div id="thresh-modal-input-section">
+          <div class="thresh-modal-section-header">
+            <i class="bi bi-graph-up"></i>
+            <h3>Threshold (%)</h3>
+          </div>
+          <div class="thresh-modal-input-container">
+            <input type="text" id="thresh-modal-value-input" placeholder="Enter threshold value">
+          </div>
+        </div>
+      </div>
+     
+      <!-- Footer with save button -->
+      <div id="thresh-modal-footer">
+        <button id="thresh-modal-save-btn">Save</button>
+      </div>
+    </div>
+  </div>

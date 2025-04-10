@@ -1,4 +1,9 @@
 <div class="search-container">
-    <i class="bi bi-search search-icon"></i>
-    <input type="text" class="search-input" placeholder="Search by Transaction No, Company code, or Employee ID">
-  </div>
+  <i class="bi bi-search search-icon"></i>
+  <input 
+    type="text" 
+    class="search-input" 
+    placeholder="Search by Transaction No, Company code, Employee ID or Status"
+    value="<%= typeof searchTerm !== 'undefined' ? searchTerm : '' %>"
+  >
+</div>

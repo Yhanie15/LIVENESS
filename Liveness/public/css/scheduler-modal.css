@@ -113,4 +113,281 @@
   .sched-btn-save:hover {
     background-color: #1c93b0;
   }
+ /* Scheduler Modal Styles */
+#sched-modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 900;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+ 
+#sched-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+ 
+#sched-modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 450px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  animation: sched-modal-fade-in 0.3s ease;
+  /* Critical fix for centering */
+  margin: 0 !important;
+  transform: translate(0, 0) !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+}
+ 
+#sched-modal-header {
+  background: linear-gradient(to right, #3a2b58, #3a8bbb);
+  color: white;
+  padding: clamp(8px, 2vw, 16px) clamp(10px, 3vw, 20px);
+  position: relative;
+  box-shadow: inset 0px 2px 10px rgba(0, 0, 0, 0.3);
+}
+ 
+#sched-modal-title {
+  font-size: clamp(16px, 4vw, 22px);
+  margin: 0;
+  font-weight: 600;
+}
+ 
+#sched-modal-subtitle {
+  margin: 3px 0 0;
+  font-size: clamp(11px, 2.5vw, 13px);
+  opacity: 0.9;
+}
+ 
+#sched-modal-close-btn {
+  position: absolute;
+  top: clamp(6px, 1.5vw, 10px);
+  right: clamp(6px, 1.5vw, 10px);
+  background-color: #ff3b30;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  width: clamp(18px, 5vw, 24px);
+  height: clamp(18px, 5vw, 24px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: clamp(12px, 3vw, 16px);
+  padding: 0;
+}
+ 
+#sched-modal-body {
+  padding: clamp(10px, 3vw, 16px);
+}
+ 
+#sched-modal-selections {
+  display: flex;
+  gap: clamp(10px, 3vw, 16px);
+}
+ 
+#sched-modal-date-section,
+#sched-modal-time-section {
+  flex: 1;
+}
+ 
+.sched-modal-section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: clamp(6px, 2vw, 10px);
+  color: #3a2b58;
+}
+ 
+.sched-modal-section-header i {
+  font-size: clamp(14px, 3.5vw, 18px);
+  margin-right: clamp(4px, 1.5vw, 8px);
+  color: #3a2b58;
+}
+ 
+.sched-modal-section-header h3 {
+  font-size: clamp(13px, 3.5vw, 16px);
+  margin: 0;
+  font-weight: 600;
+}
+ 
+.sched-modal-input-container {
+  width: 100%;
+}
+ 
+#sched-modal-date-input {
+  width: 100%;
+  padding: clamp(6px, 2vw, 10px);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #333;
+  background-color: #fff;
+  cursor: pointer;
+}
+ 
+.sched-modal-time-inputs {
+  display: flex;
+  align-items: center;
+  gap: clamp(2px, 1vw, 5px);
+}
+ 
+#sched-modal-hour-input,
+#sched-modal-minute-input {
+  width: clamp(40px, 10vw, 60px);
+  padding: clamp(6px, 2vw, 10px);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: clamp(12px, 3vw, 14px);
+  text-align: center;
+  color: #333;
+}
+ 
+.sched-modal-time-separator {
+  font-size: clamp(14px, 4vw, 18px);
+  font-weight: bold;
+  color: #333;
+}
+ 
+#sched-modal-ampm-dropdown {
+  position: relative;
+  width: clamp(50px, 12vw, 70px);
+}
+ 
+#sched-modal-ampm-btn {
+  width: 100%;
+  padding: clamp(6px, 2vw, 10px);
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: clamp(12px, 3vw, 14px);
+  color: #333;
+}
+ 
+#sched-modal-ampm-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  z-index: 10;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+ 
+.sched-modal-ampm-option {
+  padding: clamp(6px, 2vw, 10px);
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: clamp(12px, 3vw, 14px);
+}
+ 
+.sched-modal-ampm-option:hover {
+  background-color: #f5f5f5;
+}
+ 
+#sched-modal-footer {
+  padding: clamp(8px, 2.5vw, 15px) clamp(10px, 3vw, 20px);
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #eee;
+}
+ 
+#sched-modal-save-btn {
+  background-color: #3a9bdb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: clamp(6px, 2vw, 10px) clamp(15px, 4vw, 25px);
+  font-size: clamp(12px, 3vw, 14px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  box-shadow: inset 0px 1px 5px rgba(0, 0, 0, 0.2);
+}
+ 
+#sched-modal-save-btn:hover {
+  background-color: #2d8bc7;
+}
+ 
+.sched-modal-hidden {
+  display: none !important;
+}
+ 
+/* Animation */
+@keyframes sched-modal-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+ 
+/* Improved Responsive adjustments */
+@media (max-width: 768px) {
+  #sched-modal-content {
+    width: 85%;
+    max-width: 380px;
+  }
+}
+ 
+@media (max-width: 576px) {
+  #sched-modal-content {
+    width: 85%;
+    max-width: 320px;
+  }
+ 
+  #sched-modal-selections {
+    flex-direction: column;
+    gap: 12px;
+  }
+ 
+  #sched-modal-save-btn {
+    width: 100%; /* Full width on mobile */
+    text-align: center;
+  }
+}
+ 
+/* For very small screens */
+@media (max-width: 375px) {
+  #sched-modal-content {
+    width: 90%;
+    max-width: 280px;
+  }
+ 
+  .sched-modal-time-inputs {
+    flex-wrap: wrap;
+  }
+}
+ 
+/* For iPhone SE and other very small devices */
+@media (max-width: 320px) {
+  #sched-modal-content {
+    width: 95%;
+    max-width: 260px;
+  }
+}
  

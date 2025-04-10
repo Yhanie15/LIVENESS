@@ -25,7 +25,7 @@ class DashboardController {
    */
   async getTransactions(req, res) {
     try {
-      const apiUrl = process.env.API_URL || 'http://192.168.6.93:5001/api/transactions';
+      const apiUrl = process.env.API_URL ;
       const page = req.query.page || 1;
       const limit = req.query.limit || 100;
       

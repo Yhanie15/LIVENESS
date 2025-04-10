@@ -97,17 +97,17 @@ class UserlogService {
         })
 
         // Improved image handling with fallback and WebP support
-        let imageSource = "/img/profile1.jpg"
-        if (userlog.image_data) {
+        let imageSource = "/images/avatar.png"
+        if (userlog.image_resize) {
           // Check and convert to WebP if possible
-          if (!userlog.image_data.startsWith("data:image/webp")) {
-            if (!userlog.image_data.startsWith("data:image")) {
-              imageSource = `data:image/webp;base64,${this.convertToWebP(userlog.image_data)}`
+          if (!userlog.image_resize.startsWith("data:image/webp")) {
+            if (!userlog.image_resize.startsWith("data:image")) {
+              imageSource = `data:image/webp;base64,${this.convertToWebP(userlog.image_resize)}`
             } else {
-              imageSource = userlog.image_data.replace(/\.(jpg|png)$/, ".webp")
+              imageSource = userlog.image_resize.replace(/\.(jpg|png)$/, ".webp")
             }
           } else {
-            imageSource = userlog.image_data
+            imageSource = userlog.image_resize
           }
         }
 

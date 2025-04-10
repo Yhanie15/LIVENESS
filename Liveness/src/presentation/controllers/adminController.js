@@ -55,12 +55,13 @@ exports.reports = async (req, res) => {
   console.log("Admin Report route accessed, user:", req.session.user)
 
   try {
-    // Get page and limit from query parameters
+    // Get page, limit, and search from query parameters
     const page = req.query.page || 1
     const limit = req.query.limit || 10
+    const search = req.query.search || ''  // Add this line to capture search parameter
 
-    // Use the ReportService to fetch and format the data
-    const { transactions, pagination } = await ReportService.getAllReports(page, limit)
+    // Use the ReportService to fetch and format the data (now including search parameter)
+    const { transactions, pagination } = await ReportService.getAllReports(page, limit, search)
 
     res.render("admin/layouts/admin_report_page", {
       title: "Reports",
@@ -71,6 +72,7 @@ exports.reports = async (req, res) => {
       layout: "admin/layouts/admin-main-layout",
       transactions: transactions,
       pagination: pagination,
+      searchTerm: search,  // Pass the search term to the view for display
     })
   } catch (error) {
     console.error("Error in reports controller:", error)
@@ -88,8 +90,9 @@ exports.reports = async (req, res) => {
         currentPage: 1,
         totalPages: 1,
         totalItems: 0,
-        pageSize: 10, // Use a default value instead of the undefined 'limit'
+        pageSize: 10,
       },
+      searchTerm: req.query.search || '',  // Include search term even in error state
     })
   }
 }

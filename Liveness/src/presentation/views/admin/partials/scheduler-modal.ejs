@@ -1,40 +1,60 @@
-<!-- Scheduler Modal -->
-<div id="schedModal" class="sched-modal">
-    <div class="sched-modal-content">
-      <div class="sched-modal-header">
-        <h2>Scheduler</h2>
-        <span class="sched-close-btn">&times;</span>
-      </div>
-      <div class="sched-modal-body">
-        <p>Select when you want the model training to begin</p>
-       
-        <div class="sched-modal-form">
-          <div class="sched-form-group">
-            <div class="sched-form-label">
-              <i class="sched-circle-icon"></i>
-              <span>Date Selection</span>
-            </div>
-            <input type="text" id="schedDatePicker" class="sched-form-control" placeholder="Select date">
+<!--Scheduler-modal.ejs-->
+<div id="sched-modal-container" class="sched-modal-hidden">
+  <div id="sched-modal-overlay"></div>
+  <div id="sched-modal-content">
+    <!-- Header with gradient background -->
+    <div id="sched-modal-header">
+      <h2 id="sched-modal-title">Scheduler</h2>
+      <p id="sched-modal-subtitle">Select when you want the model training to begin</p>
+      <button id="sched-modal-close-btn" aria-label="Close">
+        <i class="bi bi-x"></i>
+      </button>
+    </div>
+   
+    <!-- Modal body with selection fields -->
+    <div id="sched-modal-body">
+      <!-- Date and Time sections side by side -->
+      <div id="sched-modal-selections">
+        <!-- Date Selection -->
+        <div id="sched-modal-date-section">
+          <div class="sched-modal-section-header">
+            <i class="bi bi-calendar"></i>
+            <h3>Date Selection</h3>
           </div>
-         
-          <div class="sched-form-group">
-            <div class="sched-form-label">
-              <i class="sched-circle-icon"></i>
-              <span>Time Selection</span>
-            </div>
-            <div class="sched-time-inputs">
-              <input type="text" id="schedHourInput" class="sched-form-control sched-time-input" placeholder="Hour">
-              <input type="text" id="schedMinuteInput" class="sched-form-control sched-time-input" placeholder="Minutes">
-              <select id="schedAmpmSelect" class="sched-form-control sched-time-select">
-                <option value="AM">AM</option>
-                <option value="PM">PM</option>
-              </select>
+          <div class="sched-modal-input-container">
+            <input type="text" id="sched-modal-date-input" placeholder="Select date" readonly>
+          </div>
+        </div>
+       
+        <!-- Time Selection -->
+        <div id="sched-modal-time-section">
+          <div class="sched-modal-section-header">
+            <i class="bi bi-clock"></i>
+            <h3>Time Selection</h3>
+          </div>
+          <div class="sched-modal-time-inputs">
+            <input type="text" id="sched-modal-hour-input" placeholder="Hour">
+            <span class="sched-modal-time-separator">:</span>
+            <input type="text" id="sched-modal-minute-input" placeholder="Minutes">
+            <div id="sched-modal-ampm-dropdown">
+              <button id="sched-modal-ampm-btn">
+                <span id="sched-modal-ampm-text">AM</span>
+                <i class="bi bi-chevron-down"></i>
+              </button>
+              <div id="sched-modal-ampm-options" class="sched-modal-hidden">
+                <div class="sched-modal-ampm-option" data-value="AM">AM</div>
+                <div class="sched-modal-ampm-option" data-value="PM">PM</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="sched-modal-footer">
-        <button id="schedSaveButton" class="sched-btn-save">Save</button>
-      </div>
+    </div>
+   
+    <!-- Footer with save button -->
+    <div id="sched-modal-footer">
+      <button id="sched-modal-save-btn">Save</button>
     </div>
   </div>
+</div>
+ 

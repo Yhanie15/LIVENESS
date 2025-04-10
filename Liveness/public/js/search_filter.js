@@ -20,6 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
     initExport(exportBtn)
   }
 
+  console.log("Initializing Search, Filter, and Export modules")
+
   // Start the initialization
   init()
 })

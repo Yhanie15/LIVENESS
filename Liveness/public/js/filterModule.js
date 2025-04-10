@@ -19,8 +19,30 @@ let companyCodesCache = null
 // Initialize filter functionality
 export function initFilter(filterBtn) {
   if (!filterBtn) return console.warn("Filter button not found")
+  
   filterBtn.addEventListener("click", showFilterModal)
+  
+  // Initialize pagination links if they exist
+  initPaginationLinks()
+  
+  // Fetch company codes for dropdown
   fetchCompanyCodes()
+}
+
+// Initialize pagination links
+function initPaginationLinks() {
+  const paginationLinks = document.querySelectorAll('.pagination .page-link')
+  paginationLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault()
+      const page = parseInt(this.getAttribute('data-page'))
+      if (isNaN(page)) return
+      
+      // Get current filters and update page
+      const currentFilters = { ...getCurrentFilters(), page }
+      fetchAndUpdateTable(currentFilters)
+    })
+  })
 }
 
 // Create and show filter modal
@@ -158,7 +180,7 @@ async function fetchCompanyCodes() {
   }
 }
 
-// Initialize date picker - FIXED to normalize dates
+// Initialize date picker
 function initDatePicker() {
   const startDateInput = filterModal.querySelector("#start-date")
   const endDateInput = filterModal.querySelector("#end-date")
@@ -181,6 +203,10 @@ function initDatePicker() {
   // Set default values
   startDateInput.value = formatDate(oneWeekAgo)
   endDateInput.value = formatDate(today)
+
+  // Set initial filter state values
+  filterState.startDate = oneWeekAgo
+  filterState.endDate = today
 
   // Add event listeners with date validation
   startDateInput.addEventListener("change", () => {
@@ -208,7 +234,7 @@ function initDatePicker() {
     if (endDateInput.value) {
       // Create date and normalize time
       const date = new Date(endDateInput.value)
-      date.setHours(0, 0, 0, 0)
+      date.setHours(23, 59, 59, 999) // End of day
       filterState.endDate = date
     } else {
       filterState.endDate = null
@@ -221,6 +247,7 @@ function initDatePicker() {
       if (startDate > filterState.endDate) {
         startDateInput.value = endDateInput.value
         filterState.startDate = new Date(filterState.endDate)
+        filterState.startDate.setHours(0, 0, 0, 0)
       }
     }
   })
@@ -283,109 +310,253 @@ function clearAllFilters() {
   })
 }
 
-// Apply filters to the table - FIXED date comparison
+// Apply filters by fetching data from API with filters
 function applyFilters() {
-  // Get all table rows except header
-  const rows = document.querySelectorAll(".report-table tbody tr")
-  if (!rows.length) return hideFilterModal()
-
+  // Hide the modal first
+  hideFilterModal()
+  
   // Check if any filters are active
   const hasActiveFilters = Object.values(filterState).some((value) => value !== null)
-
-  // If no filters are active, show all rows
-  if (!hasActiveFilters) {
-    rows.forEach((row) => (row.style.display = ""))
-    return hideFilterModal()
+  
+  // Prepare filter parameters for API call
+  const filterParams = {
+    page: 1, // Reset to page 1 when applying filters
+    limit: 10, // Default limit, can be changed to match your needs
   }
-
-  // Normalize filter dates to remove time component
-  let startDateNormalized = null
-  let endDateNormalized = null
-
-  if (filterState.startDate) {
-    startDateNormalized = new Date(filterState.startDate)
-    startDateNormalized.setHours(0, 0, 0, 0)
+  
+  // Add active filters to parameters
+  if (filterState.companyCode) filterParams.companyCode = filterState.companyCode
+  if (filterState.status) filterParams.status = filterState.status
+  if (filterState.activity) filterParams.activity = filterState.activity
+  if (filterState.startDate) filterParams.startDate = filterState.startDate
+  if (filterState.endDate) filterParams.endDate = filterState.endDate
+  
+  // Fetch filtered data and update table
+  fetchAndUpdateTable(filterParams)
+  
+  // Show notification if filters are applied
+  if (hasActiveFilters) {
+    addFilterNotification()
   }
+}
 
-  if (filterState.endDate) {
-    endDateNormalized = new Date(filterState.endDate)
-    endDateNormalized.setHours(23, 59, 59, 999) // End of day
+// Fetch data with filters and update the table
+async function fetchAndUpdateTable(params) {
+  try {
+    const tableBody = document.querySelector(".report-table tbody")
+    if (!tableBody) return console.error("Table body not found")
+    
+    // Show loading indicator
+    tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><div class="mt-2">Loading data...</div></td></tr>'
+    
+    // Fetch filtered data from API
+    const result = await fetchTransactions(params)
+    
+    // Update pagination controls
+    updatePagination(result.pagination)
+    
+    // Update table with new data
+    updateTableWithData(result.data)
+  } catch (error) {
+    console.error("Error fetching filtered data:", error)
+    // Show error message in table
+    const tableBody = document.querySelector(".report-table tbody")
+    if (tableBody) {
+      tableBody.innerHTML = '<tr><td colspan="9" class="text-center text-danger py-3"><i class="bi bi-exclamation-triangle-fill me-2"></i>Error loading data. Please try again.</td></tr>'
+    }
   }
+}
 
-  // Filter configuration - maps filter types to cell indices and extraction functions
-  const filterConfig = {
-    companyCode: {
-      index: 1,
-      extract: (cell) => cell.textContent.trim(),
-    },
-    activity: {
-      index: 3,
-      extract: (cell) => cell.textContent.trim(),
-    },
-    status: {
-      index: 7,
-      extract: (cell) => {
-        const badge = cell.querySelector(".status-badge")
-        return badge ? badge.textContent.trim() : ""
-      },
-    },
-    date: {
-      index: 4,
-      extract: (cell) => {
-        const text = cell.textContent.trim()
-        return text ? parseDate(text) : null
-      },
-    },
+// Update table with new data from API
+function updateTableWithData(transactions) {
+  const tableBody = document.querySelector(".report-table tbody")
+  if (!tableBody) return console.error("Table body not found")
+  
+  if (!transactions || transactions.length === 0) {
+    tableBody.innerHTML = '<tr><td colspan="9" class="text-center py-3">No records found matching your criteria</td></tr>'
+    return
   }
-
-  // Process each row with the filters
-  rows.forEach((row) => {
-    let showRow = true
-
-    // Check each filter type
-    if (filterState.companyCode !== null) {
-      const config = filterConfig.companyCode
-      const cellValue = row.cells[config.index] ? config.extract(row.cells[config.index]) : ""
-      if (cellValue !== filterState.companyCode) showRow = false
+  
+  // Clear existing rows
+  tableBody.innerHTML = ''
+  
+  // Create rows for each transaction
+  transactions.forEach(transaction => {
+    const row = document.createElement('tr')
+    
+    // Format date and time from timestamp
+    let formattedDate = ''
+    let formattedTime = ''
+    
+    if (transaction.timestamp) {
+      const date = new Date(transaction.timestamp)
+      formattedDate = date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric', 
+        year: 'numeric' 
+      })
+      
+      formattedTime = date.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: false 
+      })
+    } else {
+      formattedDate = transaction.date || ''
+      formattedTime = transaction.time || ''
     }
-
-    if (showRow && filterState.activity !== null) {
-      const config = filterConfig.activity
-      const cellValue = row.cells[config.index] ? config.extract(row.cells[config.index]) : ""
-      if (cellValue !== filterState.activity) showRow = false
-    }
-
-    if (showRow && filterState.status !== null) {
-      const config = filterConfig.status
-      const cellValue = row.cells[config.index] ? config.extract(row.cells[config.index]) : ""
-      if (cellValue !== filterState.status) showRow = false
-    }
-
-    // Date range filter - FIXED comparison logic
-    if (showRow && (startDateNormalized !== null || endDateNormalized !== null)) {
-      const config = filterConfig.date
-      const rowDate = row.cells[config.index] ? config.extract(row.cells[config.index]) : null
-
-      if (rowDate) {
-        // Check start date (inclusive)
-        if (startDateNormalized !== null && rowDate < startDateNormalized) {
-          showRow = false
-        }
-
-        // Check end date (inclusive)
-        if (showRow && endDateNormalized !== null && rowDate > endDateNormalized) {
-          showRow = false
-        }
-      }
-    }
-
-    // Update row visibility
-    row.style.display = showRow ? "" : "none"
+    
+    // Prepare image sources with fallbacks
+    const thumbnailSrc = transaction.image_resize || transaction.image || '/images/avatar.png'
+    const fullSizeSrc = transaction.image_data || transaction.originalImage || thumbnailSrc
+    
+    // Create row content based on API response structure
+    row.innerHTML = `
+      <td>${transaction.transaction_no || ''}</td>
+      <td>${transaction.company_code || ''}</td>
+      <td>${transaction.employee_id || ''}</td>
+      <td>${transaction.activity || 'N/A'}</td>
+      <td>${formattedDate}</td>
+      <td>${formattedTime}</td>
+      <td class="text-center">
+        <img src="${thumbnailSrc}" 
+             class="thumbnail-img" alt="Thumbnail" 
+             data-bs-toggle="modal" data-bs-target="#imageModal" 
+             data-img-src="${fullSizeSrc}">
+      </td>
+      <td><span class="status-badge ${transaction.status === 'FAKE' ? 'badge-fake' : 'badge-real'}">${transaction.status || ''}</span></td>
+      <td>${transaction.score ? transaction.score + ' %' : ''}</td>
+    `
+    
+    tableBody.appendChild(row)
   })
+  
+  // Re-initialize image modal functionality
+  initializeImageModalTriggers()
+}
 
-  // Hide the modal and show notification
-  hideFilterModal()
-  addFilterNotification()
+// Initialize image modal triggers for new rows
+function initializeImageModalTriggers() {
+  const thumbnails = document.querySelectorAll('.thumbnail-img')
+  thumbnails.forEach(img => {
+    img.addEventListener('click', function() {
+      const modalImg = document.querySelector('#imageModal .modal-image')
+      if (modalImg) {
+        modalImg.src = this.getAttribute('data-img-src')
+      }
+    })
+  })
+}
+
+// Update pagination controls with new data
+function updatePagination(pagination) {
+  if (!pagination) return
+  
+  const paginationContainer = document.querySelector('.pagination-container')
+  if (!paginationContainer) return console.warn("Pagination container not found")
+  
+  // Update page info text if it exists
+  const pageInfo = document.querySelector('.pagination-info')
+  if (pageInfo) {
+    pageInfo.textContent = `Page ${pagination.currentPage} of ${pagination.totalPages} (${pagination.totalItems} items)`
+  }
+  
+  // Update pagination links
+  const paginationUl = paginationContainer.querySelector('ul.pagination')
+  if (!paginationUl) return
+  
+  // Clear existing pagination links
+  paginationUl.innerHTML = ''
+  
+  // Create pagination items
+  
+  // Previous button
+  const prevLi = document.createElement('li')
+  prevLi.className = `page-item ${pagination.currentPage <= 1 ? 'disabled' : ''}`
+  prevLi.innerHTML = `<a class="page-link" href="#" data-page="${pagination.currentPage - 1}">&laquo;</a>`
+  paginationUl.appendChild(prevLi)
+  
+  // Page links
+  const maxPages = 5 // Maximum number of page links to show
+  let startPage = Math.max(1, pagination.currentPage - Math.floor(maxPages / 2))
+  let endPage = Math.min(pagination.totalPages, startPage + maxPages - 1)
+  
+  // Adjust if at the end
+  if (endPage - startPage + 1 < maxPages && startPage > 1) {
+    startPage = Math.max(1, endPage - maxPages + 1)
+  }
+  
+  // First page link if not at the beginning
+  if (startPage > 1) {
+    const firstLi = document.createElement('li')
+    firstLi.className = 'page-item'
+    firstLi.innerHTML = `<a class="page-link" href="#" data-page="1">1</a>`
+    paginationUl.appendChild(firstLi)
+    
+    // Add ellipsis if needed
+    if (startPage > 2) {
+      const ellipsisLi = document.createElement('li')
+      ellipsisLi.className = 'page-item disabled'
+      ellipsisLi.innerHTML = `<span class="page-link">...</span>`
+      paginationUl.appendChild(ellipsisLi)
+    }
+  }
+  
+  // Page numbers
+  for (let i = startPage; i <= endPage; i++) {
+    const li = document.createElement('li')
+    li.className = `page-item ${i === pagination.currentPage ? 'active' : ''}`
+    li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`
+    paginationUl.appendChild(li)
+  }
+  
+  // Last page link if not at the end
+  if (endPage < pagination.totalPages) {
+    // Add ellipsis if needed
+    if (endPage < pagination.totalPages - 1) {
+      const ellipsisLi = document.createElement('li')
+      ellipsisLi.className = 'page-item disabled'
+      ellipsisLi.innerHTML = `<span class="page-link">...</span>`
+      paginationUl.appendChild(ellipsisLi)
+    }
+    
+    const lastLi = document.createElement('li')
+    lastLi.className = 'page-item'
+    lastLi.innerHTML = `<a class="page-link" href="#" data-page="${pagination.totalPages}">${pagination.totalPages}</a>`
+    paginationUl.appendChild(lastLi)
+  }
+  
+  // Next button
+  const nextLi = document.createElement('li')
+  nextLi.className = `page-item ${pagination.currentPage >= pagination.totalPages ? 'disabled' : ''}`
+  nextLi.innerHTML = `<a class="page-link" href="#" data-page="${pagination.currentPage + 1}">&raquo;</a>`
+  paginationUl.appendChild(nextLi)
+  
+  // Add click event listeners to pagination links
+  paginationUl.querySelectorAll('a.page-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault()
+      const page = parseInt(this.getAttribute('data-page'))
+      if (isNaN(page)) return
+      
+      // Get current filters and update page
+      const currentFilters = { ...getCurrentFilters(), page }
+      fetchAndUpdateTable(currentFilters)
+    })
+  })
+}
+
+// Get current filters from state
+function getCurrentFilters() {
+  const filters = { page: 1, limit: 10 }
+  
+  if (filterState.companyCode) filters.companyCode = filterState.companyCode
+  if (filterState.status) filters.status = filterState.status
+  if (filterState.activity) filters.activity = filterState.activity
+  if (filterState.startDate) filters.startDate = filterState.startDate
+  if (filterState.endDate) filters.endDate = filterState.endDate
+  
+  return filters
 }
 
 // Add a notification to show filters have been applied
@@ -426,7 +597,61 @@ function addFilterNotification() {
   }, 3000)
 }
 
-// Helper function to parse dates - FIXED to normalize time
+// Fetch transactions from API with filter parameters
+export async function fetchTransactions(filters = {}) {
+  try {
+    // Build query parameters
+    const queryParams = new URLSearchParams()
+
+    // Add pagination params
+    queryParams.append("page", filters.page || 1)
+    queryParams.append("limit", filters.limit || 10)
+
+    // Add filter params if they exist
+    const filterMapping = {
+      companyCode: "company_code",
+      status: "status",
+      activity: "activity",
+      startDate: "start_date",
+      endDate: "end_date",
+    }
+
+    // Process each filter
+    Object.entries(filterMapping).forEach(([key, paramName]) => {
+      if (filters[key]) {
+        const value = key.includes("Date") ? formatDateForAPI(filters[key]) : filters[key]
+        queryParams.append(paramName, value)
+      }
+    })
+
+    // Fetch data
+    const response = await fetch(`${API_BASE_URL}/transactions?${queryParams.toString()}`)
+    if (!response.ok) throw new Error(`API request failed with status ${response.status}`)
+
+    const result = await response.json()
+    
+    return {
+      data: result.data,
+      pagination: {
+        currentPage: parseInt(result.page),
+        totalPages: Math.ceil(result.total / result.limit),
+        totalItems: result.total,
+        pageSize: parseInt(result.limit),
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching transactions:", error)
+    throw error
+  }
+}
+
+// Format date for API (YYYY-MM-DD)
+function formatDateForAPI(date) {
+  if (!(date instanceof Date)) date = new Date(date)
+  return date.toISOString().split("T")[0]
+}
+
+// Helper function to parse dates - for parsing date strings from table cells
 function parseDate(dateString) {
   try {
     // Example format: "Feb 14, 2025"
@@ -462,47 +687,3 @@ function parseDate(dateString) {
     return new Date(0)
   }
 }
-
-// Fetch transactions from API with filter parameters
-export async function fetchTransactions(filters = {}) {
-  try {
-    // Build query parameters
-    const queryParams = new URLSearchParams()
-
-    // Add pagination params
-    queryParams.append("page", filters.page || 1)
-    queryParams.append("limit", filters.limit || 10)
-
-    // Add filter params if they exist
-    const filterMapping = {
-      companyCode: "company_code",
-      status: "status",
-      startDate: "start_date",
-      endDate: "end_date",
-    }
-
-    // Process each filter
-    Object.entries(filterMapping).forEach(([key, paramName]) => {
-      if (filters[key]) {
-        const value = key.includes("Date") ? formatDateForAPI(filters[key]) : filters[key]
-        queryParams.append(paramName, value)
-      }
-    })
-
-    // Fetch data
-    const response = await fetch(`${API_BASE_URL}/transactions?${queryParams.toString()}`)
-    if (!response.ok) throw new Error(`API request failed with status ${response.status}`)
-
-    return await response.json()
-  } catch (error) {
-    console.error("Error fetching transactions:", error)
-    throw error
-  }
-}
-
-// Format date for API (YYYY-MM-DD)
-function formatDateForAPI(date) {
-  if (!(date instanceof Date)) date = new Date(date)
-  return date.toISOString().split("T")[0]
-}
-
