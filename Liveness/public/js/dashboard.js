@@ -8,14 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     apiUrl: 'http://192.168.100.152:5001/api/dashboard-stats',
     refreshInterval: 120_000  // 2‑minute refresh
   };
- 
+
   /* ------------ HELPERS (same as before) ------------ */
   const utils = {
     getElement: sel => document.querySelector(sel),
     getChart: id => Chart.getChart(id),
     pct: (v, t) => (t > 0 ? (v / t * 100).toFixed(1) : 0)
   };
- 
+
   /* ------------ CHART HANDLERS (unchanged code from earlier) ------------ */
   const charts = {
     initPie(fake, real) {
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
  
-  /* ------------ UI RENDERERS (with fixes for progress bar display) ------------ */
+  /* ------------ UI RENDERERS (with fixes for progress bar display and image conversion) ------------ */
   const ui = {
     counters(data) {
       utils.getElement('.transaction-count').textContent = data.total.toLocaleString();
@@ -107,16 +107,28 @@ document.addEventListener('DOMContentLoaded', () => {
       utils.getElement('.real-stat').innerHTML = `<span class="pie-dot real-dot"></span> Real : ${data.overall.real.toLocaleString()} (${utils.pct(data.overall.real, data.total)}%)`;
     },
  
+    // Updated recent function now renders an image element from the base64 string.
     recent(list) {
       const wrap = document.getElementById('recent-detections-list');
       wrap.innerHTML = '';
-      if (!list.length) { wrap.innerHTML = '<div class="no-data">No recent fake detections</div>'; return; }
+      if (!list.length) { 
+        wrap.innerHTML = '<div class="no-data">No recent fake detections</div>'; 
+        return; 
+      }
  
       list.forEach((det, i) => {
         const ts = new Date(det.timestamp);
         const el = document.createElement('div');
         el.className = 'detection-item';
+ 
+        // Prefix the base64 string with the proper data URI header.
+        // (Change "image/jpeg" to "image/webp" if your image is in WebP format)
+        const imageSrc = "data:image/jpeg;base64," + det.image_resize;
+ 
         el.innerHTML = `
+          <div class="detection-image">
+            <img src="${imageSrc}" alt="Fake Detection">
+          </div>
           <div class="detection-info">
             <div class="detection-id">${det.employee_id}</div>
             <div class="detection-meta">${ts.toLocaleTimeString()} | ${det.company_code}</div>
@@ -127,15 +139,23 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="fake-percentage">Fake: ${det.confidence}%</div>
           </div>`;
+ 
         wrap.appendChild(el);
-        if (i < list.length - 1) wrap.appendChild(Object.assign(document.createElement('div'), { className: 'detection-separator' }));
+        if (i < list.length - 1) {
+          const separator = document.createElement('div');
+          separator.className = 'detection-separator';
+          wrap.appendChild(separator);
+        }
       });
     },
  
     top(list, sel, type) {
       const wrap = utils.getElement(sel);
       wrap.innerHTML = '';
-      if (!list.length) { wrap.innerHTML = `<div class="no-data">No ${type} data</div>`; return; }
+      if (!list.length) { 
+        wrap.innerHTML = `<div class="no-data">No ${type} data</div>`; 
+        return; 
+      }
  
       const max = list[0].cnt;
  
@@ -143,9 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const div = document.createElement('div');
         div.className = `${type}-item`;
  
-        // Fix for employee_id handling
         if (type === 'employee') {
-          // Ensure we always use employee_id if it exists
           const identifier = item.employee_id || item.id;
           const name = item.name || `Employee ${identifier}`;
  
@@ -162,7 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="${type}-count">${item.cnt}</div>`;
         } else {
-          // For companies
           const identifier = item.company_code || item.code || item.id;
           const name = item.name || `Company ${identifier}`;
  
@@ -186,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
  
   /* ------------ CHART TOGGLE BUTTONS ------------ */
-  // Add event listeners for chart type toggle buttons
   const initChartToggleButtons = () => {
     const lineBtn = document.querySelector('#daily-stats-card .chart-btn:nth-child(1)');
     const barBtn = document.querySelector('#daily-stats-card .chart-btn:nth-child(2)');
@@ -194,22 +210,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (lineBtn && barBtn) {
       lineBtn.addEventListener('click', () => {
         if (!lineBtn.classList.contains('active')) {
-          // Toggle active class
           lineBtn.classList.add('active');
           barBtn.classList.remove('active');
- 
-          // Change chart type
           charts.changeChartType(dailyChart, 'line');
         }
       });
  
       barBtn.addEventListener('click', () => {
         if (!barBtn.classList.contains('active')) {
-          // Toggle active class
           barBtn.classList.add('active');
           lineBtn.classList.remove('active');
- 
-          // Change chart type
           charts.changeChartType(dailyChart, 'bar');
         }
       });
@@ -226,10 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function refresh() {
     try {
       const stats = await fetch(config.apiUrl).then(r => r.json());
- 
-      // Log the data structure to help with debugging
       console.log('Dashboard stats:', stats);
- 
       ui.counters(stats);
       ui.recent(stats.recentFake);
       ui.top(stats.topCompanies, '.companies-list', 'company');
@@ -244,4 +251,3 @@ document.addEventListener('DOMContentLoaded', () => {
   refresh();
   setInterval(refresh, config.refreshInterval);
 });
- 
