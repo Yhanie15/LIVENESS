@@ -63,5 +63,27 @@ connection.query(createSupportTableQuery, (err) => {
   }
 })
 
+// Create LoginActivity table
+const createLoginActivityTableQuery = `
+  CREATE TABLE IF NOT EXISTS LoginActivity (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(255),
+    action VARCHAR(255),
+    time VARCHAR(255),
+    date VARCHAR(255),
+    ipAddress VARCHAR(255),
+    compCode VARCHAR(255),
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )
+`
+
+connection.query(createLoginActivityTableQuery, (err) => {
+  if (err) {
+    console.error("Error creating LoginActivity table:", err)
+  } else {
+    console.log("LoginActivity table is ready")
+  }
+})
+
 module.exports = connection
 

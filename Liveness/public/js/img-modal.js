@@ -37,7 +37,7 @@ function openModal(originalImageSrc, score, status, transactionId) {
     imageStatus.textContent = status;
 
     // Fetch remarks (the updated endpoint now processes transactionId more efficiently)
-    fetch(`http://192.168.6.93:5001/api/transactions-with-remarks?transaction_id=${transactionId}`)
+    fetch(`http://192.168.100.152:5001/api/transactions-with-remarks?transaction_id=${transactionId}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Transaction details not found');
