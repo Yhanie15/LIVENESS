@@ -315,7 +315,7 @@ async function exportToPDF() {
 
     // Add title
     doc.setFontSize(16)
-    doc.text("Transaction Report", 14, 15)
+    doc.text("Transactionlogs", 14, 15)
 
     // Add date
     doc.setFontSize(10)
@@ -392,7 +392,7 @@ async function exportToPDF() {
     })
 
     // Save the PDF
-    const fileName = `transactions_report_${formatDateForFileName(new Date())}.pdf`
+    const fileName = `transactionlogs_report_${formatDateForFileName(new Date())}.pdf`
     doc.save(fileName)
 
     console.log("PDF export completed")
@@ -406,7 +406,7 @@ async function exportToPDF() {
 
 // Get data from the table excluding the image column for Excel export
 async function getTableDataForExcel() {
-  const table = document.querySelector(".report-table")
+  const table = document.querySelector(".transactionlogs-table")
   if (!table) {
     console.error("Table not found")
     return null
@@ -458,7 +458,7 @@ async function getTableDataForExcel() {
 
 // Get data from the table including images for PDF
 async function getTableDataWithImages() {
-  const table = document.querySelector(".report-table")
+  const table = document.querySelector(".transactionlogs-table")
   if (!table) {
     console.error("Table not found")
     return null

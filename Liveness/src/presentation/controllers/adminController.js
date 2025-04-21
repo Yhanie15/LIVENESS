@@ -1,8 +1,8 @@
 const AdminService = require("../../application/services/AdminService")
 const AdminRepository = require("../../infrastructure/repositories/adminRepository")
 const AdminEntity = require("../../entities/AdminEntity")
-const UserlogService = require("../../application/services/UserlogService")
-const ReportService = require("../../application/services/ReportService")
+const ReportsService = require("../../application/services/ReportsService")
+const TransactionlogsService = require("../../application/services/TransactionlogsService")
 const UserManagementService = require("../../application/services/UserManagementService")
 const path = require("path")
 
@@ -23,24 +23,24 @@ exports.dashboard = (req, res) => {
   })
 }
 
-exports.transactionlog = async (req, res) => {
-  console.log("TransactionLog route accessed, user:", req.session.user)
+exports.reports = async (req, res) => {
+  console.log("Reports route accessed, user:", req.session.user)
 
   try {
     // Get page and limit from query parameters
     const page = req.query.page || 1
     const limit = req.query.limit || 10
 
-    // Fetch transaction logs using the UserlogService
-    const { logs, pagination } = await UserlogService.getAllLogs(page, limit)
+    // Fetch transaction logs using the ReportsService
+    const { logs, pagination } = await ReportsService.getAllLogs(page, limit)
 
-    res.render("admin/layouts/admin_transaction_page", {
-      title: "Transaction Logs",
-      currentPage: "userlogs",
-      pageTitle: "Transaction Logs",
-      pageIcon: "bi bi-arrow-left-right",
+    res.render("admin/layouts/admin_reports_page", {
+      title: "Reports",
+      currentPage: "reports",
+      pageTitle: "Reports",
+      pageIcon: "bi bi-bar-chart-fill",
       user: req.session.user,
-      userlogs: logs,
+      reports: logs,
       pagination: pagination,
       layout: "admin/layouts/admin-main-layout",
     })
@@ -50,9 +50,9 @@ exports.transactionlog = async (req, res) => {
   }
 }
 
-// Update the reports function to use the ReportService
-exports.reports = async (req, res) => {
-  console.log("Admin Report route accessed, user:", req.session.user)
+// Update the transactionlogs function to use the TransactionlogsService
+exports.transactionlogs = async (req, res) => {
+  console.log("Admin transactionlogs route accessed, user:", req.session.user)
 
   try {
     // Get page, limit, and search from query parameters
@@ -60,13 +60,13 @@ exports.reports = async (req, res) => {
     const limit = req.query.limit || 10
     const search = req.query.search || ''  // Add this line to capture search parameter
 
-    // Use the ReportService to fetch and format the data (now including search parameter)
-    const { transactions, pagination } = await ReportService.getAllReports(page, limit, search)
+    // Use the TransactionlogsService to fetch and format the data (now including search parameter)
+    const { transactions, pagination } = await TransactionlogsService.getAllTransactionlogs(page, limit, search)
 
-    res.render("admin/layouts/admin_report_page", {
-      title: "Reports",
-      currentPage: "Reports",
-      pageTitle: "Admin Reports",
+    res.render("admin/layouts/admin_transactionlogs_page", {
+      title: "Transactionlogs",
+      currentPage: "Transactionlogs",
+      pageTitle: "Admin Transactionlogs",
       pageIcon: "bi bi-bar-chart-fill",
       user: req.session.user,
       layout: "admin/layouts/admin-main-layout",
@@ -75,13 +75,13 @@ exports.reports = async (req, res) => {
       searchTerm: search,  // Pass the search term to the view for display
     })
   } catch (error) {
-    console.error("Error in reports controller:", error)
+    console.error("Error in transactionlogs controller:", error)
 
     // Handle the error gracefully
-    res.render("admin/layouts/admin_report_page", {
-      title: "Reports",
-      currentPage: "Reports",
-      pageTitle: "Admin Reports",
+    res.render("admin/layouts/admin_transactionlogs_page", {
+      title: "Transactionlogs",
+      currentPage: "Transactionlogs",
+      pageTitle: "Admin Transactionlogs",
       pageIcon: "bi bi-bar-chart-fill",
       user: req.session.user,
       layout: "admin/layouts/admin-main-layout",

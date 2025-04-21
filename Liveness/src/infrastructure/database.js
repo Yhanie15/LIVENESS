@@ -65,16 +65,18 @@ connection.query(createSupportTableQuery, (err) => {
 
 // Create LoginActivity table
 const createLoginActivityTableQuery = `
-  CREATE TABLE IF NOT EXISTS LoginActivity (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(255),
-    action VARCHAR(255),
-    time VARCHAR(255),
-    date VARCHAR(255),
-    ipAddress VARCHAR(255),
-    compCode VARCHAR(255),
-    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  )
+ CREATE TABLE IF NOT EXISTS LoginActivity (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  username VARCHAR(100) NOT NULL,
+  action VARCHAR(50) NOT NULL,
+  time VARCHAR(50),
+  date VARCHAR(50),
+  ipAddress VARCHAR(50),
+  compCode VARCHAR(50) NOT NULL,
+  employee_id VARCHAR(50) DEFAULT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)
 `
 
 connection.query(createLoginActivityTableQuery, (err) => {

@@ -358,7 +358,7 @@ function applyFilters() {
 // Fetch data with filters and update the table
 async function fetchAndUpdateTable(params) {
   try {
-    const tableBody = document.querySelector(".report-table tbody");
+    const tableBody = document.querySelector(".transactionlogs-table tbody");
     if (!tableBody) return console.error("Table body not found");
 
     // Show loading indicator
@@ -376,7 +376,7 @@ async function fetchAndUpdateTable(params) {
   } catch (error) {
     console.error("Error fetching filtered data:", error);
     // Show error message in table
-    const tableBody = document.querySelector(".report-table tbody");
+    const tableBody = document.querySelector(".transactionlogs-table tbody");
     if (tableBody) {
       tableBody.innerHTML =
         '<tr><td colspan="9" class="text-center text-danger py-3"><i class="bi bi-exclamation-triangle-fill me-2"></i>Error loading data. Please try again.</td></tr>';
@@ -387,7 +387,7 @@ async function fetchAndUpdateTable(params) {
 // Update table with new data from API
 // Update table with new data from API
 function updateTableWithData(transactions) {
-  const tableBody = document.querySelector(".report-table tbody");
+  const tableBody = document.querySelector(".transactionlogs-table tbody");
   if (!tableBody) return console.error("Table body not found");
 
   // Check if there are transactions; if not, show a message
@@ -400,7 +400,7 @@ function updateTableWithData(transactions) {
   // Clear existing rows
   tableBody.innerHTML = "";
   
-  // Rebuild table rows exactly like on the report page
+  // Rebuild table rows exactly like on the transactionlogs page
   transactions.forEach((transaction) => {
     const row = document.createElement("tr");
 

@@ -7,7 +7,7 @@
 }
 
 /* Table styles with fixed header and scrollable body */
-.report-table-wrapper {
+.transactionlogs-table-wrapper {
   background-color: #ffffff;
   border-radius: 5px 5px 0px 0px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
@@ -18,19 +18,19 @@
   margin-bottom: 0; /* Add this to ensure no gap */
 }
 
-.report-table {
+.transactionlogs-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.report-table thead {
+.transactionlogs-table thead {
   background-color: #ffffff;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
-.report-table th {
+.transactionlogs-table th {
   background-color: #ffffff;
   color: #495057;
   font-weight: 600;
@@ -45,18 +45,18 @@
   flex-grow: 1;
 }
 
-.report-table td {
+.transactionlogs-table td {
   padding: 5px 14px;
   border-bottom: 1px solid #e9ecef;
   color: #212529;
   font-size: 12px;
 }
 
-.report-table tbody tr:last-child td {
+.transactionlogs-table tbody tr:last-child td {
   border-bottom: none;
 }
 
-.report-table tbody tr:hover {
+.transactionlogs-table tbody tr:hover {
   background-color: #f8f9fa;
 }
 
@@ -166,21 +166,21 @@
   }
 
   /* Adjust table */
-  .report-table-wrapper {
+  .transactionlogs-table-wrapper {
     overflow-x: auto;
   }
 
-  .report-table {
+  .transactionlogs-table {
     width: 100%;
     table-layout: fixed;
   }
 
-  .report-table th{
+  .transactionlogs-table th{
     font-size: 4px;
     padding: 6px;
     white-space: nowrap; /* Prevents text from wrapping inside table */
   }
-  .report-table td {
+  .transactionlogs-table td {
     font-size: 4.5px;
     padding: 6px;
     white-space: nowrap; /* Prevents text from wrapping inside table */
@@ -242,21 +242,21 @@
   }
 
   /* Adjust table */
-  .report-table-wrapper {
+  .transactionlogs-table-wrapper {
     overflow-x: auto;
   }
 
-  .report-table {
+  .transactionlogs-table {
     width: 100%;
     table-layout: fixed;
   }
 
-  .report-table th{
+  .transactionlogs-table th{
     font-size: 8px;
     padding: 6px;
     white-space: nowrap; /* Prevents text from wrapping inside table */
   }
-  .report-table td {
+  .transactionlogs-table td {
     font-size: 9px;
     padding: 6px;
     white-space: nowrap; /* Prevents text from wrapping inside table */

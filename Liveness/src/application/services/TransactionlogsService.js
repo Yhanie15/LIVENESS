@@ -1,15 +1,15 @@
 const axios = require("axios");
 require("dotenv").config();
 
-class ReportService {
+class TransactionlogsService {
   /**
-   * Get all transaction reports with pagination and search functionality
+   * Get all transaction transactionlogs with pagination and search functionality
    * @param {number} page - Current page number
    * @param {number} limit - Number of items per page
    * @param {string} search - Optional search term to filter results
    * @returns {Promise<Object>} - Transactions and pagination data
    */
-  async getAllReports(page = 1, limit = 10, search = '') {
+  async getAllTransactionlogs(page = 1, limit = 10, search = '') {
     try {
       // Implement request timeout and circuit breaker
       const controller = new AbortController();
@@ -194,4 +194,4 @@ class ReportService {
   }
 }
 
-module.exports = new ReportService();
+module.exports = new TransactionlogsService();

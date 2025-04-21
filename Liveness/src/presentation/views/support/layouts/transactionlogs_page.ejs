@@ -1,0 +1,156 @@
+<!-- In support/layouts/transactionlogs_page.ejs -->
+<div class="search-filter-row">
+    <%- include('../partials/search') %>
+    <div class="action-buttons">
+      <%- include('../partials/filter') %>
+      <%- include('../partials/export') %>
+    </div>
+  </div>
+  
+  <div class="table-container">
+    <div class="transactionlogs-table-wrapper">
+      <div class="table-body-container">
+        <table class="transactionlogs-table">
+          <thead>
+            <tr>
+              <th>TRANSACTION NO.</th>
+              <th>COMPANY CODE</th>
+              <th>EMPLOYEE ID</th>
+              <th>ACTIVITY</th>
+              <th>DATE</th>
+              <th>TIME</th>
+              <th>IMAGE</th>
+              <th>STATUS</th>
+              <th>SCORE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (typeof transactions !== 'undefined' && transactions.length > 0) { %>
+              <% transactions.forEach(transaction => { %>
+                <tr>
+                  <td><%= transaction.id %></td>
+                  <td><%= transaction.company %></td>
+                  <td><%= transaction.employee %></td>
+                  <td>
+                    <%= transaction.activity !== null ? transaction.activity : 'N/A' %>
+                  </td>
+                  <td><%= transaction.date %></td>
+                  <td><%= transaction.time %></td>
+                  <td>
+                    <div class="profile-image-container">
+                      <% if (transaction.image) { %>
+                        <% 
+                          // Precompute formattedScore to avoid inline expression issues.
+                          const formattedScore = transaction.score.replace("%", ",");
+                        %>
+                        <img
+                          src="<%= transaction.image %>"
+                          alt="Profile"
+                          class="profile-image"
+                          loading="lazy"
+                          width="100"
+                          height="100"
+                          onclick="openModal('<%= transaction.originalImage %>', '<%= formattedScore %>', '<%= transaction.status %>', '<%= transaction.id %>')"
+                        >
+                      <% } else { %>
+                        <img
+                          src="/images/avatar.png"
+                          alt="Default Profile"
+                          class="profile-image"
+                          loading="lazy"
+                          width="100"
+                          height="100"
+                        >
+                      <% } %>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="status-badge <%= transaction.status.toLowerCase() %>">
+                      <%= transaction.status %>
+                    </span>
+                  </td>
+                  <td><%= transaction.score %></td>
+                </tr>
+              <% }); %>
+            <% } else { %>
+              <tr>
+                <td colspan="9" class="no-records">No records found</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <%- include('../partials/pagination') %>
+  </div>
+  
+  <!-- Modal Section: Dynamic content will be inserted via JavaScript -->
+  <div id="imageModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="image-container">
+          <img id="modalImage" src="/placeholder.svg" alt="Transactionlogs Image">
+          <div class="status-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </div>
+        </div>
+  
+        <div class="image-info">
+          <div class="verification-result">
+            <p class="verification-text">
+              This image is <span id="imageStatus">fake</span>
+            </p>
+            <div class="score-container">
+              <span id="scoreValue" class="score-value"></span>
+              <p class="confidence-label">Confidence Score</p>
+            </div>
+          </div>
+  
+          <div class="detection-details">
+            <p class="details-title">Image detection details</p>
+  
+            <div class="metric-container">
+              <div class="metric-label">Face :</div>
+              <div class="progress-container">
+                <div class="progress-bar" id="faceBar"></div>
+              </div>
+              <div class="metric-value" id="faceScore"></div>
+            </div>
+  
+            <div class="metric-container">
+              <div class="metric-label">Texture :</div>
+              <div class="progress-container">
+                <div class="progress-bar" id="textureBar"></div>
+              </div>
+              <div class="metric-value" id="textureScore"></div>
+            </div>
+  
+            <div class="metric-container">
+              <div class="metric-label">Reflection :</div>
+              <div class="progress-container">
+                <div class="progress-bar" id="reflectionBar"></div>
+              </div>
+              <div class="metric-value" id="reflectionScore"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="close-btn" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+  

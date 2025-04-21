@@ -16,34 +16,20 @@
         <span class="menu-text">Dashboard</span>
       </a>
     </li>
-    
-    <li class="sidebar-item <%= currentPage === 'userlogs' ? 'active' : '' %>">
-      <a href="/userlogs" class="sidebar-link" data-tooltip="Userlog">
+
+    <li class="sidebar-item <%= currentPage === 'transactionlogs' ? 'active' : '' %>">
+      <a href="/transactionlogs" class="sidebar-link" data-tooltip="s">
         <i class="bi bi-arrow-left-right"></i>
         <span class="menu-text">Transaction logs</span>
       </a>
     </li>
 
+        
     <li class="sidebar-item <%= currentPage === 'reports' ? 'active' : '' %>">
       <a href="/reports" class="sidebar-link" data-tooltip="Reports">
         <i class="bi bi-bar-chart-fill"></i>
-        <span class="menu-text">Reports</span>
+        <span class="menu-text">Report</span>
       </a>
     </li>
   </ul>
-  
-  <!-- Add a spacer that pushes the logout to the bottom -->
-  <!-- <div style="flex-grow: 1;"></div> -->
-  
-  <!-- Logout tab at the bottom footer area with clear separation -->
-  <!-- <div class="sidebar-footer" style="margin-top: auto; border-top: 1px solid rgba(0, 0, 0, 0.1); padding-top: 10px; padding-bottom: 15px;">
-    <ul class="list-unstyled sidebar-menu">
-      <li class="sidebar-item">
-        <a href="/logout" class="sidebar-link" data-tooltip="Logout">
-          <i class="bi bi-box-arrow-right"></i>
-          <span class="menu-text">Logout</span>
-        </a>
-      </li>
-    </ul>
-  </div> -->
 </nav>

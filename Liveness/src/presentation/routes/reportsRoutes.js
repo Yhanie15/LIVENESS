@@ -1,7 +1,7 @@
-const express = require("express")
-const router = express.Router()
-const reportsController = require("../controllers/reportsController")    
-const { TokenAuthenticated } = require("../../frameworks/web/middleware/authMiddleware")
+const express = require("express");
+const router = express.Router();
+const reportsController = require("../controllers/reportsController");
+const { TokenAuthenticated } = require("../../frameworks/web/middleware/authMiddleware");
 
 // Performance optimization middleware
 router.use((req, res, next) => {
@@ -16,21 +16,19 @@ router.use((req, res, next) => {
   });
   
   next();
-})
+});
 
 // Debug middleware to log all requests
 router.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`)
-  next()
-})
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
 
 // Add performance monitoring to reports route
 router.get("/reports", (req, res, next) => {
   // Additional performance headers
   res.set('X-Performance-Marker', 'reports-page');
   next();
-}, reportsController.reports_view)
+}, TokenAuthenticated, reportsController.reports_view);
 
-router.use(TokenAuthenticated)
-
-module.exports = router
+module.exports = router;

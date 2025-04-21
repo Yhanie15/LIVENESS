@@ -178,46 +178,76 @@ class SupportRepository {
     }
   }
   
-  // Add a new login activity record
-  async addLoginActivity(username, action, compCode, ipAddress) {
-    const currentDate = new Date();
-    const time = currentDate.toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" });
-    const date = currentDate.toLocaleDateString("en-PH", { timeZone: "Asia/Manila" });
-    
-    const query = `
+  // Add a new login activity record with employee_id support
+async addLoginActivity(username, action, compCode, ipAddress, employee_id = null) {
+  const currentDate = new Date();
+  const time = currentDate.toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" });
+  const date = currentDate.toLocaleDateString("en-PH", { timeZone: "Asia/Manila" });
+  
+  let query = '';
+  let params = [];
+  
+  if (employee_id) {
+    query = `
+      INSERT INTO LoginActivity (username, action, time, date, ipAddress, compCode, employee_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+    params = [username, action, time, date, ipAddress, compCode, employee_id];
+  } else {
+    query = `
       INSERT INTO LoginActivity (username, action, time, date, ipAddress, compCode)
       VALUES (?, ?, ?, ?, ?, ?)
     `;
-    
-    console.log(`Repository: Recording login activity for ${username}`);
-    return this.executeQuery(query, [username, action, time, date, ipAddress, compCode]);
+    params = [username, action, time, date, ipAddress, compCode];
   }
+  
+  console.log(`Repository: Recording login activity for ${username}${employee_id ? ` (Employee ID: ${employee_id})` : ''}`);
+  return this.executeQuery(query, params);
+}
 
-  // Get login history for a specific user or company
-  async getLoginHistory(compCode, username) {
-    try {
-      console.log(`Repository: Getting login history for ${username} in company ${compCode}`);
-      const query = `
-        SELECT * FROM LoginActivity
-        WHERE username = ? AND compCode = ?
-        ORDER BY createdAt DESC
-      `;
-      const rows = await this.executeQuery(query, [username, compCode]);
-      return rows.map(row => ({
-        id: row.id,
-        username: row.username,
-        action: row.action,
-        time: new Date(row.createdAt).toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" }),
-        date: new Date(row.createdAt).toLocaleDateString("en-PH", { timeZone: "Asia/Manila" }),
-        ipAddress: row.ipAddress || '',
-        compCode: row.compCode,
-        createdAt: row.createdAt
-      }));
-    } catch (error) {
-      console.error("Repository error fetching login history:", error);
-      throw error;
+  // Get login history for a specific user based on username, compCode, and employee_id
+async getLoginHistory(compCode, username, employee_id = null) {
+  try {
+    console.log(`Repository: Getting login history for user: ${username}, compCode: ${compCode}, employee_id: ${employee_id || 'Not provided'}`);
+    
+    // Build the query with parameters
+    let query = `
+      SELECT * FROM LoginActivity
+      WHERE username = ? AND compCode = ?
+    `;
+    
+    const params = [username, compCode];
+    
+    // Add employee_id filter if provided
+    if (employee_id) {
+      query += ` AND employee_id = ?`;
+      params.push(employee_id);
     }
+    
+    // Finalize query with ordering and limit
+    query += `
+      ORDER BY createdAt DESC
+      LIMIT 50
+    `;
+    
+    const rows = await this.executeQuery(query, params);
+    
+    return rows.map(row => ({
+      id: row.id,
+      username: row.username,
+      employee_id: row.employee_id || null,
+      action: row.action,
+      time: new Date(row.createdAt).toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" }),
+      date: new Date(row.createdAt).toLocaleDateString("en-PH", { timeZone: "Asia/Manila" }),
+      ipAddress: row.ipAddress || '',
+      compCode: row.compCode,
+      createdAt: row.createdAt
+    }));
+  } catch (error) {
+    console.error("Repository error fetching login history:", error);
+    throw error;
   }
+}
 }
 
 module.exports = new SupportRepository();

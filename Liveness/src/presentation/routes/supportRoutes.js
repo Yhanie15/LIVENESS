@@ -10,7 +10,6 @@ router.use((req, res, next) => {
   next()
 })
 
-// Public Authentication Routes
 router.get("/support/register", supportController.register_view)
 router.post("/support/register", supportController.register_post)
 router.get("/support/login", supportController.login_view)
@@ -22,12 +21,8 @@ router.post("/support/reset-password", supportController.resetPassword_post)
 router.get('/support/login-history', supportController.getLoginHistory);
 router.get("/logout", supportController.logout)
 
-// Apply the TokenAuthenticated middleware for all subsequent routes
-router.use(TokenAuthenticated)
 
-// Protected Routes
-// router.get("/", supportController.redirectToDashboard)
-// router.get("/dashboard", supportController.dashboard)
+router.use(TokenAuthenticated)
 
 module.exports = router
 

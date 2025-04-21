@@ -26,7 +26,7 @@ router.use(TokenAuthenticated)
 // Protected Routes
 router.get("/", adminController.redirectToDashboard) // Root route for /admin
 router.get("/dashboard", adminController.dashboard) // This is the correct path
-router.get("/transactionlog", adminController.transactionlog) // This is the correct path
+router.get("/transactionlogs", adminController.transactionlogs) // This is the correct path
 router.get("/reports", adminController.reports) // This is the correct path
 router.get("/settings/user-management", adminController.userManagement) // This is the correct path
 

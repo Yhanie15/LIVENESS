@@ -51,7 +51,7 @@ exports.login_view = (req, res) => {
   });
 };
 
-// Login POST
+// Login POST with improved activity tracking and employee_id handling
 exports.login_post = async (req, res) => {
   console.log("Login post received:", req.body);
 
@@ -77,30 +77,40 @@ exports.login_post = async (req, res) => {
       id: support.id,
       username: support.username,
       compCode: support.compCode,
+      employee_id: support.employee_id || null,  // Include employee_id if available
     };
     req.session.token = token;
     req.session.expiration = expirationTime;
     req.session.message = "Support logged in successfully";
 
-    // Record login activity
+    // Record login activity with improved error handling and employee_id inclusion
     const ipAddress =
-      req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-    await SupportRepository.addLoginActivity(
-      support.username,
-      "Logged in",
-      support.compCode,
-      ipAddress
-    );
-
-    // Store current login for immediate display
-    req.session.loginActivity = {
-      user: support.username,
-      username: support.username,
-      action: "Logged in",
-      time: new Date().toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" }),
-      date: new Date().toLocaleDateString("en-PH", { timeZone: "Asia/Manila" }),
-      ipAddress: ipAddress,
-    };
+      req.headers["x-forwarded-for"] || req.socket.remoteAddress || "Unknown IP";
+    
+    try {
+      await SupportRepository.addLoginActivity(
+        support.username,
+        "Logged in",
+        support.compCode,
+        ipAddress,
+        support.employee_id  // Pass employee_id to the repository
+      );
+      
+      // Store current login for immediate display
+      req.session.loginActivity = {
+        username: support.username,
+        employee_id: support.employee_id || null,
+        action: "Logged in",
+        time: new Date().toLocaleTimeString("en-PH", { timeZone: "Asia/Manila" }),
+        date: new Date().toLocaleDateString("en-PH", { timeZone: "Asia/Manila" }),
+        ipAddress: ipAddress,
+      };
+      
+      console.log("Login activity recorded successfully");
+    } catch (activityError) {
+      console.error("Error recording login activity:", activityError);
+      // Continue with login even if activity recording fails
+    }
 
     req.session.save((err) => {
       if (err) {
@@ -265,23 +275,29 @@ exports.register_post = async (req, res) => {
   }
 };
 
-// Logout
+// Logout with improved activity tracking including employee_id
 exports.logout = async (req, res) => {
   console.log("Logout requested");
 
-  if (req.session.user) {
-    const ipAddress =
-      req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  // Save user info before destroying session
+  const userData = req.session.user ? { ...req.session.user } : null;
+  
+  if (userData) {
+    const ipAddress = req.headers["x-forwarded-for"] || 
+                     req.socket.remoteAddress || 
+                     "Unknown IP";
     try {
       await SupportRepository.addLoginActivity(
-        req.session.user.username,
+        userData.username,
         "Logged out",
-        req.session.user.compCode,
-        ipAddress
+        userData.compCode,
+        ipAddress,
+        userData.employee_id  // Include employee_id in logout activity
       );
-      console.log("Logout activity recorded");
+      console.log("Logout activity recorded for", userData.username, userData.employee_id ? `(Employee ID: ${userData.employee_id})` : '');
     } catch (error) {
       console.error("Error recording logout activity:", error);
+      // Continue with logout even if activity recording fails
     }
   }
 
@@ -304,18 +320,25 @@ exports.logout = async (req, res) => {
   }
 };
 
-// Updated endpoint to only return the current user's history
+// Updated endpoint to return the current user's history with employee_id filtering
 exports.getLoginHistory = async (req, res) => {
   try {
     if (!req.session.user) {
       return res.status(401).json({ error: "Not authenticated" });
     }
     
-    const { username, compCode } = req.session.user;
+    const { username, compCode, employee_id } = req.session.user;
     
-    console.log(`Fetching login history for user: ${username}, compCode: ${compCode}`);
+    console.log(`Fetching login history for user: ${username}, compCode: ${compCode}, employee_id: ${employee_id || 'Not provided'}`);
     
-    const loginHistory = await SupportRepository.getLoginHistory(compCode, username);
+    if (!username || !compCode) {
+      return res.status(400).json({ 
+        error: "Missing required user data", 
+        message: "Username or company code is missing from session" 
+      });
+    }
+    
+    const loginHistory = await SupportRepository.getLoginHistory(compCode, username, employee_id);
     
     if (!Array.isArray(loginHistory)) {
       console.error("Login history is not an array:", loginHistory);
@@ -327,6 +350,10 @@ exports.getLoginHistory = async (req, res) => {
     return res.status(200).json(loginHistory);
   } catch (error) {
     console.error("Error fetching login history:", error);
-    return res.status(500).json({ error: "Failed to fetch login history: " + error.message });
+    return res.status(500).json({ 
+      error: "Failed to fetch login history", 
+      message: error.message,
+      stack: process.env.NODE_ENV === "development" ? error.stack : undefined
+    });
   }
 };

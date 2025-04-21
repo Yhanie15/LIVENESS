@@ -1,28 +1,28 @@
-import ReportService from "../../src/application/services/ReportService";
+import TransactionlogsService from "../../src/application/services/TransactionlogsService";
 
 /**
- * Fetches reports based on page and search term, then updates the table and pagination.
+ * Fetches transactionlogs based on page and search term, then updates the table and pagination.
  * @param {number} page - The page number to fetch.
  * @param {string} search - The search term.
  */
-export async function fetchReports(page, search) {
+export async function fetchTransactionlogs(page, search) {
   try {
     // Optionally show a loading indicator here
-    const reportData = await ReportService.getAllReports(page, 10, search);
-    updateTable(reportData.transactions);
-    updatePaginationControls(reportData.pagination, search);
+    const transactionlogsData = await TransactionlogsService.getAllTransactionlogs(page, 10, search);
+    updateTable(transactionlogsData.transactions);
+    updatePaginationControls(transactionlogsData.pagination, search);
   } catch (error) {
-    console.error("Error fetching reports:", error);
+    console.error("Error fetching transactionlogs:", error);
   }
 }
 
 /**
- * Updates the report table body with fetched transactions.
+ * Updates the transactionlogs table body with fetched transactions.
  * @param {Array} transactions - The transaction data.
  */
 function updateTable(transactions) {
   console.log("Updating table with transactions:", transactions);
-  const tableBody = document.querySelector(".report-table tbody");
+  const tableBody = document.querySelector(".transactionlogs-table tbody");
   tableBody.innerHTML = "";
   if (transactions.length > 0) {
     transactions.forEach((transaction) => {
@@ -68,14 +68,14 @@ function updatePaginationControls(pagination, search) {
   if (nextBtn) {
     nextBtn.onclick = () => {
       if (pagination.currentPage < pagination.totalPages) {
-        fetchReports(pagination.currentPage + 1, search);
+        fetchTransactionlogs(pagination.currentPage + 1, search);
       }
     };
   }
   if (prevBtn) {
     prevBtn.onclick = () => {
       if (pagination.currentPage > 1) {
-        fetchReports(pagination.currentPage - 1, search);
+        fetchTransactionlogs(pagination.currentPage - 1, search);
       }
     };
   }

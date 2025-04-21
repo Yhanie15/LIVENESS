@@ -1,7 +1,7 @@
 const axios = require("axios")
 require("dotenv").config()
 
-class UserlogService {
+class ReportsService {
   /**
    * Get all transaction logs with pagination
    * @param {number} page - Page number
@@ -25,10 +25,10 @@ class UserlogService {
 
       clearTimeout(timeoutId)
 
-      const { data: userlogs, total, page: currentPage, limit: pageSize } = response.data
+      const { data: reports, total, page: currentPage, limit: pageSize } = response.data
 
       return {
-        logs: this.formatUserlogs(userlogs),
+        logs: this.formatReports(reports),
         pagination: {
           currentPage: Number.parseInt(currentPage),
           totalPages: Math.ceil(total / pageSize),
@@ -60,16 +60,16 @@ class UserlogService {
   }
 
   /**
-   * Format user logs for display
-   * @param {Array} data - Raw user logs data
-   * @returns {Array} - Formatted user logs
+   * Format reports for display
+   * @param {Array} data - Raw reports data
+   * @returns {Array} - Formatted reports
    */
-  static formatUserlogs(data) {
+  static formatReports(data) {
     if (!data || data.length === 0) return []
 
-    return data.map((userlog) => {
+    return data.map((reports) => {
       // Optimize timestamp handling
-      const timestamp = userlog.timestamp || new Date().toISOString()
+      const timestamp = reports.timestamp || new Date().toISOString()
 
       try {
         const date = new Date(timestamp)
@@ -77,7 +77,7 @@ class UserlogService {
         // Improved date validation
         if (isNaN(date.getTime())) {
           return {
-            ...userlog,
+            ...reports,
             date: "Invalid Date",
             time: "Invalid Time",
           }
@@ -98,31 +98,31 @@ class UserlogService {
 
         // Improved image handling with fallback and WebP support
         let imageSource = "/images/avatar.png"
-        if (userlog.image_resize) {
+        if (reports.image_resize) {
           // Check and convert to WebP if possible
-          if (!userlog.image_resize.startsWith("data:image/webp")) {
-            if (!userlog.image_resize.startsWith("data:image")) {
-              imageSource = `data:image/webp;base64,${this.convertToWebP(userlog.image_resize)}`
+          if (!reports.image_resize.startsWith("data:image/webp")) {
+            if (!reports.image_resize.startsWith("data:image")) {
+              imageSource = `data:image/webp;base64,${this.convertToWebP(reports.image_resize)}`
             } else {
-              imageSource = userlog.image_resize.replace(/\.(jpg|png)$/, ".webp")
+              imageSource = reports.image_resize.replace(/\.(jpg|png)$/, ".webp")
             }
           } else {
-            imageSource = userlog.image_resize
+            imageSource = reports.image_resize
           }
         }
 
         return {
-          company: userlog.company_code,
-          id: userlog.employee_id,
-          activity: userlog.activity || "N/A",
+          company: reports.company_code,
+          id: reports.employee_id,
+          activity: reports.activity || "N/A",
           date: formattedDate,
           time: formattedTime,
           image: imageSource,
         }
       } catch (error) {
-        console.error("Error formatting userlog:", error)
+        console.error("Error formatting reports:", error)
         return {
-          ...userlog,
+          ...reports,
           date: "Invalid Date",
           time: "Invalid Time",
         }
@@ -142,5 +142,5 @@ class UserlogService {
   }
 }
 
-module.exports = UserlogService
+module.exports = ReportsService
 

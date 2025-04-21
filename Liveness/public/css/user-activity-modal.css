@@ -75,6 +75,10 @@
     border-bottom: 1px solid #f0f0f0;
     align-items: center;
   }
+
+  .activity-item:last-child {
+    border-bottom: none;
+  }
  
   .activity-avatar {
     width: 40px;
@@ -127,4 +131,25 @@
     font-size: 8px;
     font-weight: 500;
   }
+  .current-activity {
+    background-color: rgba(0, 123, 255, 0.1);
+    border-left: 3px solid #007bff;
+  }
+  .loading-spinner {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+  }
+  .no-activity-message {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+  }
+  .modal-footer {
+    padding: 10px 20px;
+    border-top: 1px solid #e9ecef;
+    text-align: center;
+    color: #777;
+  }
+  
  

@@ -16,21 +16,21 @@
         <span class="menu-text">Dashboard</span>
       </a>
     </li>
-   
-    <li class="sidebar-item <%= currentPage === 'userlogs' ? 'active' : '' %>">
-      <a href="/admin/transactionlog" class="sidebar-link" data-tooltip="Userlog">
+ 
+    <li class="sidebar-item <%= currentPage === 'transactionlogs' ? 'active' : '' %>">
+      <a href="/admin/transactionlogs" class="sidebar-link" data-tooltip="Transactionlogs">
         <i class="bi bi-arrow-left-right"></i>
-        <span class="menu-text">Transaction logs</span>
+        <span class="menu-text">Transactionlogs</span>
       </a>
     </li>
- 
+
     <li class="sidebar-item <%= currentPage === 'reports' ? 'active' : '' %>">
-      <a href="/admin/reports" class="sidebar-link" data-tooltip="Reports">
+      <a href="/admin/reports" class="sidebar-link" data-tooltip="reports">
         <i class="bi bi-bar-chart-fill"></i>
-        <span class="menu-text">Reports</span>
+        <span class="menu-text">Report</span>
       </a>
     </li>
- 
+
    
     <!-- Settings tab with submenu -->
     <li class="sidebar-item has-submenu <%= ['user-management', 'scheduler', 'thresholds'].includes(currentPage) ? 'open' : '' %>">
