@@ -1,0 +1,151 @@
+<div class="content-container">
+   
+    <div class="search-filter-row">
+      <%- include('../../support/partials/search') %>
+      <div class="action-buttons">
+        <%- include('../../support/partials/filter') %>
+        <%- include('../partials/add_user_btn') %>
+      </div>
+    </div>
+ 
+    <%
+      // Static dummy data for development
+      const dummyUsers = [
+        {
+          id: '1',
+          name: 'Reuben Harter',
+          employeeId: 'EMP1058',
+          email: 'Hassan_Gates265@example.com',
+          company_code: 'COMP26',
+          avatarUrl: '/images/default-avatar.png'
+        },
+        {
+          id: '2',
+          name: 'Tim Greene',
+          employeeId: 'EMP1038',
+          email: 'VikkiDykes@example.com',
+          company_code: 'COMP26',
+          avatarUrl: '/images/default-avatar.png'
+        },
+        {
+          id: '3',
+          name: 'Luigi Bray',
+          employeeId: 'EMP1030',
+          email: 'Chante.Adams@example.com',
+          company_code: 'COMP26',
+          avatarUrl: '/images/default-avatar.png'
+        },
+        {
+          id: '4',
+          name: 'Florentino Lamar',
+          employeeId: 'EMP1088',
+          email: 'cbunvgoy.ofqcd@example.com',
+          company_code: 'COMP26',
+          avatarUrl: '/images/default-avatar.png'
+        },
+        {
+          id: '5',
+          name: 'Ophelia Tatum',
+          employeeId: 'EMP1088',
+          email: 'Penni_Wolford@example.com',
+          company_code: 'COMP26',
+          avatarUrl: '/images/default-avatar.png'
+        },
+        {
+          id: '6',
+          name: 'Clarinda Heck',
+          employeeId: 'EMP1088',
+          email: 'Darrick.Alves392@nowhere.com',
+          company_code: 'COMP26',
+          avatarUrl: '/images/default-avatar.png'
+        }
+      ];
+     
+      // Use passed in users data if available, otherwise use the dummy data
+      const displayUsers = typeof users !== 'undefined' ? users : dummyUsers;
+    %>
+ 
+    <div class="user-cards-container">
+      <% if (displayUsers && displayUsers.length > 0) { %>
+        <% displayUsers.forEach(user => { %>
+          <div class="user-card">
+            <div class="user-card-header">
+              <div class="user-avatar">
+                <img src="<%= user.avatarUrl || '/images/default-avatar.png' %>" alt="<%= user.name %>">
+              </div>
+              <div class="user-info">
+                <h3 class="user-name"><%= user.name %></h3>
+                <p class="user-id"><%= user.employeeId %></p>
+              </div>
+            </div>
+            <div class="user-card-body">
+              <div class="user-detail">
+                <span class="detail-icon"><i class="bi bi-envelope"></i></span>
+                <span class="detail-text"><%= user.email %></span>
+              </div>
+              <div class="user-detail">
+                <span class="detail-icon"><i class="bi bi-building"></i></span>
+                <span class="detail-text"><%= user.company_code %></span>
+              </div>
+            </div>
+            <div class="user-card-footer">
+              <button class="btn btn-edit" data-user-id="<%= user.id %>" onclick="editUser('<%= user.id %>')">
+                <i class="bi bi-pencil-square"></i> Edit
+              </button>
+              <button class="btn btn-delete" data-user-id="<%= user.id %>" onclick="confirmDelete('<%= user.id %>', '<%= user.name %>')">
+                <i class="bi bi-trash"></i> Delete
+              </button>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="no-users-message">
+          <i class="bi bi-person-x"></i>
+          <p>No users found. Try adjusting your search criteria or add a new user.</p>
+        </div>
+      <% } %>
+    </div>
+ 
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="deleteUserModalLabel">Confirm Delete</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete <span id="deleteUserName"></span>?
+            <p class="text-danger">This action cannot be undone.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <form id="deleteUserForm" method="POST">
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+ 
+    <!-- Include pagination partial with dummy pagination data -->
+    <%
+      // Create dummy pagination data if not provided
+      if (typeof pagination === 'undefined') {
+        pagination = {
+          currentPage: 1,
+          pageSize: 10,
+          totalItems: 6,
+          totalPages: 1
+        };
+       
+        // Add searchTerm if needed for pagination URLs
+        if (typeof searchTerm === 'undefined') {
+          searchTerm = '';
+        }
+      }
+    %>
+    <%- include('../../support/partials/pagination') %>
+  </div>
+ 

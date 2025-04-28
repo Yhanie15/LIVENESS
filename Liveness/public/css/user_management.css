@@ -1,0 +1,198 @@
+/* User Management Page */
+.content-container {
+    padding: 1rem;
+  }
+ 
+  .page-title-container {
+    margin-bottom: 1.5rem;
+  }
+ 
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #333;
+  }
+ 
+  .page-description {
+    color: #666;
+    font-size: 0.9rem;
+  }
+ 
+  /* User Cards Grid */
+  .user-cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+ 
+  /* User Card */
+  .user-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+ 
+  .user-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+ 
+  /* Card Header with Avatar and Name */
+  .user-card-header {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    background: linear-gradient(to right, #fcfcfc, #f5f5f5);
+  }
+ 
+  .user-avatar {
+    width: 50px;
+    height: 50px;
+    margin-right: 1rem;
+  }
+ 
+  .user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+ 
+  .user-info {
+    flex: 1;
+  }
+ 
+  .user-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+  }
+ 
+  .user-id {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 0;
+  }
+ 
+  /* Card Body with User Details */
+  .user-card-body {
+    padding: 1rem;
+  }
+ 
+  .user-detail {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+  }
+ 
+  .user-detail:last-child {
+    margin-bottom: 0;
+  }
+ 
+  .detail-icon {
+    width: 20px;
+    color: #586c89;
+    margin-right: 0.75rem;
+    text-align: center;
+  }
+ 
+  .detail-text {
+    color: #444;
+    word-break: break-word;
+  }
+ 
+  /* Card Footer with Action Buttons */
+  .user-card-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background-color: #f8f9fa;
+    border-top: 1px solid #f0f0f0;
+  }
+ 
+  .btn-edit, .btn-delete {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+  }
+ 
+  .btn-edit {
+    background-color: #eef2f7;
+    color: #586c89;
+  }
+ 
+  .btn-edit:hover {
+    background-color: #d8e1ee;
+  }
+ 
+  .btn-delete {
+    background-color: #f8e0e0;
+    color: #dc3545;
+  }
+ 
+  .btn-delete:hover {
+    background-color: #f5d0d0;
+  }
+ 
+  .btn i {
+    margin-right: 4px;
+  }
+ 
+  /* Empty State */
+  .no-users-message {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px dashed #dee2e6;
+  }
+ 
+  .no-users-message i {
+    font-size: 3rem;
+    color: #adb5bd;
+    margin-bottom: 1rem;
+    display: block;
+  }
+ 
+  .no-users-message p {
+    color: #6c757d;
+  }
+ 
+  /* Responsive Design */
+  @media (max-width: 1200px) {
+    .user-cards-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+ 
+  @media (max-width: 768px) {
+    .user-cards-container {
+      grid-template-columns: 1fr;
+    }
+  }
+ 
+  /* Delete Modal */
+  #deleteUserModal .modal-body {
+    padding: 1.5rem;
+  }
+ 
+  #deleteUserName {
+    font-weight: 600;
+  }
+ 
