@@ -98,69 +98,61 @@ exports.transactionlogs = async (req, res) => {
 }
 
 exports.userManagement = async (req, res) => {
-  console.log("Admin User Management route accessed, user:", req.session.user)
-
+  console.log("Admin User Management route accessed, user:", req.session.user);
+  
   try {
-    // Get page and limit from query parameters
-    const page = req.query.page || 1
-    const limit = req.query.limit || 10
-
-    // Fetch users data - uncomment when UserManagementService is implemented
-    // const { users, pagination } = await UserManagementService.getAllUsers(page, limit)
-
-    // For now, use dummy data
-    const users = []
-    const pagination = {
-      currentPage: Number.parseInt(page),
-      totalPages: 1,
-      totalItems: 0,
-      pageSize: Number.parseInt(limit),
-    }
-
+    // Get page, limit, and search parameters from query string
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+    const search = req.query.search || '';
+    
+    // Get users from the UserManagementService
+    const { users, pagination } = await UserManagementService.getAllUsers(page, limit, search);
+    
+    // Map users to match the expected format in the template
+    const formattedUsers = users.map(user => ({
+      id: user.id,
+      name: user.username, // Using username as name for display
+      email: user.email,
+      compCode: user.compCode, // Use compCode instead of company_code
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
+    }));
+    
     res.render("admin/layouts/admin_user_management", {
       title: "User Management",
       currentPage: "user-management",
       pageTitle: "User Management",
       pageIcon: "bi bi-people-fill",
       user: req.session.user,
-      users: users,
-      pagination: pagination,
       layout: "admin/layouts/admin-main-layout",
-    })
+      users: formattedUsers, // Pass formatted users to the template
+      pagination: pagination, // Pass pagination data
+      searchTerm: search // Pass search term for form persistence
+    });
   } catch (error) {
-    console.error("Error in user management controller:", error)
-
-    // Handle the error gracefully
+    console.error("Error fetching users:", error);
+    
+    // Render the page with an error but empty users array
     res.render("admin/layouts/admin_user_management", {
       title: "User Management",
       currentPage: "user-management",
       pageTitle: "User Management",
       pageIcon: "bi bi-people-fill",
       user: req.session.user,
+      layout: "admin/layouts/admin-main-layout",
       users: [],
       pagination: {
         currentPage: 1,
         totalPages: 1,
         totalItems: 0,
-        pageSize: 10,
+        pageSize: 10
       },
-      layout: "admin/layouts/admin-main-layout",
-    })
+      searchTerm: req.query.search || '',
+      error: "Failed to fetch users. Please try again."
+    });
   }
-}
-
-
-exports.userManagement = (req, res) => {
-  console.log("Admin User Management route accessed, user:", req.session.user)
-  res.render("admin/layouts/admin_user_management", {
-    title: "User Management",
-    currentPage: "user-management",
-    pageTitle: "User Management",
-    pageIcon: "bi bi-people-fill",
-    user: req.session.user,
-    layout: "admin/layouts/admin-main-layout",
-  })
-}
+};
 
 // --- Authentication Functions ---
 
