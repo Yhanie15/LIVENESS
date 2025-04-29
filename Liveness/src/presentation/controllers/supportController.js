@@ -357,3 +357,49 @@ exports.getLoginHistory = async (req, res) => {
     });
   }
 };
+
+exports.registerUser = async (req, res) => {
+  try {
+    console.log("API Register user request received:", req.body);
+    
+    const { name, email, password, compCode } = req.body;
+
+    // Validate required fields
+    if (!name || !password || !email || !compCode) {
+      console.log("Missing required fields");
+      return res.status(400).json({ 
+        success: false, 
+        message: "All fields are required" 
+      });
+    }
+    
+    // Call the service to create the user
+    const userData = {
+      name,      // This is the username from the form
+      email,
+      password,
+      compCode
+    };
+    
+    const newUser = await SupportService.createSupportUser(userData);
+    
+    console.log("User created successfully:", newUser.username);
+    
+    return res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      user: {
+        id: newUser.id,
+        username: newUser.username,
+        email: newUser.email,
+        compCode: newUser.compCode
+      }
+    });
+  } catch (error) {
+    console.error("API Error registering user:", error);
+    return res.status(400).json({ 
+      success: false, 
+      message: error.message || "Error creating user" 
+    });
+  }
+};

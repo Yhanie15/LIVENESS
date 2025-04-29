@@ -128,7 +128,65 @@
   .edit-user-btn-save:hover {
     background-color: #2d8bc7;
   }
- 
+  .field-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 4px;
+  }
+  .edit-user-btn-save:disabled {
+    background-color: #a0c0e8;
+    cursor: not-allowed;
+  }
+  
+  /* Notification system */
+  .notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    max-width: 350px;
+  }
+  
+  .notification {
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    position: relative;
+    border-left: 4px solid #333;
+    animation: slideIn 0.3s ease-out forwards;
+  }
+  
+  .notification.success {
+    border-left-color: #28a745;
+  }
+  
+  .notification.error {
+    border-left-color: #dc3545;
+  }
+  
+  .notification.warning {
+    border-left-color: #ffc107;
+  }
+  
+  .notification.info {
+    border-left-color: #17a2b8;
+  }
+  
+  .notification-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    color: #aaa;
+    cursor: pointer;
+    padding: 0 5px;
+  }
+  
+  .notification-close:hover {
+    color: #555;
+  }
   /* Animation */
   @keyframes edit-user-modal-fade-in {
     from {

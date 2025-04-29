@@ -64,9 +64,9 @@ exports.transactionlogs = async (req, res) => {
     const { transactions, pagination } = await TransactionlogsService.getAllTransactionlogs(page, limit, search)
 
     res.render("admin/layouts/admin_transactionlogs_page", {
-      title: "Transactionlogs",
-      currentPage: "Transactionlogs",
-      pageTitle: "Admin Transactionlogs",
+      title: "Transaction",
+      currentPage: "Transaction",
+      pageTitle: "Transaction",
       pageIcon: "bi bi-bar-chart-fill",
       user: req.session.user,
       layout: "admin/layouts/admin-main-layout",
@@ -75,13 +75,13 @@ exports.transactionlogs = async (req, res) => {
       searchTerm: search,  // Pass the search term to the view for display
     })
   } catch (error) {
-    console.error("Error in transactionlogs controller:", error)
+    console.error("Error in transaction controller:", error)
 
     // Handle the error gracefully
     res.render("admin/layouts/admin_transactionlogs_page", {
-      title: "Transactionlogs",
-      currentPage: "Transactionlogs",
-      pageTitle: "Admin Transactionlogs",
+      title: "Transaction",
+      currentPage: "Transaction",
+      pageTitle: "Transaction",
       pageIcon: "bi bi-bar-chart-fill",
       user: req.session.user,
       layout: "admin/layouts/admin-main-layout",

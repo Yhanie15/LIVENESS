@@ -141,6 +141,56 @@ class SupportService {
     }
   }
 
+  async createSupportUser(userData) {
+    console.log("Creating support user:", userData.name)
+    
+    try {
+      // Create current date and time
+      const currentDate = new Date()
+      const formattedDate = currentDate.toLocaleDateString("en-GB")
+      const formattedTime = currentDate.toLocaleTimeString("en-GB", { hour12: false })
+      const formattedDateTime = `${formattedDate} ${formattedTime}`
+      
+      // Create Support Entity
+      const supportEntity = new SupportEntity({
+        username: userData.name,
+        email: userData.email,
+        password: userData.password,
+        compCode: userData.compCode,
+        createdAt: formattedDateTime,
+        updatedAt: formattedDateTime
+      })
+      
+      // Validate the entity
+      supportEntity.validate()
+      
+      // Check if username already exists
+      const existingSupport = await this.supportRepository.findByUsername(supportEntity.username)
+      if (existingSupport) {
+        console.log(`Username ${supportEntity.username} already exists`)
+        throw new Error("Username already exists")
+      }
+      
+      // Hash password
+      const hashedPassword = await bcrypt.hash(supportEntity.password, 10)
+      supportEntity.password = hashedPassword
+      
+      // Save to database
+      const savedSupport = await this.supportRepository.save(supportEntity)
+      console.log(`Support user ${supportEntity.username} created successfully`)
+      
+      return {
+        id: savedSupport.id,
+        username: savedSupport.username,
+        email: savedSupport.email,
+        compCode: savedSupport.compCode
+      }
+    } catch (error) {
+      console.error("Error creating support user:", error)
+      throw error
+    }
+  }
+
   async register(supportEntity) {
     console.log("Register service called for username:", supportEntity.username)
 
@@ -188,7 +238,7 @@ class SupportService {
 
       const resetURL = process.env.FRONTEND_URL
         ? `${process.env.FRONTEND_URL}/support/reset-password?token=${resetToken}`
-        : `http://localhost:3000/support/reset-password?token=${resetToken}`
+        : `http://localhost:3005/support/reset-password?token=${resetToken}`
 
       const mailOptions = {
         to: support.email,
@@ -232,4 +282,3 @@ class SupportService {
 }
 
 module.exports = new SupportService(SupportRepository)
-

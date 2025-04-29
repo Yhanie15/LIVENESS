@@ -12,6 +12,8 @@ const adminRoutes = require("./src/presentation/routes/adminRoutes")
 const reportsRoutes = require("./src/presentation/routes/reportsRoutes")
 const transactionlogsRoutes = require("./src/presentation/routes/transactionlogsRoutes")
 const dashboardRoutes = require("./src/presentation/routes/dashboardRoutes")
+const apiRoutes = require('./src/presentation/routes/apiRoutes');
+
 
 const app = express()
 
@@ -71,6 +73,7 @@ app.use("/",supportRoutes)
 app.use("/", reportsRoutes) 
 app.use("/", transactionlogsRoutes)
 app.use("/", dashboardRoutes)
+app.use('/api', apiRoutes);
 // app.use("/", employeeRoutes)
 
 // Start the server.

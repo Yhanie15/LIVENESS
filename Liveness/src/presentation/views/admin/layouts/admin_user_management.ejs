@@ -1,7 +1,9 @@
 <div class="search-filter-row">
   <%- include('../../support/partials/search') %>
   <div class="action-buttons">
-    <%- include('../partials/add_user_btn') %>
+    <button class="btn add-user-btn" id="addUserBtn">
+      <i class="bi bi-person-plus"></i> Add User
+    </button>
   </div>
 </div>
 
@@ -49,3 +51,4 @@
 
 <%- include('../partials/delete_user_modal') %>
 <%- include('../partials/edit_user_modal') %>
+<%- include('../partials/add_user_modal') %>

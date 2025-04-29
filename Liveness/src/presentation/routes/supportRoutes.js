@@ -19,6 +19,7 @@ router.post("/support/forgot-password", supportController.forgotPassword_post)
 router.get("/support/reset-password", supportController.resetPassword_view)
 router.post("/support/reset-password", supportController.resetPassword_post)
 router.get('/support/login-history', supportController.getLoginHistory);
+router.post("/api/users", supportController.registerUser);
 router.get("/logout", supportController.logout)
 
 
