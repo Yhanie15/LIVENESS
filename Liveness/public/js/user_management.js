@@ -175,16 +175,3 @@ function showNotification(message, type) {
 function editUser(userId) {
   window.location.href = `/admin/settings/user-management/edit/${userId}`;
 }
-
-// Function to confirm deletion of a user
-function confirmDelete(userId, userName) {
-  // Set the user name in the modal
-  document.getElementById('deleteUserName').textContent = userName;
-  
-  // Set the form action URL
-  document.getElementById('deleteUserForm').action = `/admin/settings/user-management/delete/${userId}`;
-  
-  // Show the modal
-  const deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
-  deleteModal.show();
-}

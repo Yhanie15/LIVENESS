@@ -1,0 +1,179 @@
+/* Edit User Modal Styles */
+.edit-user-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+ 
+  .edit-user-modal-overlay.hidden {
+    display: none;
+  }
+ 
+  .edit-user-modal-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 500px;
+    overflow: hidden;
+    animation: edit-user-modal-fade-in 0.3s ease;
+  }
+ 
+  .edit-user-modal-header {
+    background: linear-gradient(to right, #3a2b58, #3a8bbb);
+    color: white;
+    padding: clamp(8px, 2vw, 16px) clamp(10px, 3vw, 20px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: inset 0px 2px 10px rgba(0, 0, 0, 0.3);
+  }
+ 
+  .edit-user-modal-header h2 {
+    margin: 0;
+    font-size: clamp(16px, 4vw, 22px);
+    font-weight: 600;
+  }
+ 
+  .edit-user-modal-close-btn {
+    background-color: #ff3b30;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    width: clamp(18px, 5vw, 24px);
+    height: clamp(18px, 5vw, 24px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: clamp(12px, 3vw, 16px);
+    padding: 0;
+  }
+ 
+  .edit-user-modal-close-btn:hover {
+    opacity: 0.9;
+  }
+ 
+  .edit-user-modal-body {
+    padding: 20px;
+  }
+ 
+  .edit-user-form .form-group {
+    margin-bottom: 20px;
+  }
+ 
+  .edit-user-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+    font-size: 1rem;
+  }
+ 
+  .edit-user-form .form-control {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95rem;
+  }
+ 
+  .edit-user-form .form-control:focus {
+    border-color: #3a8bbb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(58, 139, 187, 0.2);
+  }
+ 
+  .edit-user-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+ 
+  .edit-user-btn-cancel {
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    background-color: #f7f7f7;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+  }
+ 
+  .edit-user-btn-cancel:hover {
+    background-color: #eaeaea;
+  }
+ 
+  .edit-user-btn-save {
+    padding: 10px 25px;
+    border: none;
+    background-color: #3a9bdb;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    box-shadow: inset 0px 1px 5px rgba(0, 0, 0, 0.2);
+  }
+ 
+  .edit-user-btn-save:hover {
+    background-color: #2d8bc7;
+  }
+ 
+  /* Animation */
+  @keyframes edit-user-modal-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+ 
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .edit-user-modal-container {
+      width: 85%;
+      max-width: 380px;
+    }
+  }
+ 
+  @media (max-width: 576px) {
+    .edit-user-modal-container {
+      width: 85%;
+      max-width: 320px;
+    }
+ 
+    .edit-user-btn-save {
+      width: 100%; /* Full width on mobile */
+      text-align: center;
+    }
+  }
+ 
+  /* For very small screens */
+  @media (max-width: 375px) {
+    .edit-user-modal-container {
+      width: 90%;
+      max-width: 280px;
+    }
+  }
+ 
+  /* For iPhone SE and other very small devices */
+  @media (max-width: 320px) {
+    .edit-user-modal-container {
+      width: 95%;
+      max-width: 260px;
+    }
+  }
+ 

@@ -1,0 +1,36 @@
+<!-- views/admin/partials/edit_user_modal.ejs -->
+<div id="editUserModal" class="edit-user-modal-overlay hidden">
+    <div class="edit-user-modal-container">
+      <div class="edit-user-modal-header">
+        <h2>Edit User</h2>
+        <button class="edit-user-modal-close-btn">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
+      <div class="edit-user-modal-body">
+        <div class="edit-user-form">
+          <div class="form-group">
+            <label for="editFullName">Full Name</label>
+            <input type="text" id="editFullName" class="form-control" placeholder="Enter full name">
+          </div>
+         
+          <div class="form-group">
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" class="form-control" placeholder="Enter email address">
+          </div>
+         
+          <div class="form-group">
+            <label for="editCompanyCode">Company Code</label>
+            <input type="text" id="editCompanyCode" class="form-control" placeholder="Enter company code">
+          </div>
+        </div>
+      </div>
+      <div class="edit-user-modal-footer">
+        <button id="cancelEditUserBtn" class="edit-user-btn-cancel">Cancel</button>
+        <button id="confirmEditUserBtn" class="edit-user-btn-save">
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+ 

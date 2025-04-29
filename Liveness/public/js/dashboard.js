@@ -111,20 +111,18 @@ document.addEventListener('DOMContentLoaded', () => {
     recent(list) {
       const wrap = document.getElementById('recent-detections-list');
       wrap.innerHTML = '';
-      if (!list.length) { 
-        wrap.innerHTML = '<div class="no-data">No recent fake detections</div>'; 
-        return; 
+      if (!list.length) {
+        wrap.innerHTML = '<div class="no-data">No recent fake detections</div>';
+        return;
       }
- 
+     
       list.forEach((det, i) => {
         const ts = new Date(det.timestamp);
         const el = document.createElement('div');
         el.className = 'detection-item';
- 
-        // Prefix the base64 string with the proper data URI header.
-        // (Change "image/jpeg" to "image/webp" if your image is in WebP format)
+     
         const imageSrc = "data:image/jpeg;base64," + det.image_resize;
- 
+     
         el.innerHTML = `
           <div class="detection-image">
             <img src="${imageSrc}" alt="Fake Detection">
@@ -139,16 +137,31 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="fake-percentage">Fake: ${det.confidence}%</div>
           </div>`;
- 
+     
+        // --- ADD THIS AFTER innerHTML ---
+        const img = el.querySelector('img');
+        if (img) {
+          img.style.cursor = 'pointer'; // Optional: make it obvious it's clickable
+          img.addEventListener('click', () => {
+            openModal(
+              imageSrc,                  // base64 image
+              det.confidence,             // confidence as score
+              "Fake",                     // since it's "recent fake detections"
+              det.transaction_id || det.id // You need to ensure this field exists
+            );
+          });
+        }
+     
         wrap.appendChild(el);
+       
         if (i < list.length - 1) {
           const separator = document.createElement('div');
           separator.className = 'detection-separator';
           wrap.appendChild(separator);
         }
       });
-    },
- 
+       },  
+       
     top(list, sel, type) {
       const wrap = utils.getElement(sel);
       wrap.innerHTML = '';
