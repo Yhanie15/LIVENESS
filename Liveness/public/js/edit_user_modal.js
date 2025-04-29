@@ -41,10 +41,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Get the user data from the card
                 const userCard = this.closest('.user-card');
                 if (userCard) {
-                    // Get user data from the card
+                    // Get user data from the card - using correct selectors that match the HTML structure
                     const userName = userCard.querySelector('.user-name').textContent;
-                    const userEmail = userCard.querySelector('.user-detail .detail-text[title]').textContent;
-                    const userCompanyCode = userCard.querySelectorAll('.user-detail .detail-text')[1].textContent;
+                    
+                    // Fix: Get the correct elements from the user card
+                    const userDetails = userCard.querySelectorAll('.user-detail .detail-text');
+                    const userEmail = userDetails[0].textContent.trim();
+                    const userCompanyCode = userDetails[1].textContent.trim();
  
                     // Set form values
                     fullNameInput.value = userName;
@@ -125,4 +128,3 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialize edit buttons
     setupEditButtons();
 });
- 
